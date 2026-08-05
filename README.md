@@ -12,7 +12,7 @@
 
 ## לידים
 
-טופס הסל שולח ל-CRM השיווקי המשותף (`sendLeadToCRM`, נטען מ-config.js של ריפו ort-presentation-builder) עם `source: 'app-farm'`. יש גם קישור וואטסאפ ישיר עם רשימת הכלים שנבחרו.
+טופס הסל שולח ל-CRM השיווקי המשותף (`sendLeadToCRM`, נטען מ-config.js של ריפו ort-training) עם `source: 'app-farm'`. יש גם קישור וואטסאפ ישיר עם רשימת הכלים שנבחרו.
 
 ## הוספת כלי חדש
 
