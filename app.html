@@ -62,7 +62,7 @@
     </div>
     <div class="footer-bottom">
       <p>© חוות האפליקציות · כלים דיגיטליים לניהול בית ספר</p>
-      <p>טכנולוגיה עם טביעת אצבע אנושית</p>
+      <p class="footer-typewriter" data-text="טכנולוגיה עם טביעת אצבע אנושית"></p>
     </div>
   </div>
   <span class="footer-fp" data-brand-mark style="--mark-fp:#fff;--mark-heart:#fff" aria-hidden="true"></span>
@@ -71,6 +71,7 @@
 <div id="cart-root"></div>
 
 <script src="apps-data.js"></script>
+<script src="logos.js"></script>
 <!-- CRM שיווקי — קונפיג משותף -->
 <script src="https://meytalp-dev.github.io/ort-training/marketing/config.js"></script>
 <script src="store.js"></script>
@@ -97,16 +98,20 @@ function renderDetail() {
     feats += '<li><span style="color:' + c.color + '">' + SVG_FEAT + '</span>' + app.features[i] + '</li>';
   }
 
-  box.innerHTML = '<article class="detail-card" style="--c:' + c.color + '">'
-    + '<div class="detail-head">'
-    +   '<div class="icon-tile" style="' + tileStyle(c.color) + '">' + iconSVG(app, c.color) + '</div>'
-    +   '<div><h1>' + app.name + '</h1>'
-    +   '<span class="cat-tag" style="color:' + c.color + ';background:' + c.color + '1a;border-color:' + c.color + '3d">' + c.name + '</span></div>'
+  var L = getLogo(app.id);
+  box.innerHTML = '<article class="detail-card has-stage reveal is-visible" style="--c:' + c.color + '">'
+    + '<div class="detail-stage" style="--c1:' + L.c1 + ';--c2:' + L.c2 + '">'
+    +   logoSVG(app, 112)
+    +   '<h1>' + app.name + '</h1>'
+    +   '<span class="cat-tag" style="color:' + c.color + ';background:' + c.color + '1a;border-color:' + c.color + '3d">' + c.name + '</span>'
     + '</div>'
-    + '<p class="detail-desc">' + app.desc + '</p>'
-    + '<h2>מה הכלי נותן</h2>'
-    + '<ul class="features">' + feats + '</ul>'
-    + '<div class="detail-actions">' + addBtnHTML(app.id) + '</div>'
+    + '<div class="detail-body">'
+    +   '<p class="detail-desc">' + app.desc + '</p>'
+    +   '<h2>מה הכלי נותן</h2>'
+    +   '<ul class="features">' + feats + '</ul>'
+    +   '<div class="detail-actions">' + addBtnHTML(app.id)
+    +     '<a class="btn-outline" href="index.html#catalog">לכל הכלים</a></div>'
+    + '</div>'
     + '</article>';
 }
 

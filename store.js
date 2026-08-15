@@ -99,7 +99,7 @@ function renderCartUI() {
       if (!app) continue;
       var color = getCategory(app.cat).color;
       html += '<div class="cart-item">'
-        + '<div class="icon-tile" style="' + tileStyle(color) + '">' + iconSVG(app, color) + '</div>'
+        + (typeof logoSVG === 'function' ? logoSVG(app, 40) : '<div class="icon-tile" style="' + tileStyle(color) + '">' + iconSVG(app, color) + '</div>')
         + '<span class="ci-name">' + app.name + '</span>'
         + '<button type="button" class="ci-remove" onclick="removeItem(\'' + app.id + '\')" aria-label="הסרת ' + app.name + '">' + SVG_X + '</button>'
         + '</div>';

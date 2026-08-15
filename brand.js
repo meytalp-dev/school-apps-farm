@@ -1,6 +1,6 @@
 /**
- * חוות האפליקציות — סימן המותג (טביעת אצבע + לב, בשפה העיצובית של IMPACT OS)
- * משמש בניווט ובפוטר; מוזרק לאלמנטים עם data-brand-mark.
+ * חוות האפליקציות — שכבת המותג והתנועה (בשפת IMPACT OS)
+ * סימן טביעת-אצבע+לב · לואדר · אור-עכבר ב-hero · badge בגלילה · reveal · flip במגע · מכתבת בפוטר
  */
 var BRAND_MARK_SVG =
   '<svg class="brand-lockup-mark" viewBox="0 0 240 284" xmlns="http://www.w3.org/2000/svg" fill="none" aria-hidden="true">'
@@ -30,16 +30,62 @@ var BRAND_MARK_SVG =
   + '</g></svg>';
 
 (function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* סימן המותג בכל המקומות המסומנים */
   var slots = document.querySelectorAll('[data-brand-mark]');
   for (var i = 0; i < slots.length; i++) slots[i].innerHTML = BRAND_MARK_SVG;
 
+  /* טביעת-אצבע כ-watermark (data-URI) לרקעים של כרטיסים */
+  var wm = BRAND_MARK_SVG.replace(/var\(--mark-fp, #12C7C7\)/g, '#061E4F').replace(/var\(--mark-heart, #F00678\)/g, '#061E4F').replace(/ class="brand-lockup-mark"/, '');
+  document.documentElement.style.setProperty('--fp-url', 'url("data:image/svg+xml;charset=utf-8,' + encodeURIComponent(wm) + '")');
+
+  /* לואדר — פעם אחת בכל session */
+  var loader = document.getElementById('islLoader');
+  if (loader) {
+    var seen = false;
+    try { seen = sessionStorage.getItem('farm-loader') === '1'; } catch (e) {}
+    if (seen || reduce) { loader.remove(); }
+    else {
+      var done = false;
+      var finish = function () {
+        if (done) return; done = true;
+        loader.classList.add('is-done');
+        try { sessionStorage.setItem('farm-loader', '1'); } catch (e) {}
+        setTimeout(function () { if (loader.parentNode) loader.parentNode.removeChild(loader); }, 600);
+      };
+      var skip = loader.querySelector('.isl-skip');
+      if (skip) skip.addEventListener('click', finish);
+      setTimeout(finish, 1750);
+    }
+  }
+
+  /* Hero — אור עוקב-עכבר שחושף את טביעת-האצבע */
+  var hero = document.querySelector('.hero'), light = document.querySelector('.hero-reveal-light');
+  if (hero && light && window.matchMedia('(hover: hover)').matches && !reduce) {
+    hero.addEventListener('mousemove', function (e) {
+      var r = hero.getBoundingClientRect();
+      light.style.setProperty('--x', (e.clientX - r.left) + 'px');
+      light.style.setProperty('--y', (e.clientY - r.top) + 'px');
+      light.style.setProperty('--o', '1');
+    });
+    hero.addEventListener('mouseleave', function () { light.style.setProperty('--o', '0'); });
+  }
+
+  /* Nav — badge בגלילה */
+  var badge = document.querySelector('.nav-scroll-badge');
+  if (badge) {
+    var onScroll = function () { badge.classList.toggle('is-visible', window.scrollY > 260); };
+    window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  }
+
   /* reveal on scroll */
-  if ('IntersectionObserver' in window) {
+  if ('IntersectionObserver' in window && !reduce) {
     var io = new IntersectionObserver(function (entries) {
       for (var j = 0; j < entries.length; j++) {
         if (entries[j].isIntersecting) { entries[j].target.classList.add('is-visible'); io.unobserve(entries[j].target); }
       }
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    }, { rootMargin: '0px 0px -6% 0px', threshold: 0.06 });
     window.observeReveal = function (root) {
       var els = (root || document).querySelectorAll('.reveal:not(.is-visible)');
       for (var k = 0; k < els.length; k++) io.observe(els[k]);
@@ -51,4 +97,40 @@ var BRAND_MARK_SVG =
     };
   }
   window.observeReveal();
+
+  /* Flip — במגע: הקשה על כרטיס הופכת אותו (כפתורים וקישורים לא הופכים) */
+  document.addEventListener('click', function (e) {
+    var card = e.target.closest && e.target.closest('.app-card');
+    if (!card) {
+      var open = document.querySelectorAll('.app-card.is-flipped');
+      for (var m = 0; m < open.length; m++) open[m].classList.remove('is-flipped');
+      return;
+    }
+    if (e.target.closest('a, button, input, select, label')) return;
+    var others = document.querySelectorAll('.app-card.is-flipped');
+    for (var n = 0; n < others.length; n++) if (others[n] !== card) others[n].classList.remove('is-flipped');
+    card.classList.toggle('is-flipped');
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var card = document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('app-card') ? document.activeElement : null;
+    if (card) { e.preventDefault(); card.classList.toggle('is-flipped'); }
+  });
+
+  /* פוטר — מכתבת */
+  var tw = document.querySelector('.footer-typewriter');
+  if (tw && !reduce && 'IntersectionObserver' in window) {
+    var full = tw.getAttribute('data-text') || tw.textContent; tw.textContent = '';
+    var started = false;
+    var tio = new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting || started) return; started = true; tio.disconnect();
+      tw.classList.add('is-writing'); var idx = 0;
+      (function type() {
+        tw.textContent = full.slice(0, ++idx);
+        if (idx < full.length) setTimeout(type, 34 + Math.random() * 40);
+        else setTimeout(function () { tw.classList.remove('is-writing'); }, 1200);
+      })();
+    }, { threshold: .4 });
+    tio.observe(tw);
+  } else if (tw) { tw.textContent = tw.getAttribute('data-text') || tw.textContent; }
 })();

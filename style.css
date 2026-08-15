@@ -196,45 +196,104 @@ nav.site {
 }
 .section-sub { font-size: 16px; color: var(--gray); line-height: 1.75; max-width: 540px; margin: 10px auto 0; }
 
-/* רשת כרטיסים */
+/* רשת כרטיסים — flip cards כמו כרטיסי-המוצר באימפקט */
 .grid {
   display: grid; gap: 22px;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  align-items: stretch;
 }
-.card {
-  --c: var(--teal);
-  background: var(--white); border-radius: 26px;
-  padding: 30px 28px 34px;
-  box-shadow: 0 2px 16px rgba(6,30,79,0.06);
-  display: flex; flex-direction: column; gap: 12px;
-  position: relative; overflow: hidden;
-  transition: transform 320ms var(--motion-ease), box-shadow 320ms var(--motion-ease);
+.app-card {
+  --c1: var(--teal); --c2: var(--navy);
+  min-height: 330px; perspective: 1400px; cursor: pointer; outline: none;
+  position: relative;
+}
+.app-card-inner {
+  position: relative; min-height: 330px; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 680ms cubic-bezier(.2,.7,.2,1);
   will-change: transform;
 }
-.card::after {
-  content: ''; position: absolute; bottom: 0; right: 0; left: 0; height: 3px;
-  background: var(--c);
-  transform: scaleX(.4); transform-origin: right center;
-  transition: transform 480ms cubic-bezier(.22,.68,0,1.2);
+@media (hover: hover) {
+  .app-card:hover .app-card-inner, .app-card:focus-within .app-card-inner { transform: rotateY(180deg) translateY(-4px); }
 }
-.card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); }
-.card:hover::after { transform: scaleX(1) scaleY(1.8); }
-.icon-tile {
-  width: 54px; height: 62px; border-radius: 18px;
-  display: flex; align-items: center; justify-content: center;
-  transition: box-shadow 320ms ease;
+.app-card.is-flipped .app-card-inner { transform: rotateY(180deg) translateY(-4px); }
+.app-face {
+  position: absolute; inset: 0; min-height: 330px;
+  display: flex; flex-direction: column; overflow: hidden;
+  border: 1px solid rgba(6,30,79,0.08); border-radius: 28px;
+  background: linear-gradient(180deg, var(--white), #F8FAFD);
+  box-shadow: 0 18px 44px rgba(6,30,79,0.06);
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  transition: box-shadow 320ms var(--motion-ease), border-color 320ms var(--motion-ease);
 }
-.card .icon-tile { margin-bottom: 8px; }
-.card .icon-tile svg { width: 26px; height: 26px; transition: transform 420ms cubic-bezier(.22,.68,0,1.2); }
-.card:hover .icon-tile { box-shadow: 0 0 0 6px rgba(6,30,79,0.05); }
-.card:hover .icon-tile svg { transform: translateY(-2px) scale(1.08); }
-.card h3 { font-size: 20px; font-weight: 800; color: var(--navy); letter-spacing: -.3px; line-height: 1.3; }
-.card h3 a { color: inherit; text-decoration: none; }
-.card h3 a::after { content: ''; position: absolute; inset: 0; }
-.card p { color: var(--gray); font-size: 15.5px; line-height: 1.75; flex: 1; }
-.card .card-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; }
-.card .more { font-size: 14px; font-weight: 700; color: var(--navy); opacity: .7; transition: opacity var(--motion-fast); }
-.card:hover .more { opacity: 1; }
+.app-card:hover .app-face, .app-card.is-flipped .app-face {
+  box-shadow: 0 28px 64px rgba(6,30,79,0.12);
+  border-color: color-mix(in srgb, var(--c1) 30%, white);
+}
+/* פנים קדמיות — הלוגו על במה משלו */
+.app-media {
+  flex: 1; position: relative; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  padding: 30px 22px 26px; text-align: center;
+  background:
+    radial-gradient(circle at 22% 20%, color-mix(in srgb, var(--c1) 16%, transparent), transparent 42%),
+    radial-gradient(circle at 80% 84%, color-mix(in srgb, var(--c2) 12%, transparent), transparent 44%),
+    var(--white);
+}
+.app-media::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--fp-url) center/38% auto no-repeat;
+  opacity: .05; pointer-events: none;
+}
+.app-logo-wrap { position: relative; z-index: 1; }
+.app-logo-wrap .app-logo {
+  display: block; border-radius: 24px;
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--c2) 28%, transparent), 0 0 0 1px rgba(255,255,255,.6) inset;
+  transition: transform 420ms cubic-bezier(.22,.68,0,1.2);
+}
+.app-card:hover .app-logo-wrap .app-logo { transform: translateY(-3px) scale(1.04); }
+.app-logo-wrap::after {
+  content: ''; position: absolute; inset: -12px; z-index: -1; border-radius: 40px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--c1) 22%, transparent), transparent 70%);
+}
+.app-name { position: relative; z-index: 1; font-size: 22px; font-weight: 900; color: var(--navy); letter-spacing: -.5px; line-height: 1.2; text-wrap: balance; }
+.app-kicker {
+  position: relative; z-index: 1;
+  display: inline-flex; align-items: center; gap: 7px; border-radius: 999px; padding: 6px 14px;
+  font-size: 12px; font-weight: 800; color: var(--c2);
+  background: color-mix(in srgb, var(--c1) 12%, white);
+}
+.app-kicker::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--c1); }
+.app-front-hint {
+  position: relative; z-index: 1;
+  padding: 12px 20px 16px; text-align: center; font-size: 12px; font-weight: 700; color: var(--gray);
+  border-top: 1px solid rgba(6,30,79,0.06);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.app-front-hint svg { width: 14px; height: 14px; opacity: .7; }
+/* פנים אחוריות — התוכן */
+.app-face-back {
+  transform: rotateY(180deg); justify-content: center;
+  background:
+    radial-gradient(circle at 16% 16%, color-mix(in srgb, var(--c1) 14%, transparent), transparent 36%),
+    radial-gradient(circle at 84% 84%, color-mix(in srgb, var(--c2) 9%, transparent), transparent 40%),
+    linear-gradient(180deg, #fff, #F8FAFD);
+}
+.app-face-back::before {
+  content: ''; position: absolute; inset: 24px;
+  background: var(--fp-url) center/contain no-repeat; opacity: .04; pointer-events: none;
+}
+.app-back-body { position: relative; z-index: 1; padding: 24px 24px 22px; display: flex; flex-direction: column; gap: 12px; height: 100%; }
+.app-back-head { display: flex; align-items: center; gap: 12px; }
+.app-back-head .app-logo { border-radius: 12px; flex: 0 0 auto; }
+.app-back-head h3 { font-size: 18px; font-weight: 900; color: var(--navy); letter-spacing: -.3px; line-height: 1.25; }
+.app-back-body p { color: var(--gray); font-size: 14.5px; line-height: 1.7; }
+.app-feats { list-style: none; display: grid; gap: 6px; }
+.app-feats li { display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; color: var(--navy); line-height: 1.5; }
+.app-feats li svg { flex: 0 0 auto; width: 15px; height: 15px; margin-top: 3px; color: var(--c1); }
+.app-back-actions { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 6px; }
+.app-back-actions .more { font-size: 13.5px; font-weight: 700; color: var(--navy); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+.app-back-actions .more:hover { color: var(--fuchsia); }
 
 /* כפתור הוספה לסל */
 .add-btn {
@@ -346,8 +405,7 @@ nav.site {
   background: var(--c);
 }
 .detail-head { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 8px; }
-.detail-head .icon-tile { width: 72px; height: 82px; border-radius: 22px; }
-.detail-head .icon-tile svg { width: 36px; height: 36px; }
+.detail-head .app-logo { border-radius: 26px; box-shadow: 0 16px 34px color-mix(in srgb, var(--c) 30%, transparent); flex: 0 0 auto; }
 .detail-head h1 { font-size: clamp(26px, 4vw, 40px); font-weight: 900; letter-spacing: -1px; line-height: 1.15; }
 .cat-tag {
   display: inline-flex; align-items: center; gap: 7px;
@@ -458,3 +516,114 @@ footer.site::before {
   .footer-fp { display: none; }
   .cart-fab { bottom: 16px; left: 16px; right: 16px; justify-content: center; }
 }
+
+/* ═══ אפקטים בשפת אימפקט ═══ */
+
+/* לואדר — טביעת-האצבע נמשכת */
+.isl-loader {
+  position: fixed; inset: 0; z-index: 999;
+  background: var(--white);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+  transition: opacity 520ms var(--motion-ease), visibility 520ms;
+}
+.isl-loader.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
+.isl-loader .brand-lockup-mark { width: 92px; height: 109px; }
+.isl-loader .brand-lockup-mark path { stroke-dasharray: 260; stroke-dashoffset: 260; animation: islDraw 1.15s var(--motion-ease) forwards; }
+.isl-loader .brand-lockup-mark g:nth-of-type(2) path { animation-delay: .55s; stroke-dasharray: 160; stroke-dashoffset: 160; }
+.isl-loader .brand-lockup-mark circle { opacity: 0; animation: islDot .4s ease forwards; animation-delay: .9s; }
+@keyframes islDraw { to { stroke-dashoffset: 0; } }
+@keyframes islDot { to { opacity: 1; } }
+.isl-title { font-size: 20px; font-weight: 900; color: var(--navy); letter-spacing: -.4px; opacity: 0; animation: heroRise 600ms var(--motion-ease) .35s forwards; }
+.isl-title b { color: var(--fuchsia); }
+.isl-load-track { width: 160px; height: 3px; border-radius: 999px; background: rgba(6,30,79,0.08); overflow: hidden; }
+.isl-load-progress { height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, var(--teal), var(--fuchsia)); animation: islBar 1.3s var(--motion-ease) forwards; }
+@keyframes islBar { to { width: 100%; } }
+.isl-skip { position: absolute; bottom: 28px; background: none; border: none; color: var(--gray); font-size: 13px; font-weight: 600; cursor: pointer; }
+
+/* Hero — אור-עכבר שחושף את טביעת-האצבע */
+.hero-fp-static {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -52%);
+  width: min(520px, 62vw); height: auto; opacity: .06; pointer-events: none; z-index: 0;
+  animation: fingerprintBreathe 16s var(--motion-ease) infinite alternate;
+}
+@keyframes fingerprintBreathe { to { transform: translate(-50%, -52%) translateY(-10px) scale(1.025); } }
+.hero-reveal-light {
+  --x: 50%; --y: 50%; --o: 0; --r: 190px;
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  opacity: var(--o); transition: opacity 280ms var(--motion-ease);
+}
+.hero-reveal-light::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at var(--x) var(--y), rgba(18,199,199,0.18) 0, rgba(240,6,120,0.08) 26%, rgba(255,255,255,0.05) 44%, transparent 66%);
+}
+.hero-reveal-light .brand-lockup-mark {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -52%);
+  width: min(520px, 62vw); height: auto; opacity: .55;
+  clip-path: circle(var(--r) at var(--x) var(--y));
+}
+
+/* Nav — badge שמופיע בגלילה */
+.nav-scroll-badge {
+  display: inline-flex; align-items: center; gap: 8px; margin-inline: auto 0;
+  padding: 7px 16px; border-radius: 999px;
+  border: 1px solid rgba(18,199,199,0.2); background: rgba(18,199,199,0.08);
+  color: var(--teal); font-size: 12px; font-weight: 800; white-space: nowrap;
+  opacity: 0; transform: translateY(8px) scale(.96); pointer-events: none;
+  transition: opacity 260ms var(--motion-ease), transform 260ms var(--motion-ease);
+}
+.nav-scroll-badge::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 5px rgba(18,199,199,0.1); }
+.nav-scroll-badge.is-visible { opacity: 1; transform: none; }
+@media (max-width: 720px) { .nav-scroll-badge { display: none; } }
+
+/* קטלוג — טבעות-גל ברקע (כמו sectors באתר) */
+.catalog::before, .catalog::after {
+  content: ''; position: absolute; border-radius: 50%; pointer-events: none; z-index: 0;
+  opacity: .34; transform: scale(.82); animation: impactRipple 9s var(--motion-ease) infinite;
+}
+.catalog::before { width: 360px; height: 360px; top: 120px; right: 6%; border: 1px solid rgba(18,199,199,0.22); }
+.catalog::after { width: 460px; height: 460px; bottom: 80px; left: 4%; border: 1px solid rgba(240,6,120,0.16); animation-delay: 2.4s; }
+.catalog-inner { position: relative; z-index: 1; }
+
+/* קו-מחבר בין כותרת-הקטגוריה לכרטיסים */
+.section-head { position: relative; }
+.section-head::after {
+  content: ''; display: block; width: 1px; height: 26px; margin: 16px auto 0;
+  background: linear-gradient(180deg, var(--c, var(--teal)), transparent);
+  opacity: .6;
+}
+
+/* פוטר — מכתבת */
+.footer-typewriter { min-height: 1.6em; }
+.footer-typewriter.is-writing::after {
+  content: ''; display: inline-block; width: 2px; height: 1.05em; margin-inline-start: 4px; vertical-align: -.16em;
+  border-radius: 999px; background: rgba(255,255,255,.72); animation: footerCaret 780ms steps(1,end) infinite;
+}
+@keyframes footerCaret { 50% { opacity: 0; } }
+
+/* דף-פירוט — במת-לוגו */
+.detail-stage {
+  --c1: var(--teal); --c2: var(--navy);
+  position: relative; overflow: hidden; border-radius: 28px 28px 0 0;
+  padding: 44px 32px 36px; text-align: center;
+  background:
+    radial-gradient(circle at 20% 18%, color-mix(in srgb, var(--c1) 18%, transparent), transparent 40%),
+    radial-gradient(circle at 82% 82%, color-mix(in srgb, var(--c2) 12%, transparent), transparent 42%),
+    var(--white);
+  border-bottom: 1px solid var(--line);
+}
+.detail-stage::before { content: ''; position: absolute; inset: 0; background: var(--fp-url) center/34% auto no-repeat; opacity: .05; pointer-events: none; }
+.detail-stage .app-logo { position: relative; z-index: 1; border-radius: 30px; box-shadow: 0 22px 44px color-mix(in srgb, var(--c2) 30%, transparent); }
+.detail-stage h1 { position: relative; z-index: 1; margin-top: 18px; font-size: clamp(28px, 4vw, 42px); font-weight: 900; letter-spacing: -1px; line-height: 1.15; }
+.detail-stage .cat-tag { position: relative; z-index: 1; margin-top: 12px; }
+.detail-card.has-stage { padding: 0; }
+.detail-body { padding: 30px 44px 48px; }
+@media (max-width: 720px) { .detail-body { padding: 22px 22px 32px; } .detail-stage { padding: 32px 20px 28px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .app-card-inner { transition: none; transform: none !important; }
+  .app-face { position: relative; backface-visibility: visible; }
+  .app-face-back { transform: none; margin-top: 14px; }
+  .isl-loader { display: none; }
+}
+.detail-actions .btn-outline { padding: 11px 22px; font-size: 15px; }
+.cart-item .app-logo { border-radius: 12px; flex: 0 0 auto; }
