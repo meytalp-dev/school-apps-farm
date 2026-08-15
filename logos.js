@@ -375,7 +375,37 @@ var LOGOS = {
     '<rect x="10" y="12" width="44" height="40" rx="8" fill="#fff" opacity=".3"/>'
     + '<circle cx="24" cy="26" r="6" fill="#fff"/><path d="M14 40c1.4-6 5.5-8.5 10-8.5s8.6 2.5 10 8.5z" fill="#fff"/>'
     + '<rect x="38" y="20" width="10" height="5" rx="2.5" fill="#fff" opacity=".85"/><rect x="38" y="28" width="10" height="5" rx="2.5" fill="#fff" opacity=".65"/><rect x="38" y="36" width="10" height="5" rx="2.5" fill="#fff" opacity=".45"/>'
-    + '<path d="M16 46h32" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".5"/>' }
+    + '<path d="M16 46h32" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".5"/>' },
+  /* ── הסיפור הבית-ספרי + אסיפות הורים ── */
+  'parent-meetings': { c1: '#0B7DB5', c2: '#7BCB52', svg:
+    '<rect x="11" y="14" width="42" height="40" rx="7" fill="#fff" opacity=".32"/>'
+    + '<rect x="11" y="14" width="42" height="11" rx="7" fill="#fff"/>'
+    + '<path d="M22 10v8M42 10v8" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>'
+    + '<rect x="17" y="30" width="30" height="6" rx="3" fill="#fff" opacity=".55"/><rect x="17" y="39" width="30" height="6" rx="3" fill="#fff"/><rect x="17" y="48" width="30" height="4" rx="2" fill="#fff" opacity=".4"/>'
+    + '<circle cx="21" cy="42" r="2.2" fill="url(#G)"/><path d="M40 42l2.5 2.5 5-5" fill="none" stroke="url(#G)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' },
+
+  'brand-kit': { c1: '#F47C26', c2: '#F00678', svg:
+    '<circle cx="24" cy="24" r="10" fill="#fff"/><circle cx="40" cy="24" r="10" fill="#fff" opacity=".7"/><circle cx="32" cy="38" r="10" fill="#fff" opacity=".55"/>'
+    + '<path d="M18 50h28" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M22 56h20" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".6"/>'
+    + '<circle cx="24" cy="24" r="3.5" fill="url(#G)"/><circle cx="40" cy="24" r="3.5" fill="url(#G)" opacity=".8"/><circle cx="32" cy="38" r="3.5" fill="url(#G)" opacity=".7"/>' },
+
+  'competitors': { c1: '#F47C26', c2: '#061E4F', svg:
+    '<circle cx="28" cy="28" r="14" fill="none" stroke="#fff" stroke-width="4"/>'
+    + '<path d="M38 38l12 12" stroke="#fff" stroke-width="5" stroke-linecap="round"/>'
+    + '<rect x="21" y="29" width="4" height="7" rx="1.5" fill="#fff"/><rect x="26.5" y="24" width="4" height="12" rx="1.5" fill="#fff"/><rect x="32" y="20" width="4" height="16" rx="1.5" fill="#F4B41B"/>' },
+
+  'swot': { c1: '#F47C26', c2: '#7BCB52', svg:
+    '<rect x="12" y="12" width="18" height="18" rx="5" fill="#fff"/><rect x="34" y="12" width="18" height="18" rx="5" fill="#fff" opacity=".8"/>'
+    + '<rect x="12" y="34" width="18" height="18" rx="5" fill="#fff" opacity=".65"/><rect x="34" y="34" width="18" height="18" rx="5" fill="#fff" opacity=".5"/>'
+    + '<path d="M17 21l3 3 5-6" fill="none" stroke="url(#G)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>'
+    + '<path d="M40 24l6-6M40 18l6 6" stroke="url(#G)" stroke-width="2.4" stroke-linecap="round" opacity=".7"/>'
+    + '<path d="M21 47v-8M17 43l4-4 4 4" fill="none" stroke="url(#G)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>'
+    + '<path d="M43 39v6M43 48v.5" stroke="url(#G)" stroke-width="2.6" stroke-linecap="round" opacity=".7"/>' },
+
+  'parent-testimonials': { c1: '#F47C26', c2: '#F4B41B', svg:
+    '<path d="M12 22a8 8 0 0 1 8-8h24a8 8 0 0 1 8 8v12a8 8 0 0 1-8 8H30l-10 8v-8h0a8 8 0 0 1-8-8z" fill="#fff"/>'
+    + '<path d="M22 24c0-3 2-5 5-5v3c-1.5 0-2 .8-2 2h2v6h-5zM33 24c0-3 2-5 5-5v3c-1.5 0-2 .8-2 2h2v6h-5z" fill="url(#G)"/>'
+    + '<path d="M50 44l1.4 2.9 3.2.5-2.3 2.2.6 3.2-2.9-1.5-2.9 1.5.6-3.2-2.3-2.2 3.2-.5z" fill="#fff"/><path d="M42 50l1 2 2.2.3-1.6 1.6.4 2.2-2-1-2 1 .4-2.2-1.6-1.6 2.2-.3z" fill="#fff" opacity=".7"/>' }
 };
 
 /* לוגו-ברירת-מחדל למערכת חדשה שעוד אין לה סמל */
