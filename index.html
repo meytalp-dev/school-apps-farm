@@ -29,7 +29,7 @@
         <span class="brand-lockup-tagline">כלי ניהול לבית הספר</span>
       </span>
     </a>
-    <span class="nav-scroll-badge" id="navBadge">24 כלים · בוחרים רק מה שצריך</span>
+    <span class="nav-scroll-badge" id="navBadge">59 מערכות · בוחרים רק מה שצריך</span>
     <a class="nav-cta" target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=972526857000&text=%D7%A9%D7%9C%D7%95%D7%9D%21%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A9%D7%9E%D7%95%D7%A2%20%D7%A2%D7%95%D7%93%20%D7%A2%D7%9C%20%D7%97%D7%95%D7%95%D7%AA%20%D7%94%D7%90%D7%A4%D7%9C%D7%99%D7%A7%D7%A6%D7%99%D7%95%D7%AA">
       בואו נדבר
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
@@ -45,8 +45,8 @@
     <div class="hero-inner">
       <div class="hero-tag"><span class="tag-dot"></span>נבנה על ידי מנהלת בית ספר — מתוך היום-יום, לא מהמשרד</div>
       <h1>מרכיבים את מערכת הניהול<br><em>שמתאימה בדיוק לבית הספר שלכם</em></h1>
-      <p class="hero-sub">כל כלי כאן נולד מצורך אמיתי בשטח, וכל כלי עומד בפני עצמו.
-      בוחרים אחד, שניים או עשרה — בלי להתחייב למערכת ענק ובלי לשלם על מה שלא צריך.</p>
+      <p class="hero-sub">59 מערכות שנולדו מצורך אמיתי בשטח ורצות היום בבית ספר חי — וכל אחת עומדת בפני עצמה.
+      בוחרים אחת, שתיים או עשר — בלי להתחייב למערכת ענק ובלי לשלם על מה שלא צריך.</p>
       <div class="hero-btns">
         <a class="btn-primary" href="#catalog">לקטלוג הכלים</a>
         <a class="btn-outline" target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=972526857000&text=%D7%A9%D7%9C%D7%95%D7%9D%21%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A9%D7%9E%D7%95%D7%A2%20%D7%A2%D7%95%D7%93%20%D7%A2%D7%9C%20%D7%97%D7%95%D7%95%D7%AA%20%D7%94%D7%90%D7%A4%D7%9C%D7%99%D7%A7%D7%A6%D7%99%D7%95%D7%AA">שיחת היכרות</a>
@@ -134,7 +134,12 @@ var CAT_DESC = {
   attendance: 'נוכחות, איחורים ומשמעת — בזמן אמת, בלי טפסים.',
   staff:      'מערכת, תורנויות, דוחות ומשוב — הצוות מסודר.',
   pedagogy:   'אקלים, שיעורי חינוך וחיזוקים — הלב של בית הספר.',
-  planning:   'תוכנית שנתית, תקציב, בחינות וחפיפה — התמונה הגדולה.'
+  planning:   'תוכנית שנתית, משרות, תקציב, בחינות ואסטרטגיה — התמונה הגדולה.',
+  counseling: 'דשבורד יועצת, סלי שילוב ומטפלים — הטיפול מנוהל.',
+  operations: 'משימות, לוחות, נהלים, הודעות והסעות — התפעול היומי זורם.',
+  marketing:  'דף נחיתה ומודעות גיוס — בית הספר נראה טוב החוצה.',
+  generators: 'תעודות, רקעים, ברכות וסטיקרים — עיצוב במיתוג בית הספר, בלי מעצב.',
+  kits:       'ערכות מוכנות לפי תפקיד — כמה מערכות, כניסה אחת.'
 };
 var SVG_FLIP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg>';
 var SVG_TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>';
@@ -195,7 +200,7 @@ function setCat(id) {
 
 renderChips();
 renderCatalog();
-document.getElementById('navBadge').textContent = APPS.length + ' כלים · בוחרים רק מה שצריך';
+document.getElementById('navBadge').textContent = APPS.length + ' מערכות · בוחרים רק מה שצריך';
 </script>
 </body>
 </html>

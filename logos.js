@@ -159,7 +159,223 @@ var LOGOS = {
     '<rect x="10" y="22" width="44" height="30" rx="7" fill="#fff"/>'
     + '<path d="M24 22v-5a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v5" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>'
     + '<path d="M10 34h44" stroke="url(#G)" stroke-width="2.5" opacity=".45"/>'
-    + '<path d="M22 44h20M36 40l4 4-4 4M28 32l-4 2 4 2" fill="none" stroke="url(#G)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' }
+    + '<path d="M22 44h20M36 40l4 4-4 4M28 32l-4 2 4 2" fill="none" stroke="url(#G)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' },
+  /* ── הרחבה — 35 מערכות נוספות ── */
+
+  /* תלמידים */
+  'directory': { c1: '#12C7C7', c2: '#0B7DB5', svg:
+    '<rect x="12" y="10" width="40" height="44" rx="8" fill="#fff" opacity=".35"/>'
+    + '<rect x="12" y="10" width="40" height="44" rx="8" fill="none" stroke="#fff" stroke-width="2.5" opacity=".7"/>'
+    + '<circle cx="32" cy="26" r="7" fill="#fff"/><path d="M19 44c1.6-6.5 7-9.5 13-9.5s11.4 3 13 9.5z" fill="#fff"/>'
+    + '<path d="M8 20h5M8 30h5M8 40h5" stroke="#fff" stroke-width="3.5" stroke-linecap="round" opacity=".8"/>'
+    + '<circle cx="47" cy="47" r="8" fill="#7BCB52"/><path d="M43.8 46.2c.6 1.9 2.1 3.4 4 4l1.6-1.6 2.6 1.1-.5 2.2c-4.6.9-9.4-3.9-8.5-8.5l2.2-.5 1.1 2.6z" fill="#fff"/>' },
+
+  'bagrut': { c1: '#0FB5C9', c2: '#061E4F', svg:
+    '<path d="M32 12L8 24l24 12 24-12z" fill="#fff"/>'
+    + '<path d="M16 30v10c0 4 7 8 16 8s16-4 16-8V30l-16 8z" fill="#fff" opacity=".7"/>'
+    + '<path d="M54 25v14" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="54" cy="42" r="3" fill="#F4B41B"/>'
+    + '<circle cx="46" cy="50" r="8" fill="#7BCB52"/><path d="M42.5 50l2.6 2.6 4.6-5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>' },
+
+  /* ייעוץ וטיפול */
+  'counselor-dashboard': { c1: '#7B4EC8', c2: '#5B2D9E', svg:
+    '<rect x="10" y="12" width="44" height="40" rx="8" fill="#fff" opacity=".3"/>'
+    + '<rect x="15" y="17" width="16" height="12" rx="4" fill="#fff"/><rect x="34" y="17" width="15" height="12" rx="4" fill="#fff" opacity=".7"/>'
+    + '<rect x="15" y="32" width="34" height="5" rx="2.5" fill="#fff" opacity=".8"/><rect x="15" y="41" width="24" height="5" rx="2.5" fill="#fff" opacity=".6"/>'
+    + '<path d="M42 44c-2.4-2.6-6.6-.3-4.9 3 .9 1.8 3.4 3.6 4.9 4.7 1.5-1.1 4-2.9 4.9-4.7 1.7-3.3-2.5-5.6-4.9-3z" fill="#F00678"/>' },
+
+  'shiluv': { c1: '#A07EE0', c2: '#5B2D9E', svg:
+    '<path d="M14 30h36l-3 22H17z" fill="#fff"/>'
+    + '<path d="M22 30c0-8 4-13 10-13s10 5 10 13" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" opacity=".85"/>'
+    + '<circle cx="24" cy="40" r="4" fill="url(#G)" opacity=".8"/><circle cx="32" cy="42" r="4" fill="url(#G)" opacity=".8"/><circle cx="40" cy="40" r="4" fill="url(#G)" opacity=".8"/>'
+    + '<path d="M28 20l4-4 4 4M32 16v8" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>' },
+
+  'therapy': { c1: '#7B4EC8', c2: '#F00678', svg:
+    '<path d="M32 50c-9-6-19-13-19-23a9.5 9.5 0 0 1 19-3 9.5 9.5 0 0 1 19 3c0 10-10 17-19 23z" fill="#fff"/>'
+    + '<path d="M18 30h7l3-6 4 12 3-8 2 2h9" fill="none" stroke="url(#G)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' },
+
+  /* צוות */
+  'teacher-assessment': { c1: '#7BCB52', c2: '#0EA5B7', svg:
+    '<circle cx="32" cy="32" r="21" fill="#fff" opacity=".28"/>'
+    + '<path d="M32 12l19 14-7 22H20l-7-22z" fill="none" stroke="#fff" stroke-width="2.5" opacity=".7"/>'
+    + '<path d="M32 20l12 9-4.5 14h-15L20 29z" fill="#fff" opacity=".9"/>'
+    + '<circle cx="32" cy="12" r="3.5" fill="#fff"/><circle cx="51" cy="26" r="3.5" fill="#fff"/><circle cx="44" cy="48" r="3.5" fill="#fff"/><circle cx="20" cy="48" r="3.5" fill="#fff"/><circle cx="13" cy="26" r="3.5" fill="#fff"/>'
+    + '<circle cx="32" cy="32" r="4" fill="url(#G)"/>' },
+
+  'teacher-plan': { c1: '#7BCB52', c2: '#C98600', svg:
+    '<path d="M14 50V16" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".7"/>'
+    + '<path d="M14 18c8-6 14 6 22 0s10-6 14 0v20c-4-6-6-6-14 0s-14-6-22 0z" fill="#fff"/>'
+    + '<path d="M22 27h20M22 33h12" stroke="url(#G)" stroke-width="2.6" stroke-linecap="round" opacity=".7"/>'
+    + '<path d="M40 44l3 3 6-6" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' },
+
+  'staff-calendar': { c1: '#7BCB52', c2: '#12C7C7', svg:
+    '<rect x="11" y="14" width="42" height="40" rx="7" fill="#fff" opacity=".32"/>'
+    + '<rect x="11" y="14" width="42" height="11" rx="7" fill="#fff"/>'
+    + '<path d="M22 10v8M42 10v8" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>'
+    + '<circle cx="24" cy="36" r="4" fill="#fff"/><path d="M17 48c1-4.2 3.8-6 7-6s6 1.8 7 6z" fill="#fff"/>'
+    + '<circle cx="40" cy="36" r="4" fill="#fff" opacity=".8"/><path d="M33 48c1-4.2 3.8-6 7-6s6 1.8 7 6z" fill="#fff" opacity=".8"/>' },
+
+  /* תפעול ותקשורת */
+  'tasks': { c1: '#0B7DB5', c2: '#061E4F', svg:
+    '<rect x="12" y="10" width="40" height="44" rx="8" fill="#fff" opacity=".3"/>'
+    + '<rect x="18" y="18" width="9" height="9" rx="3" fill="#fff"/><path d="M20.5 22.5l2 2 4-4.5" fill="none" stroke="url(#G)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+    + '<rect x="18" y="31" width="9" height="9" rx="3" fill="#fff"/><path d="M20.5 35.5l2 2 4-4.5" fill="none" stroke="url(#G)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+    + '<rect x="18" y="44" width="9" height="9" rx="3" fill="none" stroke="#fff" stroke-width="2"/>'
+    + '<path d="M31 22.5h15M31 35.5h15M31 48.5h10" stroke="#fff" stroke-width="3.5" stroke-linecap="round" opacity=".85"/>' },
+
+  'gantt': { c1: '#0EA5B7', c2: '#0B7DB5', svg:
+    '<path d="M14 12v40h38" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" opacity=".7"/>'
+    + '<rect x="18" y="17" width="16" height="7" rx="3.5" fill="#fff"/>'
+    + '<rect x="26" y="28" width="20" height="7" rx="3.5" fill="#fff" opacity=".85"/>'
+    + '<rect x="36" y="39" width="14" height="7" rx="3.5" fill="#fff" opacity=".7"/>'
+    + '<circle cx="34" cy="20.5" r="2.2" fill="url(#G)"/><circle cx="46" cy="31.5" r="2.2" fill="url(#G)"/>' },
+
+  'calendar': { c1: '#0B7DB5', c2: '#12C7C7', svg:
+    '<rect x="11" y="14" width="42" height="40" rx="7" fill="#fff" opacity=".32"/>'
+    + '<rect x="11" y="14" width="42" height="11" rx="7" fill="#fff"/>'
+    + '<path d="M22 10v8M42 10v8" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>'
+    + '<rect x="18" y="31" width="8" height="7" rx="2" fill="#fff" opacity=".6"/><rect x="28" y="31" width="8" height="7" rx="2" fill="#fff" opacity=".6"/><rect x="38" y="31" width="8" height="7" rx="2" fill="#fff" opacity=".6"/>'
+    + '<rect x="18" y="41" width="8" height="7" rx="2" fill="#fff" opacity=".6"/><rect x="28" y="41" width="8" height="7" rx="2" fill="#F00678"/><rect x="38" y="41" width="8" height="7" rx="2" fill="#fff" opacity=".6"/>' },
+
+  'roles': { c1: '#0B7DB5', c2: '#5B2D9E', svg:
+    '<circle cx="32" cy="18" r="6" fill="#fff"/><path d="M23 32c1.3-5.5 5-8 9-8s7.7 2.5 9 8z" fill="#fff"/>'
+    + '<path d="M32 32v6M32 38H18v6M32 38h14v6" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>'
+    + '<circle cx="18" cy="48" r="4.5" fill="#fff" opacity=".85"/><circle cx="32" cy="48" r="4.5" fill="#fff" opacity=".85"/><circle cx="46" cy="48" r="4.5" fill="#fff" opacity=".85"/>' },
+
+  'handbook': { c1: '#0B7DB5', c2: '#061E4F', svg:
+    '<path d="M32 18c-6-5-13-6-20-4v32c7-2 14-1 20 4z" fill="#fff"/>'
+    + '<path d="M32 18c6-5 13-6 20-4v32c-7-2-14-1-20 4z" fill="#fff" opacity=".7"/>'
+    + '<path d="M17 22c4-1 8-1 11 1M17 29c4-1 8-1 11 1M36 23c4-2 8-2 11-1M36 30c4-2 8-2 11-1" stroke="url(#G)" stroke-width="2" stroke-linecap="round" opacity=".6"/>'
+    + '<path d="M32 18v32" stroke="url(#G)" stroke-width="2" opacity=".5"/>' },
+
+  'employment': { c1: '#0B7DB5', c2: '#7BCB52', svg:
+    '<rect x="10" y="24" width="44" height="28" rx="7" fill="#fff"/>'
+    + '<path d="M24 24v-5a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v5" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>'
+    + '<path d="M10 36h44" stroke="url(#G)" stroke-width="2.5" opacity=".45"/>'
+    + '<circle cx="32" cy="38" r="5" fill="url(#G)"/><path d="M24 50c1-4 4.5-6 8-6s7 2 8 6z" fill="url(#G)" opacity=".8"/>' },
+
+  'my-conversations': { c1: '#0B7DB5', c2: '#F00678', svg:
+    '<path d="M12 22a8 8 0 0 1 8-8h24a8 8 0 0 1 8 8v12a8 8 0 0 1-8 8H30l-10 8v-8h0a8 8 0 0 1-8-8z" fill="#fff"/>'
+    + '<rect x="28" y="19" width="8" height="14" rx="4" fill="url(#G)"/>'
+    + '<path d="M24 28a8 8 0 0 0 16 0M32 36v3" fill="none" stroke="url(#G)" stroke-width="2.5" stroke-linecap="round"/>' },
+
+  'bnot-sherut': { c1: '#12C7C7', c2: '#0B7DB5', svg:
+    '<circle cx="24" cy="20" r="6" fill="#fff"/><path d="M12 38c1.4-7 6-10 12-10s10.6 3 12 10z" fill="#fff"/>'
+    + '<circle cx="42" cy="22" r="5" fill="#fff" opacity=".75"/><path d="M33 38c1.2-5.5 4.8-8 9-8s7.8 2.5 9 8z" fill="#fff" opacity=".75"/>'
+    + '<path d="M18 46h28M22 52h20" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>'
+    + '<path d="M44 12l1.4 2.9 3.2.5-2.3 2.2.6 3.2-2.9-1.5-2.9 1.5.6-3.2-2.3-2.2 3.2-.5z" fill="#F4B41B"/>' },
+
+  'resources': { c1: '#0B7DB5', c2: '#F4B41B', svg:
+    '<circle cx="20" cy="26" r="6" fill="#fff"/><circle cx="44" cy="26" r="6" fill="#fff"/><circle cx="32" cy="42" r="6" fill="#fff"/>'
+    + '<path d="M20 26h24M20 26l12 16M44 26L32 42" stroke="#fff" stroke-width="2.5" opacity=".6"/>'
+    + '<circle cx="32" cy="24" r="4" fill="url(#G)"/><path d="M32 20v-6M28 16l4-3 4 3" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' },
+
+  'broadcast': { c1: '#25D366', c2: '#0B7DB5', svg:
+    '<path d="M14 26v12h8l14 10V16L22 26z" fill="#fff"/>'
+    + '<path d="M42 24a10 10 0 0 1 0 16" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" opacity=".85"/>'
+    + '<path d="M47 18a17 17 0 0 1 0 28" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" opacity=".55"/>' },
+
+  'transportation': { c1: '#0B7DB5', c2: '#F4B41B', svg:
+    '<rect x="10" y="14" width="44" height="34" rx="9" fill="#fff"/>'
+    + '<rect x="15" y="20" width="14" height="12" rx="3" fill="url(#G)" opacity=".7"/><rect x="35" y="20" width="14" height="12" rx="3" fill="url(#G)" opacity=".7"/>'
+    + '<circle cx="20" cy="49" r="5" fill="#061E4F"/><circle cx="44" cy="49" r="5" fill="#061E4F"/>'
+    + '<circle cx="18" cy="39" r="2.5" fill="url(#G)"/><circle cx="46" cy="39" r="2.5" fill="url(#G)"/>' },
+
+  /* תכנון */
+  'exam-prep-form': { c1: '#C98600', c2: '#0EA5B7', svg:
+    '<rect x="14" y="10" width="36" height="44" rx="6" fill="#fff" opacity=".35"/>'
+    + '<rect x="14" y="10" width="36" height="44" rx="6" fill="none" stroke="#fff" stroke-width="2.5" opacity=".7"/>'
+    + '<rect x="24" y="7" width="16" height="7" rx="3.5" fill="#fff"/>'
+    + '<path d="M21 24h22M21 32h22M21 40h14" stroke="#fff" stroke-width="3" stroke-linecap="round"/>'
+    + '<circle cx="42" cy="46" r="7" fill="#7BCB52"/><path d="M39 46l2.2 2.2 4-4.4" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' },
+
+  'curriculum': { c1: '#C98600', c2: '#0B7DB5', svg:
+    '<rect x="11" y="13" width="42" height="40" rx="7" fill="#fff" opacity=".3"/>'
+    + '<rect x="11" y="13" width="42" height="10" rx="7" fill="#fff"/>'
+    + '<rect x="16" y="28" width="12" height="7" rx="3" fill="#fff"/><rect x="31" y="28" width="17" height="7" rx="3" fill="#fff" opacity=".7"/>'
+    + '<rect x="16" y="39" width="20" height="7" rx="3" fill="#fff" opacity=".7"/><rect x="39" y="39" width="9" height="7" rx="3" fill="#F00678"/>'
+    + '<circle cx="21" cy="18" r="2" fill="url(#G)"/><circle cx="28" cy="18" r="2" fill="url(#G)" opacity=".7"/>' },
+
+  'positions': { c1: '#C98600', c2: '#061E4F', svg:
+    '<circle cx="22" cy="20" r="6" fill="#fff"/><path d="M10 38c1.4-7 6-10 12-10s10.6 3 12 10z" fill="#fff"/>'
+    + '<circle cx="42" cy="20" r="6" fill="none" stroke="#fff" stroke-width="2.5" stroke-dasharray="3 3"/><path d="M30 38c1.4-7 6-10 12-10s10.6 3 12 10z" fill="none" stroke="#fff" stroke-width="2.5" stroke-dasharray="3 3"/>'
+    + '<rect x="16" y="44" width="32" height="8" rx="4" fill="#fff" opacity=".85"/><rect x="16" y="44" width="20" height="8" rx="4" fill="url(#G)" opacity=".7"/>' },
+
+  'strategy': { c1: '#C98600', c2: '#F00678', svg:
+    '<path d="M14 50L26 30l10 8 14-22" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>'
+    + '<path d="M50 16h-9M50 16v9" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'
+    + '<circle cx="14" cy="50" r="4" fill="#fff"/><circle cx="26" cy="30" r="4" fill="#fff"/><circle cx="36" cy="38" r="4" fill="#fff"/>' },
+
+  'planning-hub': { c1: '#C98600', c2: '#7BCB52', svg:
+    '<circle cx="32" cy="32" r="8" fill="#fff"/>'
+    + '<circle cx="32" cy="12" r="5" fill="#fff" opacity=".85"/><circle cx="51" cy="24" r="5" fill="#fff" opacity=".85"/><circle cx="46" cy="47" r="5" fill="#fff" opacity=".85"/><circle cx="18" cy="47" r="5" fill="#fff" opacity=".85"/><circle cx="13" cy="24" r="5" fill="#fff" opacity=".85"/>'
+    + '<path d="M32 17v7M46 27l-7 3M43 43l-6-6M21 43l6-6M18 27l7 3" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".6"/>'
+    + '<path d="M28.5 32l2.5 2.5 4.5-5" fill="none" stroke="url(#G)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' },
+
+  'planning-form': { c1: '#C98600', c2: '#FF7A1A', svg:
+    '<rect x="14" y="10" width="30" height="42" rx="6" fill="#fff" opacity=".9"/>'
+    + '<path d="M21 22h16M21 30h16M21 38h10" stroke="url(#G)" stroke-width="3" stroke-linecap="round" opacity=".7"/>'
+    + '<rect x="24" y="7" width="10" height="6" rx="3" fill="url(#G)"/>'
+    + '<path d="M50 20l-14 14-2 6 6-2 14-14z" fill="#fff"/><path d="M47 23l4 4" stroke="url(#G)" stroke-width="2" stroke-linecap="round"/>' },
+
+  /* שיווק וגיוס */
+  'landing-recruitment': { c1: '#F47C26', c2: '#F00678', svg:
+    '<rect x="10" y="12" width="44" height="40" rx="7" fill="#fff" opacity=".3"/>'
+    + '<rect x="10" y="12" width="44" height="9" rx="7" fill="#fff"/><circle cx="16" cy="16.5" r="1.8" fill="url(#G)"/><circle cx="22" cy="16.5" r="1.8" fill="url(#G)" opacity=".7"/>'
+    + '<rect x="16" y="26" width="32" height="6" rx="3" fill="#fff"/><rect x="20" y="35" width="24" height="4" rx="2" fill="#fff" opacity=".7"/>'
+    + '<rect x="23" y="43" width="18" height="6" rx="3" fill="#fff"/>' },
+
+  'job-card-builder': { c1: '#F47C26', c2: '#F4B41B', svg:
+    '<rect x="10" y="16" width="44" height="32" rx="7" fill="#fff"/>'
+    + '<circle cx="22" cy="28" r="5" fill="url(#G)"/><path d="M14 40c1-4 4.5-6 8-6s7 2 8 6z" fill="url(#G)" opacity=".8"/>'
+    + '<path d="M36 25h12M36 32h12M36 39h8" stroke="url(#G)" stroke-width="2.6" stroke-linecap="round" opacity=".7"/>'
+    + '<path d="M50 10l1.4 2.9 3.2.5-2.3 2.2.6 3.2-2.9-1.5-2.9 1.5.6-3.2-2.3-2.2 3.2-.5z" fill="#fff"/>' },
+
+  /* מחוללים */
+  'cert-generator': { c1: '#7B4EC8', c2: '#F4B41B', svg:
+    '<rect x="10" y="12" width="44" height="34" rx="6" fill="#fff"/>'
+    + '<path d="M18 22h28M20 29h24M24 36h16" stroke="url(#G)" stroke-width="2.4" stroke-linecap="round" opacity=".55"/>'
+    + '<circle cx="44" cy="44" r="8" fill="#F4B41B"/><path d="M40 50l-2 8 6-3 6 3-2-8" fill="#F4B41B"/>'
+    + '<path d="M44 40.5l1.1 2.3 2.5.4-1.8 1.7.4 2.5-2.2-1.2-2.2 1.2.4-2.5-1.8-1.7 2.5-.4z" fill="#fff"/>' },
+
+  'zoom-bg': { c1: '#7B4EC8', c2: '#0B7DB5', svg:
+    '<rect x="8" y="14" width="48" height="32" rx="7" fill="#fff" opacity=".35"/>'
+    + '<rect x="8" y="14" width="48" height="32" rx="7" fill="none" stroke="#fff" stroke-width="2.5" opacity=".7"/>'
+    + '<path d="M8 40c8-8 14-8 20-2s12 6 28-4v5a7 7 0 0 1-7 7H15a7 7 0 0 1-7-7z" fill="#fff" opacity=".8"/>'
+    + '<circle cx="32" cy="27" r="6" fill="#fff"/><path d="M22 40c1.5-5 5.5-7.5 10-7.5s8.5 2.5 10 7.5z" fill="#fff"/>'
+    + '<path d="M26 52h12" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>' },
+
+  'greeting-cards': { c1: '#F00678', c2: '#7B4EC8', svg:
+    '<rect x="12" y="14" width="40" height="36" rx="6" fill="#fff" transform="rotate(-6 32 32)"/>'
+    + '<path d="M32 44c-7-4.6-14-9.8-14-17a7 7 0 0 1 14-2 7 7 0 0 1 14 2c0 7.2-7 12.4-14 17z" fill="url(#G)" transform="rotate(-6 32 32)"/>'
+    + '<path d="M50 12l1.2 2.5 2.8.4-2 2 .5 2.7-2.5-1.3-2.5 1.3.5-2.7-2-2 2.8-.4z" fill="#F4B41B"/>' },
+
+  'sticker-maker': { c1: '#7B4EC8', c2: '#12C7C7', svg:
+    '<path d="M14 20a6 6 0 0 1 6-6h24a6 6 0 0 1 6 6v18L36 52H20a6 6 0 0 1-6-6z" fill="#fff"/>'
+    + '<path d="M50 38H42a6 6 0 0 0-6 6v8z" fill="#fff" opacity=".6"/>'
+    + '<circle cx="26" cy="27" r="3" fill="url(#G)"/><circle cx="38" cy="27" r="3" fill="url(#G)"/>'
+    + '<path d="M24 36c3 4 13 4 16 0" fill="none" stroke="url(#G)" stroke-width="3" stroke-linecap="round"/>' },
+
+  /* ערכות */
+  'hub-teachers': { c1: '#061E4F', c2: '#12C7C7', svg:
+    '<rect x="12" y="12" width="18" height="18" rx="5" fill="#fff"/><rect x="34" y="12" width="18" height="18" rx="5" fill="#fff" opacity=".7"/>'
+    + '<rect x="12" y="34" width="18" height="18" rx="5" fill="#fff" opacity=".7"/><rect x="34" y="34" width="18" height="18" rx="5" fill="#fff" opacity=".45"/>'
+    + '<circle cx="21" cy="19" r="3" fill="url(#G)"/><path d="M16 27c.8-3 2.8-4.5 5-4.5s4.2 1.5 5 4.5z" fill="url(#G)"/>' },
+
+  'hub-counselors': { c1: '#061E4F', c2: '#7B4EC8', svg:
+    '<rect x="12" y="12" width="18" height="18" rx="5" fill="#fff"/><rect x="34" y="12" width="18" height="18" rx="5" fill="#fff" opacity=".7"/>'
+    + '<rect x="12" y="34" width="18" height="18" rx="5" fill="#fff" opacity=".7"/><rect x="34" y="34" width="18" height="18" rx="5" fill="#fff" opacity=".45"/>'
+    + '<path d="M21 26c-3-2-6-4.4-6-7.5a3.2 3.2 0 0 1 6-1.2 3.2 3.2 0 0 1 6 1.2c0 3.1-3 5.5-6 7.5z" fill="#F00678"/>' },
+
+  'hub-manu': { c1: '#061E4F', c2: '#0B7DB5', svg:
+    '<rect x="12" y="12" width="18" height="18" rx="5" fill="#fff"/><rect x="34" y="12" width="18" height="18" rx="5" fill="#fff" opacity=".7"/>'
+    + '<rect x="12" y="34" width="18" height="18" rx="5" fill="#fff" opacity=".7"/><rect x="34" y="34" width="18" height="18" rx="5" fill="#fff" opacity=".45"/>'
+    + '<rect x="16" y="16" width="4" height="4" fill="url(#G)"/><rect x="22" y="16" width="4" height="4" fill="url(#G)"/><rect x="16" y="22" width="4" height="4" fill="url(#G)"/><rect x="23" y="23" width="3" height="3" fill="url(#G)"/>' },
+
+  'role-dashboard': { c1: '#061E4F', c2: '#F00678', svg:
+    '<rect x="10" y="12" width="44" height="40" rx="8" fill="#fff" opacity=".3"/>'
+    + '<circle cx="24" cy="26" r="6" fill="#fff"/><path d="M14 40c1.4-6 5.5-8.5 10-8.5s8.6 2.5 10 8.5z" fill="#fff"/>'
+    + '<rect x="38" y="20" width="10" height="5" rx="2.5" fill="#fff" opacity=".85"/><rect x="38" y="28" width="10" height="5" rx="2.5" fill="#fff" opacity=".65"/><rect x="38" y="36" width="10" height="5" rx="2.5" fill="#fff" opacity=".45"/>'
+    + '<path d="M16 46h32" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".5"/>' }
 };
 
 /* לוגו-ברירת-מחדל למערכת חדשה שעוד אין לה סמל */
