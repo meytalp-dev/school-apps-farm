@@ -405,7 +405,14 @@ var LOGOS = {
   'parent-testimonials': { c1: '#F47C26', c2: '#F4B41B', svg:
     '<path d="M12 22a8 8 0 0 1 8-8h24a8 8 0 0 1 8 8v12a8 8 0 0 1-8 8H30l-10 8v-8h0a8 8 0 0 1-8-8z" fill="#fff"/>'
     + '<path d="M22 24c0-3 2-5 5-5v3c-1.5 0-2 .8-2 2h2v6h-5zM33 24c0-3 2-5 5-5v3c-1.5 0-2 .8-2 2h2v6h-5z" fill="url(#G)"/>'
-    + '<path d="M50 44l1.4 2.9 3.2.5-2.3 2.2.6 3.2-2.9-1.5-2.9 1.5.6-3.2-2.3-2.2 3.2-.5z" fill="#fff"/><path d="M42 50l1 2 2.2.3-1.6 1.6.4 2.2-2-1-2 1 .4-2.2-1.6-1.6 2.2-.3z" fill="#fff" opacity=".7"/>' }
+    + '<path d="M50 44l1.4 2.9 3.2.5-2.3 2.2.6 3.2-2.9-1.5-2.9 1.5.6-3.2-2.3-2.2 3.2-.5z" fill="#fff"/><path d="M42 50l1 2 2.2.3-1.6 1.6.4 2.2-2-1-2 1 .4-2.2-1.6-1.6 2.2-.3z" fill="#fff" opacity=".7"/>' },
+  /* ── שליחה מרוכזת לקבוצות ── */
+  'group-broadcast': { c1: '#25D366', c2: '#061E4F', svg:
+    '<path d="M8 22a6 6 0 0 1 6-6h14a6 6 0 0 1 6 6v6a6 6 0 0 1-6 6h-6l-6 5v-5h-2a6 6 0 0 1-6-6z" fill="#fff" opacity=".5"/>'
+    + '<path d="M22 32a6 6 0 0 1 6-6h14a6 6 0 0 1 6 6v6a6 6 0 0 1-6 6h-6l-6 5v-5h-2a6 6 0 0 1-6-6z" fill="#fff" opacity=".75"/>'
+    + '<path d="M14 42a6 6 0 0 1 6-6h14a6 6 0 0 1 6 6v6a6 6 0 0 1-6 6h-6l-6 5v-5h-2a6 6 0 0 1-6-6z" fill="#fff" opacity=".35"/>'
+    + '<path d="M40 10l10 4v10l-10 4z" fill="#fff"/><path d="M34 15v8h6v-8z" fill="#fff"/><path d="M52 12a8 8 0 0 1 0 14" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity=".8"/>'
+    + '<path d="M17 21h10M17 25h6" stroke="url(#G)" stroke-width="2.2" stroke-linecap="round" opacity=".6"/>' }
 };
 
 /* לוגו-ברירת-מחדל למערכת חדשה שעוד אין לה סמל */
