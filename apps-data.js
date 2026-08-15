@@ -4,11 +4,11 @@
  */
 
 var CATEGORIES = [
-  { id: 'students',   name: 'תלמידים',            color: '#00b4d8' },
-  { id: 'attendance', name: 'נוכחות ומשמעת',      color: '#e84393' },
-  { id: 'staff',      name: 'צוות והוראה',        color: '#00cec9' },
-  { id: 'pedagogy',   name: 'פדגוגיה ואקלים',     color: '#6c5ce7' },
-  { id: 'planning',   name: 'תכנון ותקציב',       color: '#f39c12' }
+  { id: 'students',   name: 'תלמידים',            color: '#12C7C7' },
+  { id: 'attendance', name: 'נוכחות ומשמעת',      color: '#F00678' },
+  { id: 'staff',      name: 'צוות והוראה',        color: '#7BCB52' },
+  { id: 'pedagogy',   name: 'פדגוגיה ואקלים',     color: '#FF7A1A' },
+  { id: 'planning',   name: 'תכנון ותקציב',       color: '#C98600' }
 ];
 
 var APPS = [

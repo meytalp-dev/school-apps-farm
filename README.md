@@ -8,7 +8,8 @@
 - `app.html?id=<app-id>` — דף פירוט לכל כלי
 - `apps-data.js` — קטלוג הכלים (24 כלים, 5 קטגוריות, סמלי SVG)
 - `store.js` — לוגיקת הסל, המגירה וטופס הליד
-- `style.css` — עיצוב משותף (בהיר, Playpen Sans Hebrew + Assistant)
+- `style.css` — עיצוב משותף בשפה העיצובית של IMPACT OS (impactos.co.il): Heebo, navy `#061E4F` + fuchsia `#F00678` + teal `#12C7C7`, כפתורי pill, כרטיסים לבנים עם פס-צבע תחתון, פוטר navy
+- `brand.js` — סימן המותג (טביעת-אצבע + לב) + reveal-on-scroll
 
 ## לידים
 
