@@ -134,3 +134,56 @@ var BRAND_MARK_SVG =
     tio.observe(tw);
   } else if (tw) { tw.textContent = tw.getAttribute('data-text') || tw.textContent; }
 })();
+
+/* ── v3: tilt · view-transitions · מקלדת/מצגת ── */
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var canHover = window.matchMedia && window.matchMedia('(hover: hover)').matches;
+
+  /* tilt — הכרטיס נוטה לפי מיקום העכבר (max ±7°) */
+  if (canHover && !reduce) {
+    document.addEventListener('pointermove', function (e) {
+      var el = e.target.closest && e.target.closest('.tilt');
+      if (!el) return;
+      var r = el.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+      el.style.setProperty('--ry', (px * 10).toFixed(2) + 'deg');
+      el.style.setProperty('--rx', (-py * 8).toFixed(2) + 'deg');
+    }, { passive: true });
+    document.addEventListener('pointerout', function (e) {
+      var el = e.target.closest && e.target.closest('.tilt');
+      if (!el || (e.relatedTarget && el.contains(e.relatedTarget))) return;
+      el.style.setProperty('--ry', '0deg'); el.style.setProperty('--rx', '0deg');
+    }, { passive: true });
+  }
+
+  /* view transitions — הלוגו שנלחץ מקבל שם, ובדף הפירוט הלוגו הגדול מקבל אותו שם */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('[data-vt]');
+    if (!a) return;
+    var svg = a.querySelector('svg');
+    if (svg) svg.style.viewTransitionName = a.getAttribute('data-vt');
+  }, true);
+  var stageLogo = document.querySelector('.detail-stage .app-logo');
+  if (stageLogo) {
+    var id = new URLSearchParams(location.search).get('id');
+    if (id) stageLogo.style.viewTransitionName = 'logo-' + id;
+  }
+
+  /* Escape סוגר שאלון/סל; מצב-מצגת: חיצים בין כרטיסים, רווח הופך */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      if (typeof closeQuiz === 'function' && document.getElementById('quiz') && document.getElementById('quiz').classList.contains('open')) closeQuiz();
+      else if (typeof closeCart === 'function') closeCart();
+    }
+    if (!document.documentElement.classList.contains('present')) return;
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.app-card'));
+    if (!cards.length) return;
+    var i = cards.indexOf(document.activeElement);
+    var next = e.key === 'ArrowLeft' ? i + 1 : i - 1;   /* RTL: שמאלה = הבא */
+    if (next < 0) next = 0; if (next >= cards.length) next = cards.length - 1;
+    cards[next].focus(); cards[next].scrollIntoView({ block: 'center', behavior: 'smooth' });
+    e.preventDefault();
+  });
+})();

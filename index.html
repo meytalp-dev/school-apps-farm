@@ -48,18 +48,70 @@
       <p class="hero-sub">65 מערכות שנולדו מצורך אמיתי בשטח ורצות היום בבית ספר חי — וכל אחת עומדת בפני עצמה.
       בוחרים אחת, שתיים או עשר — בלי להתחייב למערכת ענק ובלי לשלם על מה שלא צריך.</p>
       <div class="hero-btns">
-        <a class="btn-primary" href="#catalog">לקטלוג הכלים</a>
-        <a class="btn-outline" target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=972526857000&text=%D7%A9%D7%9C%D7%95%D7%9D%21%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A9%D7%9E%D7%95%D7%A2%20%D7%A2%D7%95%D7%93%20%D7%A2%D7%9C%20%D7%97%D7%95%D7%95%D7%AA%20%D7%94%D7%90%D7%A4%D7%9C%D7%99%D7%A7%D7%A6%D7%99%D7%95%D7%AA">שיחת היכרות</a>
+        <button type="button" class="btn-primary" onclick="openQuiz()">3 שאלות — ונרכיב לכם סל</button>
+        <a class="btn-outline" href="#catalog">לכל המערכות</a>
       </div>
+      <div class="hero-stats" id="heroStats"></div>
+    </div>
+  </section>
+
+  <section class="day" id="day">
+    <div class="day-inner">
+      <div class="section-head reveal">
+        <div class="section-label"><span class="dot"></span>ככה זה נראה בפועל</div>
+        <h2 class="section-title">יום אחד בחיי מנהלת</h2>
+        <p class="section-sub">לא רשימת פיצ׳רים — יום עבודה. כל תחנה היא מערכת אחרת, וכולן מדברות זו עם זו.</p>
+      </div>
+      <ol class="day-track" id="dayTrack"></ol>
+    </div>
+  </section>
+
+  <section class="stars" id="stars">
+    <div class="stars-inner">
+      <div class="section-head reveal">
+        <div class="section-label"><span class="dot"></span>הכוכבים</div>
+        <h2 class="section-title">שש מערכות שכדאי להתחיל מהן</h2>
+        <p class="section-sub">אלה שמנהלות מבקשות קודם — ואלה שמורגשות כבר בשבוע הראשון.</p>
+      </div>
+      <div class="stars-grid" id="starsGrid"></div>
     </div>
   </section>
 
   <section class="catalog" id="catalog">
     <div class="catalog-inner">
+      <div class="section-head reveal" style="padding-top:40px">
+        <div class="section-label"><span class="dot"></span>כל המערכות</div>
+        <h2 class="section-title">הקטלוג המלא</h2>
+      </div>
+      <div class="search-wrap">
+        <label class="search" for="q">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input id="q" type="search" placeholder="חפשו לפי צורך: איחורים, הורים, תקציב, AI…" autocomplete="off" oninput="onSearch(this.value)">
+        </label>
+      </div>
       <nav class="cat-chips" aria-label="סינון לפי קטגוריה">
         <div class="chips-bg" id="chips"></div>
       </nav>
       <div id="catalog-body"></div>
+    </div>
+  </section>
+
+  <section class="trust" id="how">
+    <div class="trust-inner">
+      <div class="trust-grid">
+        <div class="trust-who reveal">
+          <div class="section-label"><span class="dot"></span>מי בנה את זה</div>
+          <h2 class="section-title">מנהלת בית ספר — לא חברת תוכנה</h2>
+          <p>כל מערכת כאן נולדה מבעיה שהייתה לי ביום שלישי בבוקר, ונבנתה עד שפתרה אותה. הן רצות היום בבית ספר אמיתי, עם צוות אמיתי ותלמידים אמיתיים — ומתעדכנות כל שבוע ממה שקורה בשטח.</p>
+          <p class="trust-note">בלי מודולים שאף אחד לא ביקש. בלי הטמעה של חצי שנה. בלי מחלקת שירות שלא מבינה מה זה "יום הורים".</p>
+        </div>
+        <ol class="steps reveal">
+          <li><b>1</b><div><h4>שיחת היכרות</h4><p>חצי שעה: מה מכביד היום, מה כבר עובד.</p></div></li>
+          <li><b>2</b><div><h4>בוחרים 3</h4><p>מתחילים ממה שירגיש הכי מהר — לא מהכול.</p></div></li>
+          <li><b>3</b><div><h4>מתקינים תוך שבועיים</h4><p>עם הנתונים שלכם, בעברית, מותאם לתפקידים.</p></div></li>
+          <li><b>4</b><div><h4>מלווים חודש</h4><p>ואז מוסיפים את הבאה בתור, אם רוצים.</p></div></li>
+        </ol>
+      </div>
     </div>
   </section>
 
@@ -109,6 +161,14 @@
   <span class="footer-fp" data-brand-mark style="--mark-fp:#fff;--mark-heart:#fff" aria-hidden="true"></span>
 </footer>
 
+<div class="quiz" id="quiz" role="dialog" aria-modal="true" aria-label="בנו את הסל שלכם">
+  <div class="quiz-overlay" onclick="closeQuiz()"></div>
+  <div class="quiz-card">
+    <button type="button" class="quiz-close" onclick="closeQuiz()" aria-label="סגירה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div id="quizBody"></div>
+  </div>
+</div>
+
 <div id="cart-root"></div>
 
 <script src="apps-data.js"></script>
@@ -116,91 +176,8 @@
 <!-- CRM שיווקי — קונפיג משותף -->
 <script src="https://meytalp-dev.github.io/ort-training/marketing/config.js"></script>
 <script src="store.js"></script>
+<script src="catalog-meta.js"></script>
 <script src="brand.js"></script>
-<script>
-var activeCat = 'all';
-
-function renderChips() {
-  var html = '<button type="button" class="chip' + (activeCat === 'all' ? ' active' : '') + '" onclick="setCat(\'all\')">הכול</button>';
-  for (var i = 0; i < CATEGORIES.length; i++) {
-    var c = CATEGORIES[i];
-    html += '<button type="button" class="chip' + (activeCat === c.id ? ' active' : '') + '" onclick="setCat(\'' + c.id + '\')">' + c.name + '</button>';
-  }
-  document.getElementById('chips').innerHTML = html;
-}
-
-var CAT_DESC = {
-  students:   'כל מה שקשור לתלמיד — מהקבלה ועד המסע האישי.',
-  attendance: 'נוכחות, איחורים ומשמעת — בזמן אמת, בלי טפסים.',
-  staff:      'מערכת, תורנויות, דוחות ומשוב — הצוות מסודר.',
-  pedagogy:   'אקלים, שיעורי חינוך וחיזוקים — הלב של בית הספר.',
-  planning:   'תוכנית שנתית, משרות, תקציב, בחינות ואסטרטגיה — התמונה הגדולה.',
-  counseling: 'דשבורד יועצת, סלי שילוב ומטפלים — הטיפול מנוהל.',
-  operations: 'משימות, לוחות, נהלים, הודעות והסעות — התפעול היומי זורם.',
-  marketing:  'מיתוג, מתחרים, SWOT, המלצות הורים ודף נחיתה — הסיפור של בית הספר, כתוב ומעוצב.',
-  generators: 'תעודות, רקעים, ברכות וסטיקרים — עיצוב במיתוג בית הספר, בלי מעצב.',
-  kits:       'ערכות מוכנות לפי תפקיד — כמה מערכות, כניסה אחת.'
-};
-var SVG_FLIP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg>';
-var SVG_TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>';
-
-function cardHTML(app, idx) {
-  var c = getCategory(app.cat), L = getLogo(app.id);
-  var feats = '';
-  for (var i = 0; i < Math.min(3, app.features.length); i++) feats += '<li>' + SVG_TICK + app.features[i] + '</li>';
-  return '<article class="app-card reveal" tabindex="0" aria-label="' + app.name + '" style="--c1:' + L.c1 + ';--c2:' + L.c2 + ';--reveal-delay:' + (idx % 4) * 80 + 'ms">'
-    + '<div class="app-card-inner">'
-    +   '<div class="app-face app-face-front">'
-    +     '<div class="app-media">'
-    +       '<div class="app-logo-wrap">' + logoSVG(app, 84) + '</div>'
-    +       '<div class="app-name">' + app.name + '</div>'
-    +       '<span class="app-kicker">' + c.name + '</span>'
-    +     '</div>'
-    +     '<div class="app-front-hint">' + SVG_FLIP + 'הפכו לפרטים</div>'
-    +   '</div>'
-    +   '<div class="app-face app-face-back">'
-    +     '<div class="app-back-body">'
-    +       '<div class="app-back-head">' + logoSVG(app, 40) + '<h3>' + app.name + '</h3></div>'
-    +       '<p>' + app.tagline + '</p>'
-    +       '<ul class="app-feats">' + feats + '</ul>'
-    +       '<div class="app-back-actions">' + addBtnHTML(app.id)
-    +         '<a class="more" href="app.html?id=' + app.id + '">לפרטים המלאים <span aria-hidden="true">←</span></a></div>'
-    +     '</div>'
-    +   '</div>'
-    + '</div>'
-    + '</article>';
-}
-
-function renderCatalog() {
-  var html = '';
-  for (var i = 0; i < CATEGORIES.length; i++) {
-    var c = CATEGORIES[i];
-    if (activeCat !== 'all' && activeCat !== c.id) continue;
-    var cards = '', n = 0;
-    for (var j = 0; j < APPS.length; j++) {
-      if (APPS[j].cat === c.id) cards += cardHTML(APPS[j], n++);
-    }
-    html += '<section aria-label="' + c.name + '">'
-      + '<div class="section-head reveal" style="--c:' + c.color + '">'
-      +   '<div class="section-label"><span class="dot"></span>' + n + ' כלים</div>'
-      +   '<h2 class="section-title">' + c.name + '</h2>'
-      +   (CAT_DESC[c.id] ? '<p class="section-sub">' + CAT_DESC[c.id] + '</p>' : '')
-      + '</div>'
-      + '<div class="grid">' + cards + '</div></section>';
-  }
-  document.getElementById('catalog-body').innerHTML = html;
-  if (window.observeReveal) observeReveal(document.getElementById('catalog-body'));
-}
-
-function setCat(id) {
-  activeCat = id;
-  renderChips();
-  renderCatalog();
-}
-
-renderChips();
-renderCatalog();
-document.getElementById('navBadge').textContent = APPS.length + ' מערכות · בוחרים רק מה שצריך';
-</script>
+<script src="farm.js"></script>
 </body>
 </html>

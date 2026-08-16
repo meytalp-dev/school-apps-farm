@@ -72,12 +72,31 @@
 
 <script src="apps-data.js"></script>
 <script src="logos.js"></script>
+<script src="catalog-meta.js"></script>
 <!-- CRM שיווקי — קונפיג משותף -->
 <script src="https://meytalp-dev.github.io/ort-training/marketing/config.js"></script>
 <script src="store.js"></script>
 <script src="brand.js"></script>
 <script>
 var SVG_FEAT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>';
+
+function miniCard(id) {
+  var a = getApp(id); if (!a) return '';
+  return '<a class="rel-card" href="app.html?id=' + a.id + '">' + logoSVG(a, 40) + '<span>' + a.name + '</span></a>';
+}
+function relatedHTML(app) {
+  var h = '';
+  if (typeof BUNDLES !== 'undefined' && BUNDLES[app.id]) {
+    h += '<h2>מה בתוך הערכה</h2><div class="rel-grid">' + BUNDLES[app.id].map(miniCard).join('') + '</div>';
+  }
+  var links = (typeof LINKS !== 'undefined' && LINKS[app.id]) ? LINKS[app.id] : [];
+  if (!links.length) {
+    /* אין קישור מוגדר — מציעים מערכות מאותה קטגוריה */
+    links = APPS.filter(function (x) { return x.cat === app.cat && x.id !== app.id; }).slice(0, 4).map(function (x) { return x.id; });
+  }
+  if (links.length) h += '<h2>מדבר עם</h2><p class="rel-note">המערכות שמחליפות מידע עם ' + app.name + ' — כי המערכת האמיתית היא החיבור ביניהן.</p><div class="rel-grid">' + links.map(miniCard).join('') + '</div>';
+  return h;
+}
 
 function renderDetail() {
   var params = new URLSearchParams(location.search);
@@ -111,11 +130,13 @@ function renderDetail() {
     +   '<ul class="features">' + feats + '</ul>'
     +   '<div class="detail-actions">' + addBtnHTML(app.id)
     +     '<a class="btn-outline" href="index.html#catalog">לכל הכלים</a></div>'
+    +   relatedHTML(app)
     + '</div>'
     + '</article>';
 }
 
 renderDetail();
+(function(){var l=document.querySelector('.detail-stage .app-logo'),id=new URLSearchParams(location.search).get('id');if(l&&id)l.style.viewTransitionName='logo-'+id;})();
 </script>
 </body>
 </html>
