@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דמו · גיוס משאבים ושותפויות — חוות האפליקציות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+  .filters .search { position: relative; flex: 1 1 220px; max-width: 360px; }
+  .filters .search svg { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--gray); }
+  .filters .search input { width: 100%; padding-right: 36px; }
+  .filters select.in { padding: 8px 12px; font-size: 13.5px; }
+  .filters .count { margin-inline-start: auto; font-size: 12.5px; color: var(--gray); font-weight: 700; }
+  .tbl select.st { border-radius: 999px; padding: 5px 10px; font-size: 12.5px; font-weight: 800; min-width: 118px; width: auto; }
+  .tbl select.st.new { color: #0B7A7A; background: rgba(18,199,199,.14); border-color: transparent; }
+  .tbl select.st.writing, .partner select.st.writing { color: #9A6700; background: rgba(244,180,27,.2); border-color: transparent; }
+  .tbl select.st.submitted, .partner select.st.submitted { color: var(--navy); background: rgba(6,30,79,.08); border-color: transparent; }
+  .tbl select.st.approved, .partner select.st.approved { color: #3E7F1E; background: rgba(123,203,82,.2); border-color: transparent; }
+  .tbl select.st.rejected, .partner select.st.rejected { color: var(--fuchsia); background: rgba(240,6,120,.1); border-color: transparent; }
+  .partner select.st { border-radius: 999px; padding: 5px 10px; font-size: 12.5px; font-weight: 800; }
+  .partner select.st.new { color: #0B7A7A; background: rgba(18,199,199,.14); border-color: transparent; }
+  .link-btn { background: none; border: none; font: inherit; font-weight: 800; color: var(--navy); cursor: pointer; padding: 0; text-decoration: underline; text-decoration-color: rgba(6,30,79,.25); text-underline-offset: 3px; }
+  .link-btn:hover { color: var(--fuchsia); }
+  /* דדליינים */
+  .dl { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .dl:last-child { border-bottom: none; }
+  .dl .d { width: 46px; height: 46px; border-radius: 14px; background: rgba(6,30,79,.05); display: grid; place-items: center; text-align: center; line-height: 1; flex: 0 0 auto; }
+  .dl .d b { font-size: 17px; font-weight: 900; letter-spacing: -.5px; }
+  .dl .d small { font-size: 10.5px; color: var(--gray); font-weight: 700; }
+  .dl .t { flex: 1; min-width: 0; }
+  .dl .t b { display: block; font-size: 13.5px; font-weight: 800; line-height: 1.3; }
+  .dl .t small { color: var(--gray); font-size: 12px; }
+  /* משפך */
+  .funnel { display: flex; flex-direction: column; gap: 10px; }
+  .fr { display: grid; grid-template-columns: 96px 1fr 44px; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; }
+  .fr .bar { height: 22px; border-radius: 8px; }
+  .fr .bar > i { border-radius: 8px; }
+  .fr b { text-align: left; font-variant-numeric: tabular-nums; }
+  .fr small { display: block; color: var(--gray); font-weight: 600; font-size: 11.5px; }
+  .track-list { display: flex; flex-direction: column; gap: 10px; }
+  .track-list .fr { grid-template-columns: 120px 1fr 90px; }
+  /* קישורים מהירים */
+  .quick { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .quick a { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); text-decoration: none; font-size: 13px; font-weight: 700; color: var(--navy); transition: all var(--motion-fast) var(--motion-ease); }
+  .quick a:hover { border-color: var(--teal); background: rgba(18,199,199,.06); transform: translateY(-2px); }
+  .quick a svg { width: 15px; height: 15px; color: var(--teal); flex: 0 0 auto; }
+  /* כרטיסי שותפים */
+  .partners { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .partner { background: var(--white); border: 1px solid var(--line); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 10px; transition: transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast) var(--motion-ease); }
+  .partner:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(6,30,79,.08); }
+  .partner .ph { display: flex; align-items: flex-start; gap: 10px; }
+  .partner .av { width: 40px; height: 40px; border-radius: 12px; background: var(--navy); color: #fff; display: grid; place-items: center; font-weight: 900; font-size: 15px; flex: 0 0 auto; }
+  .partner .ph h4 { font-size: 15px; font-weight: 800; line-height: 1.2; }
+  .partner .ph small { color: var(--gray); font-size: 12px; }
+  .partner .gives { display: flex; gap: 6px; flex-wrap: wrap; }
+  .partner .pf { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--line); }
+  .partner .pf small { color: var(--gray); font-size: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+  .chip-sm { white-space: nowrap; }
+  .partner .pa { display: flex; gap: 6px; }
+  /* מכתב */
+  .letter { white-space: pre-wrap; line-height: 1.75; font-size: 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; max-height: 50vh; overflow: auto; }
+  .detail dl { display: grid; grid-template-columns: 110px 1fr; gap: 8px 12px; font-size: 14px; }
+  .detail dt { color: var(--gray); font-weight: 700; } .detail dd { font-weight: 600; }
+  .days { font-variant-numeric: tabular-nums; }
+  .hidden { display: none !important; }
+  .today-note { font-size: 12px; color: var(--gray); }
+  @media (max-width: 640px) { .quick { grid-template-columns: 1fr; } .fr { grid-template-columns: 80px 1fr 40px; } .track-list .fr { grid-template-columns: 96px 1fr 80px; } }
+</style>
+</head>
+<body>
+
+<main class="demo-main">
+  <div class="demo-head">
+    <div><h2>גיוס משאבים ושותפויות</h2><p>כל ההזדמנויות של בית הספר במקום אחד: קולות קוראים, שותפים עסקיים ותחרויות — מי פנה, מה הסטטוס, ומה הדדליין הבא.</p></div>
+    <div class="demo-toolbar">
+      <button type="button" class="btn-sm primary" onclick="openAdd('grant')">+ קול קורא</button>
+      <button type="button" class="btn-sm" onclick="openAdd('partner')">+ שותף</button>
+      <button type="button" class="btn-sm" onclick="openAdd('comp')">+ תחרות</button>
+      <button type="button" class="btn-sm ghost" onclick="resetDemo()">איפוס דמו</button>
+    </div>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="tabs" id="tabs" style="margin-bottom:18px">
+    <button type="button" class="tab active" data-tab="dash">דשבורד</button>
+    <button type="button" class="tab" data-tab="grants">קולות קוראים ומענקים <span id="cGrants"></span></button>
+    <button type="button" class="tab" data-tab="partners">שיתופי פעולה <span id="cPartners"></span></button>
+    <button type="button" class="tab" data-tab="comps">תחרויות ופרסים <span id="cComps"></span></button>
+  </div>
+
+  <!-- דשבורד -->
+  <section id="tab-dash" class="row side">
+    <div style="display:grid;gap:18px">
+      <div class="card">
+        <div class="card-h"><h3>צינור הקולות הקוראים</h3><span class="hint">כמה בקשות בכל שלב, ומה שוויין</span></div>
+        <div class="funnel" id="funnel"></div>
+      </div>
+      <div class="row cols-2">
+        <div class="card">
+          <div class="card-h"><h3>לפי תחום</h3><span class="hint">סכום מבוקש</span></div>
+          <div class="track-list" id="byTrack"></div>
+        </div>
+        <div class="card">
+          <div class="card-h"><h3>מאגרי קולות קוראים</h3><span class="hint">קישורים מהירים</span></div>
+          <div class="quick" id="quick"></div>
+        </div>
+      </div>
+    </div>
+    <aside class="card">
+      <div class="card-h"><h3>דדליינים קרובים</h3><span class="today-note" id="todayNote"></span></div>
+      <div id="deadlines"></div>
+    </aside>
+  </section>
+
+  <!-- קולות קוראים -->
+  <section id="tab-grants" class="card hidden">
+    <div class="filters">
+      <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input class="in" id="qGrants" placeholder="חיפוש לפי שם או גוף מממן…" oninput="render()"></label>
+      <select class="in" id="fGrantStatus" onchange="render()"><option value="">כל הסטטוסים</option></select>
+      <select class="in" id="fGrantType" onchange="render()"><option value="">כל הסוגים</option></select>
+      <span class="count" id="nGrants"></span>
+    </div>
+    <div class="table-wrap"><table class="tbl"><thead><tr><th>שם הקול הקורא</th><th>גוף מממן</th><th>סוג</th><th>תחום</th><th>סכום מבוקש</th><th>דדליין</th><th>סטטוס</th><th></th></tr></thead><tbody id="tbGrants"></tbody></table></div>
+  </section>
+
+  <!-- שותפים -->
+  <section id="tab-partners" class="hidden">
+    <div class="filters">
+      <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input class="in" id="qPartners" placeholder="חיפוש חברה או ארגון…" oninput="render()"></label>
+      <select class="in" id="fPartnerStatus" onchange="render()"><option value="">כל הסטטוסים</option></select>
+      <span class="count" id="nPartners"></span>
+    </div>
+    <div class="partners" id="partnersGrid"></div>
+  </section>
+
+  <!-- תחרויות -->
+  <section id="tab-comps" class="card hidden">
+    <div class="filters">
+      <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input class="in" id="qComps" placeholder="חיפוש תחרות…" oninput="render()"></label>
+      <select class="in" id="fCompStatus" onchange="render()"><option value="">כל הסטטוסים</option></select>
+      <span class="count" id="nComps"></span>
+    </div>
+    <div class="table-wrap"><table class="tbl"><thead><tr><th>תחרות</th><th>מארגן</th><th>תחום</th><th>קהל</th><th>פרס</th><th>מועד הרשמה</th><th>סטטוס</th><th></th></tr></thead><tbody id="tbComps"></tbody></table></div>
+  </section>
+
+  <div id="modals"></div>
+</main>
+
+<script src="../apps-data.js"></script>
+<script src="../logos.js"></script>
+<script src="../store.js"></script>
+<script src="demo-data.js"></script>
+<script src="demo-shell.js"></script>
+<script>
+DemoShell.init('resources');
+var esc = DemoShell.esc, KEY = 'farm-demo-resources';
+/* "היום" קבוע כדי שהדמו ייראה זהה בכל טעינה */
+var TODAY = new Date('2026-11-02');
+
+var GS = { new: 'חדש', writing: 'בכתיבה', submitted: 'הוגש', approved: 'אושר', rejected: 'נדחה' };
+var PS = { new: 'פוטנציאלי', writing: 'נשלחה פנייה', submitted: 'נקבעה פגישה', approved: 'שותפות פעילה', rejected: 'סירבו' };
+var CS = { new: 'פתוח להרשמה', writing: 'נרשמנו', submitted: 'השתתפנו', approved: 'זכינו', rejected: 'לא נבחרנו' };
+var TYPES = { gov: 'ממשלתי', muni: 'עירוני', found: 'קרן', corp: 'חברה', intl: 'בינלאומי' };
+var GIVES = { vol: 'מתנדבים', equip: 'ציוד', tour: 'סיור', fund: 'מימון', mentor: 'חונכות', lecture: 'הרצאה' };
+var TRACKS = ['מדעים וטכנולוגיה', 'אמנות ותרבות', 'חינוך חברתי', 'ספורט ובריאות', 'קיימות', 'שפות'];
+var TRACK_C = ['var(--teal)', 'var(--fuchsia)', 'var(--gold)', 'var(--green)', 'var(--orange)', 'var(--navy)'];
+var ROLES = ['מנהלת קשרי קהילה', 'סמנכ"ל משאבי אנוש', 'רכז אחריות תאגידית', 'מנהל הסניף', 'מנהלת שיווק', 'מייסד-שותף', 'מנהל משרד', 'רכזת מתנדבים'];
+
+function seedData() {
+  var F = DEMO.funders, C = DEMO.companies;
+  var grants = [
+    ['תוכנית "חממה מדעית" לחטיבה', F[3], 'found', 0, 85000, '2026-11-08', 'writing'],
+    ['ציוד מעבדה לרובוטיקה', F[4], 'found', 0, 120000, '2026-11-15', 'writing'],
+    ['מנהיגות נוער בקהילה', F[2], 'found', 2, 40000, '2026-11-20', 'new'],
+    ['שיפוץ חצר ירוקה', F[5], 'muni', 4, 60000, '2026-11-25', 'submitted'],
+    ['סטודיו אמנות פתוח', F[0], 'found', 1, 35000, '2026-12-01', 'new'],
+    ['תוכנית מצוינות במתמטיקה', 'משרד החינוך — אגף על-יסודי', 'gov', 0, 150000, '2026-12-10', 'submitted'],
+    ['ליגת כדורסל שכונתית', F[5], 'muni', 3, 25000, '2026-12-18', 'new'],
+    ['תוכנית "שגרירים צעירים" — אנגלית', 'קרן "גשר לעתיד"', 'intl', 5, 55000, '2027-01-05', 'writing'],
+    ['מלגות לימוד לתלמידים מצטיינים', F[1], 'found', 2, 45000, '2027-01-15', 'new'],
+    ['חדר בריחה מתמטי נייד', 'סטארט-אפ "גרין-לוגיק"', 'corp', 0, 18000, '2027-01-28', 'new'],
+    ['תוכנית מניעה — בריאות הנפש', 'משרד הבריאות — קול קורא לבתי ספר', 'gov', 3, 70000, '2027-02-10', 'new'],
+    ['יזמות צעירה — האקתון בית ספרי', F[6], 'found', 0, 30000, '2027-02-22', 'new'],
+    ['תוכנית מדע-קהילה', F[3], 'found', 4, 48000, '2026-10-05', 'approved'],
+    ['ספריית שפות דיגיטלית', F[0], 'found', 5, 22000, '2026-09-20', 'rejected'],
+    ['תגבור אנגלית מדוברת', F[4], 'found', 5, 38000, '2026-10-12', 'approved']
+  ].map(function (r, i) { return { id: 'g' + (i + 1), name: r[0], org: r[1], type: r[2], track: r[3], amount: r[4], deadline: r[5], status: r[6], notes: '' }; });
+
+  var partners = [
+    [C[0], 0, 0, ['mentor', 'tour'], 'approved', '2026-11-12', 'מלווים את קבוצת הסייבר בי"א'],
+    [C[1], 1, 2, ['fund', 'lecture'], 'submitted', '2026-11-06', 'סדנת אוריינות פיננסית לט\''],
+    [C[2], 2, 0, ['tour', 'equip'], 'writing', '2026-11-18', 'ביקשו מצגת על מגמת המחשבים'],
+    [C[3], 3, 3, ['vol', 'fund'], 'new', '', ''],
+    [C[4], 4, 4, ['mentor', 'lecture'], 'submitted', '2026-11-09', 'הצעה לפרויקט קיימות משותף'],
+    [C[5], 5, 1, ['tour', 'mentor'], 'approved', '2026-12-03', 'סטודיו אדריכלות לתלמידי אמנות'],
+    ['רשת מסעדות "טעם השכונה"', 6, 2, ['vol', 'equip'], 'new', '', ''],
+    ['חברת "דאטה-פוינט"', 7, 0, ['equip', 'fund'], 'rejected', '', 'אין תקציב השנה — לחזור בספטמבר']
+  ].map(function (r, i) { return { id: 'p' + (i + 1), name: r[0], role: ROLES[r[1]], track: r[2], gives: r[3], status: r[4], followup: r[5], notes: r[6] }; });
+
+  var comps = [
+    ['אולימפיאדת המדעים הצעירה', 'האגודה הארצית למדע', 0, 'ז–ט', 'מלגה + סיור מעבדות', '2026-11-10', 'writing'],
+    ['תחרות סרטונים "עיר ירוקה"', 'עיריית ראשון לציון', 4, 'כל השכבות', '10,000 ₪ לפרויקט', '2026-11-30', 'new'],
+    ['דיבייט ארצי באנגלית', 'קרן "גשר לעתיד"', 5, 'י–יב', 'נסיעה לכנס בינלאומי', '2026-12-14', 'new'],
+    ['האקתון נוער — אפליקציה לקהילה', 'סייברטק בע"מ', 0, 'י–יב', 'ליווי מקצועי + ציוד', '2027-01-20', 'new'],
+    ['תערוכת אמנות צעירה', 'המוזיאון העירוני', 1, 'ט–יב', 'תצוגה + קטלוג', '2027-02-05', 'new'],
+    ['אליפות בתי הספר בכדורעף', 'התאחדות הספורט לבתי ספר', 3, 'ז–ח', 'גביע', '2026-10-01', 'approved']
+  ].map(function (r, i) { return { id: 'c' + (i + 1), name: r[0], org: r[1], track: r[2], aud: r[3], prize: r[4], deadline: r[5], status: r[6] }; });
+
+  return { grants: grants, partners: partners, comps: comps };
+}
+
+var D = load();
+function load() { try { var s = localStorage.getItem(KEY); if (s) return JSON.parse(s); } catch (e) {} return seedData(); }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(D)); } catch (e) {} }
+function resetDemo() { try { localStorage.removeItem(KEY); } catch (e) {} D = seedData(); render(); DemoShell.toast('הדמו אופס לנתוני הפתיחה'); }
+
+/* עזרים */
+function nis(n) { return '₪' + Number(n || 0).toLocaleString('he-IL'); }
+function days(d) { return Math.ceil((new Date(d) - TODAY) / 86400000); }
+function daysChip(d) {
+  var n = days(d); if (n < 0) return '<span class="chip-sm gray days">עבר</span>';
+  var c = n <= 7 ? 'fuchsia' : n <= 21 ? 'gold' : 'teal';
+  return '<span class="chip-sm ' + c + ' days">' + (n === 0 ? 'היום' : n === 1 ? 'מחר' : 'עוד ' + n + ' ימים') + '</span>';
+}
+function trackChip(t) { return '<span class="chip-sm" style="background:color-mix(in srgb,' + TRACK_C[t] + ' 14%,#fff);color:' + (t === 5 ? 'var(--navy)' : TRACK_C[t]) + '">' + TRACKS[t] + '</span>'; }
+function statusSel(kind, item, labels) {
+  var h = '<select class="in st ' + item.status + '" onchange="setStatus(\'' + kind + '\',\'' + item.id + '\',this.value)">';
+  for (var k in labels) h += '<option value="' + k + '"' + (item.status === k ? ' selected' : '') + '>' + labels[k] + '</option>';
+  return h + '</select>';
+}
+function opts(sel, labels) { var s = document.getElementById(sel); for (var k in labels) s.insertAdjacentHTML('beforeend', '<option value="' + k + '">' + labels[k] + '</option>'); }
+function find(kind, id) { var arr = kind === 'grant' ? D.grants : kind === 'partner' ? D.partners : D.comps; for (var i = 0; i < arr.length; i++) if (arr[i].id === id) return arr[i]; }
+function setStatus(kind, id, v) {
+  var it = find(kind, id); if (!it) return; it.status = v; save(); render();
+  var L = kind === 'grant' ? GS : kind === 'partner' ? PS : CS;
+  DemoShell.toast('הסטטוס עודכן: ' + L[v]);
+}
+function firstLetter(s) { return (s.replace(/["׳״']/g, '').trim().charAt(0)) || 'א'; }
+
+/* טאבים */
+var cur = 'dash';
+function showTab(name) {
+  cur = name;
+  var tabs = document.querySelectorAll('#tabs .tab'); for (var i = 0; i < tabs.length; i++) tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab') === name);
+  ['dash', 'grants', 'partners', 'comps'].forEach(function (t) { document.getElementById('tab-' + t).classList.toggle('hidden', t !== name); });
+}
+document.getElementById('tabs').addEventListener('click', function (e) { var b = e.target.closest('.tab'); if (b) showTab(b.getAttribute('data-tab')); });
+
+/* רינדור */
+function render() {
+  var g = D.grants, p = D.partners, c = D.comps;
+  /* KPI */
+  var open = g.filter(function (x) { return x.status === 'new' || x.status === 'writing' || x.status === 'submitted'; });
+  var inWork = g.filter(function (x) { return x.status === 'writing' || x.status === 'submitted'; });
+  var asked = open.reduce(function (s, x) { return s + x.amount; }, 0);
+  var won = g.filter(function (x) { return x.status === 'approved'; }).reduce(function (s, x) { return s + x.amount; }, 0);
+  var all = g.concat(c).filter(function (x) { return x.status !== 'approved' && x.status !== 'rejected' && x.deadline; });
+  var soon = all.filter(function (x) { var n = days(x.deadline); return n >= 0 && n <= 30; }).length;
+  var active = p.filter(function (x) { return x.status === 'approved'; }).length;
+  document.getElementById('kpis').innerHTML =
+    '<div class="kpi" style="--c:var(--teal)"><b>' + open.length + '</b><span>הזדמנויות פתוחות</span></div>'
+    + '<div class="kpi" style="--c:var(--gold)"><b>' + inWork.length + '</b><span>בטיפול (בכתיבה / הוגש)</span></div>'
+    + '<div class="kpi" style="--c:var(--navy)"><b>' + nis(asked) + '</b><span>סכום מבוקש בבקשות פתוחות</span></div>'
+    + '<div class="kpi" style="--c:var(--green)"><b>' + nis(won) + '</b><span>אושר השנה</span></div>'
+    + '<div class="kpi" style="--c:var(--fuchsia)"><b>' + soon + '</b><span>דדליינים ב-30 הימים הקרובים</span></div>'
+    + '<div class="kpi" style="--c:var(--orange)"><b>' + active + '</b><span>שותפויות פעילות</span></div>';
+  document.getElementById('cGrants').textContent = '(' + g.length + ')';
+  document.getElementById('cPartners').textContent = '(' + p.length + ')';
+  document.getElementById('cComps').textContent = '(' + c.length + ')';
+  document.getElementById('todayNote').textContent = 'נכון ל-' + DEMO.fmtDate(TODAY);
+
+  /* משפך */
+  var order = ['new', 'writing', 'submitted', 'approved', 'rejected'], cols = { new: 'var(--teal)', writing: 'var(--gold)', submitted: 'var(--navy)', approved: 'var(--green)', rejected: 'var(--fuchsia)' };
+  var max = 1; order.forEach(function (k) { max = Math.max(max, g.filter(function (x) { return x.status === k; }).length); });
+  document.getElementById('funnel').innerHTML = order.map(function (k) {
+    var items = g.filter(function (x) { return x.status === k; }), sum = items.reduce(function (s, x) { return s + x.amount; }, 0);
+    return '<div class="fr"><span>' + GS[k] + '<small>' + nis(sum) + '</small></span><div class="bar" style="--c:' + cols[k] + '"><i style="width:' + Math.round(items.length / max * 100) + '%"></i></div><b>' + items.length + '</b></div>';
+  }).join('');
+
+  /* לפי תחום */
+  var tmax = 1, tsum = TRACKS.map(function (t, i) { var s = g.filter(function (x) { return x.track === i && x.status !== 'rejected'; }).reduce(function (a, x) { return a + x.amount; }, 0); tmax = Math.max(tmax, s); return s; });
+  document.getElementById('byTrack').innerHTML = TRACKS.map(function (t, i) {
+    return '<div class="fr"><span>' + t + '</span><div class="bar" style="--c:' + TRACK_C[i] + '"><i style="width:' + Math.round(tsum[i] / tmax * 100) + '%"></i></div><b>' + nis(tsum[i]) + '</b></div>';
+  }).join('');
+
+  /* דדליינים */
+  var dl = all.map(function (x) { return { name: x.name, date: x.deadline, kind: x.id.charAt(0) === 'g' ? 'קול קורא' : 'תחרות' }; })
+    .concat(p.filter(function (x) { return x.followup && x.status !== 'rejected'; }).map(function (x) { return { name: x.name, date: x.followup, kind: 'מעקב שותפות' }; }))
+    .filter(function (x) { return days(x.date) >= 0; }).sort(function (a, b) { return new Date(a.date) - new Date(b.date); }).slice(0, 8);
+  var MON = ['ינו', 'פבר', 'מרץ', 'אפר', 'מאי', 'יוני', 'יולי', 'אוג', 'ספט', 'אוק', 'נוב', 'דצמ'];
+  document.getElementById('deadlines').innerHTML = dl.length ? dl.map(function (x) {
+    var d = new Date(x.date);
+    return '<div class="dl"><div class="d"><b>' + d.getDate() + '</b><small>' + MON[d.getMonth()] + '</small></div><div class="t"><b>' + esc(x.name) + '</b><small>' + x.kind + '</small></div>' + daysChip(x.date) + '</div>';
+  }).join('') : '<p class="hint">אין דדליינים קרובים</p>';
+
+  /* קישורים מהירים */
+  var links = ['מאגר קולות קוראים — משרד החינוך', 'אתר התמיכות הממשלתי', 'קולות קוראים — הרשות המקומית', 'מאגר קרנות פילנתרופיות', 'מרכז השלטון המקומי — חינוך', 'תוכניות תאגידיות לקהילה'];
+  document.getElementById('quick').innerHTML = links.map(function (l) {
+    return '<a href="#" onclick="event.preventDefault();DemoShell.toast(\'בדמו הקישורים החיצוניים אינם פעילים\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.5.5l3-3a5 5 0 00-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 00-7.5-.5l-3 3a5 5 0 007 7l1.7-1.7"/></svg>' + l + '</a>';
+  }).join('');
+
+  /* טבלת קולות קוראים */
+  var q = document.getElementById('qGrants').value.trim(), fs = document.getElementById('fGrantStatus').value, ft = document.getElementById('fGrantType').value;
+  var closed = function (x) { return x.status === 'approved' || x.status === 'rejected' ? 1 : 0; };
+  var rows = g.filter(function (x) { return (!q || (x.name + x.org).indexOf(q) > -1) && (!fs || x.status === fs) && (!ft || x.type === ft); })
+    .sort(function (a, b) { return closed(a) - closed(b) || new Date(a.deadline) - new Date(b.deadline); });
+  document.getElementById('nGrants').textContent = rows.length + ' מתוך ' + g.length;
+  document.getElementById('tbGrants').innerHTML = rows.map(function (x) {
+    return '<tr><td><button type="button" class="link-btn" onclick="openDetail(\'grant\',\'' + x.id + '\')">' + esc(x.name) + '</button></td><td>' + esc(x.org) + '</td><td><span class="chip-sm gray">' + TYPES[x.type] + '</span></td><td>' + trackChip(x.track) + '</td><td class="num">' + nis(x.amount) + '</td><td style="white-space:nowrap">' + DEMO.fmtDate(x.deadline) + ' ' + (x.status === 'approved' || x.status === 'rejected' ? '' : daysChip(x.deadline)) + '</td><td>' + statusSel('grant', x, GS) + '</td><td><button type="button" class="btn-sm ghost" onclick="openDetail(\'grant\',\'' + x.id + '\')">פירוט</button></td></tr>';
+  }).join('') || '<tr><td colspan="8" class="hint" style="text-align:center;padding:24px">לא נמצאו קולות קוראים</td></tr>';
+
+  /* שותפים */
+  var qp = document.getElementById('qPartners').value.trim(), fp = document.getElementById('fPartnerStatus').value;
+  var ps = p.filter(function (x) { return (!qp || x.name.indexOf(qp) > -1) && (!fp || x.status === fp); });
+  document.getElementById('nPartners').textContent = ps.length + ' מתוך ' + p.length;
+  document.getElementById('partnersGrid').innerHTML = ps.map(function (x) {
+    return '<div class="partner"><div class="ph"><div class="av">' + firstLetter(x.name) + '</div><div><h4>' + esc(x.name) + '</h4><small>איש קשר: ' + x.role + '</small></div></div>'
+      + '<div class="gives">' + trackChip(x.track) + x.gives.map(function (k) { return '<span class="chip-sm">' + GIVES[k] + '</span>'; }).join('') + '</div>'
+      + (x.notes ? '<p style="font-size:13px;color:var(--gray)">' + esc(x.notes) + '</p>' : '')
+      + '<div>' + statusSel('partner', x, PS) + '</div>'
+      + '<div class="pf"><small>' + (x.followup ? 'מעקב: ' + DEMO.fmtDate(x.followup) + ' ' + daysChip(x.followup) : 'אין מועד מעקב') + '</small><div class="pa"><button type="button" class="btn-sm ghost" onclick="openDetail(\'partner\',\'' + x.id + '\')">פירוט</button><button type="button" class="btn-sm navy" onclick="openLetter(\'' + x.id + '\')">מכתב פנייה</button></div></div></div>';
+  }).join('') || '<p class="hint">לא נמצאו שותפים</p>';
+
+  /* תחרויות */
+  var qc = document.getElementById('qComps').value.trim(), fc = document.getElementById('fCompStatus').value;
+  var cs = c.filter(function (x) { return (!qc || (x.name + x.org).indexOf(qc) > -1) && (!fc || x.status === fc); }).sort(function (a, b) { return closed(a) - closed(b) || new Date(a.deadline) - new Date(b.deadline); });
+  document.getElementById('nComps').textContent = cs.length + ' מתוך ' + c.length;
+  document.getElementById('tbComps').innerHTML = cs.map(function (x) {
+    return '<tr><td><button type="button" class="link-btn" onclick="openDetail(\'comp\',\'' + x.id + '\')">' + esc(x.name) + '</button></td><td>' + esc(x.org) + '</td><td>' + trackChip(x.track) + '</td><td>' + x.aud + '</td><td>' + esc(x.prize) + '</td><td style="white-space:nowrap">' + DEMO.fmtDate(x.deadline) + ' ' + (x.status === 'approved' || x.status === 'submitted' ? '' : daysChip(x.deadline)) + '</td><td>' + statusSel('comp', x, CS) + '</td><td><button type="button" class="btn-sm ghost" onclick="openDetail(\'comp\',\'' + x.id + '\')">פירוט</button></td></tr>';
+  }).join('') || '<tr><td colspan="8" class="hint" style="text-align:center;padding:24px">לא נמצאו תחרויות</td></tr>';
+}
+
+/* פירוט */
+function openDetail(kind, id) {
+  var x = find(kind, id); if (!x) return;
+  var L = kind === 'grant' ? GS : kind === 'partner' ? PS : CS, rows = [];
+  if (kind === 'grant') rows = [['גוף מממן', esc(x.org)], ['סוג', TYPES[x.type]], ['תחום', TRACKS[x.track]], ['סכום מבוקש', nis(x.amount)], ['דדליין', DEMO.fmtDate(x.deadline) + ' ' + daysChip(x.deadline)], ['סטטוס', L[x.status]], ['הערות', esc(x.notes) || '—']];
+  else if (kind === 'partner') rows = [['איש קשר', x.role], ['תחום', TRACKS[x.track]], ['מה נותנים', x.gives.map(function (k) { return GIVES[k]; }).join(', ')], ['מעקב הבא', x.followup ? DEMO.fmtDate(x.followup) : '—'], ['סטטוס', L[x.status]], ['הערות', esc(x.notes) || '—']];
+  else rows = [['מארגן', esc(x.org)], ['תחום', TRACKS[x.track]], ['קהל יעד', esc(x.aud)], ['פרס', esc(x.prize)], ['מועד הרשמה', DEMO.fmtDate(x.deadline)], ['סטטוס', L[x.status]]];
+  var body = '<div class="detail"><dl>' + rows.map(function (r) { return '<dt>' + r[0] + '</dt><dd>' + r[1] + '</dd>'; }).join('') + '</dl></div>';
+  var acts = (kind === 'partner' ? '<button type="button" class="btn-sm navy" onclick="DemoShell.closeModal(\'mDetail\');openLetter(\'' + x.id + '\')">מכתב פנייה</button>' : '') + '<button type="button" class="btn-sm" onclick="DemoShell.closeModal(\'mDetail\')">סגירה</button>';
+  showModal('mDetail', esc(x.name), body, acts);
+}
+function showModal(id, title, body, acts) {
+  var old = document.getElementById(id); if (old) old.parentNode.removeChild(old);
+  document.getElementById('modals').insertAdjacentHTML('beforeend', DemoShell.modalHTML(id, title, body, acts));
+  setTimeout(function () { DemoShell.openModal(id); }, 20);
+}
+
+/* מכתב פנייה */
+function buildLetter(p) {
+  var S = DEMO.school, gives = p.gives.map(function (k) { return GIVES[k]; });
+  return 'לכבוד\n' + p.name + '\nלידי ' + p.role + '\n\nשלום רב,\n\n'
+    + 'שמי ' + S.principal + ', ' + S.principalTitle + ' ' + S.name + ' ב' + S.city + ' — בית ספר על-יסודי עם ' + S.students + ' תלמידות ותלמידים בכיתות ז׳–יב׳ ו-' + S.staff + ' אנשי צוות.\n\n'
+    + 'אנחנו מאמינים שהחיבור בין בית הספר לעולם העבודה והקהילה הוא המפתח להצלחת התלמידים שלנו, ולכן אני פונה אליכם בהצעה לשיתוף פעולה בתחום ' + TRACKS[p.track] + '.\n\n'
+    + 'מה חשבנו שיכול להתאים:\n' + gives.map(function (g) { return '- ' + g; }).join('\n') + '\n\n'
+    + 'מה אנחנו מציעים מצדנו:\n- מסגרת חינוכית מסודרת עם ליווי צמוד של צוות\n- תלמידים סקרנים שרוצים להכיר את העולם שמעבר לכיתה\n- חשיפה בקהילה ומיתוג חיובי לארגון שלכם\n- שותפות ארוכת טווח, לא אירוע חד-פעמי\n\n'
+    + 'נשמח לפגישה קצרה של 30 דקות כדי להציג את בית הספר ולשמוע מה חשוב לכם.\n\nבתודה ובהערכה,\n' + S.principal + '\n' + S.principalTitle + ' ' + S.name + '\n' + S.city + ' · שנת הלימודים ' + S.year;
+}
+function openLetter(id) {
+  var p = find('partner', id); if (!p) return;
+  var body = '<p class="hint" style="margin-bottom:10px">מכתב שנוצר אוטומטית מפרטי בית הספר וכרטיס השותף. במערכת האמיתית אפשר לערוך ולשמור בכרטיס.</p><div class="letter" id="letterText">' + esc(buildLetter(p)) + '</div>';
+  var acts = '<button type="button" class="btn-sm" onclick="DemoShell.closeModal(\'mLetter\')">סגירה</button><button type="button" class="btn-sm" onclick="markSent(\'' + p.id + '\')">סמן כנשלח</button><button type="button" class="btn-sm primary" onclick="copyLetter()">העתקה</button>';
+  showModal('mLetter', 'מכתב פנייה לשיתוף פעולה', body, acts);
+}
+function copyLetter() {
+  var t = document.getElementById('letterText').textContent;
+  function done() { DemoShell.toast('המכתב הועתק ללוח'); }
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, done); else done();
+}
+function markSent(id) { var p = find('partner', id); if (p && p.status === 'new') { p.status = 'writing'; save(); render(); } DemoShell.closeModal('mLetter'); DemoShell.toast('סומן: נשלחה פנייה'); }
+
+/* הוספה */
+function selHTML(name, labels, arr) {
+  var h = '<select class="in" name="' + name + '">';
+  if (arr) arr.forEach(function (l, i) { h += '<option value="' + i + '">' + l + '</option>'; });
+  else for (var k in labels) h += '<option value="' + k + '">' + labels[k] + '</option>';
+  return h + '</select>';
+}
+function openAdd(kind) {
+  var body, title;
+  if (kind === 'grant') {
+    title = 'קול קורא חדש';
+    body = '<form id="fAdd" class="form-grid" onsubmit="event.preventDefault();addItem(\'grant\',this)"><label class="f span2">שם הקול הקורא<input class="in" name="name" required placeholder="למשל: תוכנית מצוינות במדעים"></label><label class="f">גוף מממן' + selHTML('org', null, DEMO.funders) + '</label><label class="f">סוג' + selHTML('type', TYPES) + '</label><label class="f">תחום' + selHTML('track', null, TRACKS) + '</label><label class="f">סכום מבוקש (₪)<input class="in" name="amount" type="number" min="0" step="1000" value="50000"></label><label class="f">דדליין<input class="in" name="deadline" type="date" value="2027-01-31" required></label><label class="f">סטטוס' + selHTML('status', GS) + '</label><label class="f span2">הערות<textarea class="in" name="notes" placeholder="מה צריך לצרף, מי אחראי…"></textarea></label></form>';
+  } else if (kind === 'partner') {
+    title = 'שותף חדש';
+    body = '<form id="fAdd" class="form-grid" onsubmit="event.preventDefault();addItem(\'partner\',this)"><label class="f span2">שם החברה / הארגון<input class="in" name="name" required placeholder="למשל: מפעל הייטק בעיר"></label><label class="f">איש קשר (תפקיד)' + selHTML('role', null, ROLES) + '</label><label class="f">תחום' + selHTML('track', null, TRACKS) + '</label><label class="f">מה יכולים לתת' + selHTML('gives', GIVES) + '</label><label class="f">סטטוס' + selHTML('status', PS) + '</label><label class="f">מועד מעקב<input class="in" name="followup" type="date"></label><label class="f span2">הערות<textarea class="in" name="notes"></textarea></label></form>';
+  } else {
+    title = 'תחרות חדשה';
+    body = '<form id="fAdd" class="form-grid" onsubmit="event.preventDefault();addItem(\'comp\',this)"><label class="f span2">שם התחרות<input class="in" name="name" required></label><label class="f">מארגן<input class="in" name="org" placeholder="מי מארגן?"></label><label class="f">תחום' + selHTML('track', null, TRACKS) + '</label><label class="f">קהל יעד<input class="in" name="aud" value="ט–יב"></label><label class="f">פרס<input class="in" name="prize" placeholder="מה מקבלים?"></label><label class="f">מועד הרשמה<input class="in" name="deadline" type="date" value="2027-02-15" required></label><label class="f">סטטוס' + selHTML('status', CS) + '</label></form>';
+  }
+  showModal('mAdd', title, body, '<button type="button" class="btn-sm" onclick="DemoShell.closeModal(\'mAdd\')">ביטול</button><button type="submit" form="fAdd" class="btn-sm primary">שמירה</button>');
+}
+function addItem(kind, f) {
+  var v = function (n) { return (f.elements[n] && f.elements[n].value || '').trim(); };
+  var id = kind.charAt(0) + Date.now();
+  if (kind === 'grant') D.grants.push({ id: id, name: v('name'), org: DEMO.funders[+v('org')], type: v('type'), track: +v('track'), amount: +v('amount') || 0, deadline: v('deadline'), status: v('status'), notes: v('notes') });
+  else if (kind === 'partner') D.partners.push({ id: id, name: v('name'), role: ROLES[+v('role')], track: +v('track'), gives: [v('gives')], status: v('status'), followup: v('followup'), notes: v('notes') });
+  else D.comps.push({ id: id, name: v('name'), org: v('org') || '—', track: +v('track'), aud: v('aud') || '—', prize: v('prize') || '—', deadline: v('deadline'), status: v('status') });
+  save(); render(); DemoShell.closeModal('mAdd'); DemoShell.toast('נשמר בדמו');
+}
+
+/* אתחול */
+opts('fGrantStatus', GS); opts('fGrantType', TYPES); opts('fPartnerStatus', PS); opts('fCompStatus', CS);
+render();
+var h = location.hash.replace('#', ''); if (h && document.getElementById('tab-' + h)) showTab(h);
+</script>
+</body>
+</html>

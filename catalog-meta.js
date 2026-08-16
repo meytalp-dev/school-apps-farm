@@ -7,6 +7,11 @@
 /* ── הכוכבים — 6 כרטיסים גדולים מעל הקטלוג ── */
 var FEATURED = ['student-file', 'attendance', 'pulse', 'parent-meetings', 'group-broadcast', 'investment-bank'];
 
+/* ── דמואים חיים (demo/<id>.html) ── */
+var DEMOS = ['pulse', 'positions', 'gantt', 'my-conversations', 'resources', 'job-card-builder', 'brand-kit'];
+function hasDemo(id) { return DEMOS.indexOf(id) !== -1; }
+function demoHref(id) { return 'demo/' + id + '.html'; }
+
 /* ── תגיות: new · popular · ai ── */
 var TAGS = {
   'student-file': ['popular'], 'attendance': ['popular'], 'tardiness': ['popular'], 'pulse': ['popular'],

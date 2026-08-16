@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דמו — חוות האפליקציות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+  /* CSS ייחודי לדמו הזה — רק מה שאין ב-demo.css */
+</style>
+</head>
+<body>
+
+<main class="demo-main">
+  <div class="demo-head">
+    <div><h2>כותרת המסך</h2><p>משפט אחד שמסביר מה רואים.</p></div>
+    <div class="demo-toolbar"><button type="button" class="btn-sm primary">+ פעולה ראשית</button><button type="button" class="btn-sm">משני</button></div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi" style="--c:var(--teal)"><b>12</b><span>מדד</span></div>
+  </div>
+
+  <div class="row side">
+    <section class="card"><div class="card-h"><h3>תוכן</h3><span class="hint">רמז</span></div>…</section>
+    <aside id="ai"></aside>
+  </div>
+</main>
+
+<script src="../apps-data.js"></script>
+<script src="../logos.js"></script>
+<script src="../store.js"></script>
+<script src="demo-data.js"></script>
+<script src="demo-shell.js"></script>
+<script>
+  DemoShell.init('APP-ID');
+  /* … לוגיקת הדמו … */
+</script>
+</body>
+</html>

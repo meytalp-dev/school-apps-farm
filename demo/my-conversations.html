@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דמו · שיחות מנהלת — חוות האפליקציות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+  /* ── ייחודי לדמו שיחות מנהלת ── */
+  .privacy-line { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 5px 12px; border-radius: 999px; background: rgba(6,30,79,0.06); color: var(--navy); font-size: 12.5px; font-weight: 800; }
+  .privacy-line svg { width: 14px; height: 14px; }
+  .filters { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+  .srch { position: relative; flex: 1; min-width: 200px; }
+  .srch .in { width: 100%; padding-inline-start: 38px; }
+  .srch svg { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--gray); pointer-events: none; }
+  .conv-list { display: flex; flex-direction: column; gap: 10px; }
+  .conv { --c: var(--teal); display: grid; grid-template-columns: 74px 1fr auto; gap: 14px; align-items: center; padding: 14px 16px; border: 1px solid var(--line); border-radius: 18px; background: var(--white); cursor: pointer; position: relative; overflow: hidden; transition: transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast); }
+  .conv::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 4px; background: var(--c); }
+  .conv:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(6,30,79,0.09); }
+  .conv .d { text-align: center; line-height: 1.1; }
+  .conv .d b { display: block; font-size: 22px; font-weight: 900; letter-spacing: -1px; color: var(--navy); font-variant-numeric: tabular-nums; }
+  .conv .d small { font-size: 11.5px; color: var(--gray); font-weight: 700; }
+  .conv .t { min-width: 0; }
+  .conv .t h4 { font-size: 15px; font-weight: 800; letter-spacing: -.2px; margin-bottom: 3px; }
+  .conv .t .who { font-size: 13px; color: var(--gray); font-weight: 600; margin-bottom: 4px; }
+  .conv .t p { font-size: 13px; color: var(--navy); opacity: .8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .conv .s { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .conv.new { animation: heroRise 600ms var(--motion-ease) both; }
+  .conv .fu-date { font-size: 11.5px; color: var(--gray); font-weight: 700; }
+  @media (max-width: 640px) { .conv { grid-template-columns: 56px 1fr; } .conv .s { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: flex-start; } .conv .d b { font-size: 18px; } }
+  .emp { text-align: center; color: var(--gray); padding: 40px 10px; font-weight: 600; }
+  /* מעקבים */
+  .fu-list { display: flex; flex-direction: column; gap: 8px; }
+  .fu { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; background: var(--bg); border: 1px solid var(--line); }
+  .fu.late { background: rgba(240,6,120,0.05); border-color: rgba(240,6,120,0.18); }
+  .fu .fday { width: 42px; text-align: center; flex: 0 0 auto; }
+  .fu .fday b { display: block; font-size: 17px; font-weight: 900; color: var(--navy); line-height: 1; }
+  .fu .fday small { font-size: 10.5px; color: var(--gray); font-weight: 800; }
+  .fu .fx { flex: 1; min-width: 0; }
+  .fu .fx b { display: block; font-size: 13px; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fu .fx small { display: block; font-size: 12px; color: var(--gray); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fu .chk { width: 30px; height: 30px; border-radius: 10px; border: 1.5px solid rgba(6,30,79,0.2); background: #fff; color: var(--navy); cursor: pointer; display: grid; place-items: center; flex: 0 0 auto; }
+  .fu .chk:hover { border-color: var(--green); background: rgba(123,203,82,0.16); }
+  .fu .chk svg { width: 14px; height: 14px; }
+  .types { display: flex; flex-direction: column; gap: 10px; }
+  .types .tr { display: grid; grid-template-columns: 74px 1fr 28px; gap: 10px; align-items: center; font-size: 13px; font-weight: 700; }
+  .types .tr .num { text-align: left; font-variant-numeric: tabular-nums; color: var(--navy); }
+  .privacy-card { background: linear-gradient(135deg, var(--navy), #0B2F73); color: #fff; border: none; }
+  .privacy-card h3 { color: #fff; }
+  .privacy-card p { font-size: 13px; line-height: 1.6; opacity: .85; }
+  .privacy-card .lock { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.12); display: grid; place-items: center; margin-bottom: 10px; }
+  .privacy-card .lock svg { width: 20px; height: 20px; }
+  /* פרטים */
+  .dt-meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; font-size: 13.5px; color: var(--gray); font-weight: 600; }
+  .dt-block { padding: 12px 14px; border-radius: 14px; background: var(--bg); border: 1px solid var(--line); margin-bottom: 10px; }
+  .dt-block h5 { font-size: 12px; font-weight: 800; color: var(--gray); letter-spacing: .3px; margin-bottom: 4px; }
+  .dt-block p { font-size: 14px; line-height: 1.65; }
+  .dt-block.dec { border-right: 4px solid var(--teal); }
+  /* הקלטה */
+  .rec { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; border: 1.5px dashed rgba(6,30,79,0.16); background: var(--bg); }
+  .rec.on { border-style: solid; border-color: rgba(240,6,120,0.4); background: rgba(240,6,120,0.04); }
+  .rec .btn-sm.rec-go { background: var(--fuchsia); border-color: var(--fuchsia); color: #fff; }
+  .rec .btn-sm.rec-go svg { width: 14px; height: 14px; }
+  .rec .timer { font-variant-numeric: tabular-nums; font-weight: 900; font-size: 15px; color: var(--navy); min-width: 46px; }
+  .wave { display: flex; align-items: center; gap: 3px; height: 26px; }
+  .wave i { width: 4px; height: 6px; border-radius: 999px; background: rgba(6,30,79,0.2); transition: height .3s; }
+  .rec.on .wave i { background: var(--fuchsia); animation: wv 1s ease-in-out infinite; }
+  .rec.on .wave i:nth-child(2) { animation-delay: .1s } .rec.on .wave i:nth-child(3) { animation-delay: .2s } .rec.on .wave i:nth-child(4) { animation-delay: .3s } .rec.on .wave i:nth-child(5) { animation-delay: .4s } .rec.on .wave i:nth-child(6) { animation-delay: .5s } .rec.on .wave i:nth-child(7) { animation-delay: .25s } .rec.on .wave i:nth-child(8) { animation-delay: .15s }
+  @keyframes wv { 0%,100% { height: 6px } 50% { height: 24px } }
+  .rec .st { font-size: 12.5px; color: var(--gray); font-weight: 600; flex: 1; }
+  .ai-out { display: none; margin-top: 10px; padding: 14px 16px; border-radius: 16px; background: rgba(18,199,199,0.08); border: 1px solid rgba(18,199,199,0.3); font-size: 13.5px; line-height: 1.7; white-space: pre-wrap; min-height: 60px; }
+  .ai-out.show { display: block; }
+  .ai-out b { color: var(--navy); }
+  .ai-out .cur { display: inline-block; width: 2px; height: 14px; background: var(--teal); vertical-align: -2px; animation: dot 1s infinite; }
+  .ai-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+  .ai-row .btn-sm.navy svg { width: 14px; height: 14px; }
+  .modal-card .form-grid { margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<main class="demo-main">
+  <div class="demo-head">
+    <div>
+      <h2>שיחות מנהלת</h2>
+      <p>הזיכרון הניהולי שלך: כל שיחה עם תלמידים, הורים, צוות, פיקוח וגורמי חוץ — מתועדת, מסוכמת, ועם מעקב אחרי ההחלטות.</p>
+      <span class="privacy-line"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>נגיש למנהלת בלבד</span>
+    </div>
+    <div class="demo-toolbar">
+      <button type="button" class="btn-sm primary" onclick="openNew()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>תיעוד שיחה חדשה</button>
+      <button type="button" class="btn-sm" onclick="exportCSV()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14"/></svg>ייצוא CSV</button>
+      <button type="button" class="btn-sm ghost" onclick="resetDemo()">איפוס דמו</button>
+    </div>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="row side">
+    <section class="card">
+      <div class="card-h"><h3>יומן השיחות</h3><span class="hint" id="countHint"></span></div>
+      <div class="filters">
+        <div class="tabs" id="tabs"></div>
+        <div class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input class="in" id="q" placeholder="חיפוש בנושא, במשתתפים או בסיכום…" oninput="render()"></div>
+      </div>
+      <div class="conv-list" id="list"></div>
+    </section>
+
+    <aside style="display:flex;flex-direction:column;gap:18px">
+      <section class="card">
+        <div class="card-h"><h3>מעקבים לשבוע הקרוב</h3><span class="hint" id="fuHint"></span></div>
+        <div class="fu-list" id="fuList"></div>
+      </section>
+      <section class="card">
+        <div class="card-h"><h3>לפי סוג</h3><span class="hint">מתחילת השנה</span></div>
+        <div class="types" id="types"></div>
+      </section>
+      <section class="card privacy-card">
+        <div class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/><circle cx="12" cy="16" r="1.2"/></svg></div>
+        <h3 style="font-size:16px;font-weight:800;margin-bottom:6px">פרטיות — נגיש למנהלת בלבד</h3>
+        <p>השיחות נשמרות בחשבון האישי של המנהלת. אף גורם אחר בבית הספר לא רואה אותן — גם לא הסגנית או המזכירות. ההקלטה נמחקת אחרי הסיכום.</p>
+      </section>
+    </aside>
+  </div>
+</main>
+
+<script src="../apps-data.js"></script>
+<script src="../logos.js"></script>
+<script src="../store.js"></script>
+<script src="demo-data.js"></script>
+<script src="demo-shell.js"></script>
+<script>
+DemoShell.init('my-conversations');
+
+/* ─── קבועים ─── */
+var TODAY = '2026-11-18'; /* "היום" קבוע בדמו — כדי שהמספרים יהיו זהים בכל טעינה */
+var KEY = 'farm-demo-my-conversations';
+var TYPES = {
+  students:    { label: 'תלמידים',   chip: 'teal',    c: 'var(--teal)' },
+  parents:     { label: 'הורים',     chip: 'gold',    c: 'var(--yellow)' },
+  staff:       { label: 'צוות',      chip: 'green',   c: 'var(--green)' },
+  supervision: { label: 'פיקוח',     chip: 'fuchsia', c: 'var(--fuchsia)' },
+  external:    { label: 'גורמי חוץ', chip: 'navy',    c: 'var(--navy)' }
+};
+var ORDER = ['students', 'parents', 'staff', 'supervision', 'external'];
+var T = DEMO.teachers, P = DEMO.parents, X = DEMO.external;
+var SVG_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
+var SVG_MIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>';
+var SVG_STOP = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
+var SVG_SPARK = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8z"/></svg>';
+
+/* ─── נתוני-דמה (הכול מומצא; תלמידים מזוהים רק לפי כיתה) ─── */
+function seedData() {
+  return [
+    { id: 'c26', date: '2026-11-18', type: 'staff', who: T[0].name + ' · מחנכת ט1', topic: 'תוכנית תגבור מתמטיקה לשכבה ט', summary: 'עברנו על תוצאות מבדק המחצית. כ-20% מהשכבה זקוקים לתגבור ממוקד בשברים ובאלגברה. נועה הציעה קבוצה של פעמיים בשבוע אחרי הלימודים.', decisions: 'פותחים קבוצת תגבור מ-1.12; נועה מגבשת רשימה; אורית בודקת שעות תקן.', fu: '2026-11-25', done: false },
+    { id: 'c25', date: '2026-11-17', type: 'students', who: 'תלמיד מכיתה ט1 · בנוכחות המחנכת', topic: 'היעדרויות חוזרות בשיעורי הבוקר', summary: 'התלמיד שיתף שהוא מתקשה לקום בזמן בגלל עבודה בשעות הערב. שיחה רגועה, לקח אחריות. סיכמנו על תוכנית לשבועיים עם ליווי של המחנכת.', decisions: 'המחנכת מעדכנת יומית; שיחה עם ההורים בשבוע הבא; בדיקה מחדש בעוד שבועיים.', fu: '2026-11-24', done: false },
+    { id: 'c24', date: '2026-11-16', type: 'parents', who: P[0] + ' · הורי תלמיד בכיתה ט1', topic: 'מעקב אחרי היעדרויות והתארגנות בבוקר', summary: 'ההורים הגיעו יחד. הם מודעים לקושי ומבקשים שיתוף פעולה. סוכם שהעדכון יגיע מהמחנכת פעם בשבוע ולא מהמזכירות.', decisions: 'עדכון שבועי מהמחנכת; פגישת מעקב משותפת בעוד שבועיים.', fu: '2026-11-23', done: false },
+    { id: 'c23', date: '2026-11-15', type: 'external', who: X[4], topic: 'פעילות אחר-הצהריים משותפת לשכבה ז', summary: 'המתנ"ס מציע חוגי העשרה במחיר מסובסד לתלמידי ז–ח. נדרש חדר אחד בבית הספר פעמיים בשבוע.', decisions: 'בודקים זמינות חדרים מול שלומי; טיוטת הסכם עד סוף החודש.', fu: '2026-11-22', done: false },
+    { id: 'c22', date: '2026-11-13', type: 'staff', who: T[17].name + ' · יועצת חינוכית', topic: 'מיפוי תלמידים לתוכנית מלווה אישי', summary: 'יעל הציגה רשימה ראשונית של 11 תלמידים משכבות ח–ט. סיכמנו על קריטריונים אחידים ועל שיחה עם כל מחנכת לפני שמעדכנים הורים.', decisions: 'רשימה סופית עד 27.11; אישור הורים לפני תחילת התוכנית.', fu: '2026-11-27', done: false },
+    { id: 'c21', date: '2026-11-12', type: 'parents', who: P[1] + ' · הורי תלמידה בכיתה יא1', topic: 'בקשה להתאמות בבחינות', summary: 'ההורים הביאו אבחון עדכני. הסברתי את התהליך מול ועדת ההתאמות ואת לוחות הזמנים לקראת הבגרויות.', decisions: 'היועצת מרכזת את המסמכים ומגישה לוועדה; תשובה להורים תוך שבועיים.', fu: '2026-11-26', done: false },
+    { id: 'c20', date: '2026-11-11', type: 'supervision', who: X[0], topic: 'ביקור פיקוח — יעדים שנתיים', summary: 'המפקחת ביקרה בשני שיעורים ובישיבת צוות. משוב חיובי על האקלים; ביקשה לחדד את יעד ההישגים באנגלית ואת מדדי המעקב.', decisions: 'מעדכנים את תוכנית העבודה עם מדדים כמותיים; שולחים גרסה מעודכנת עד 2.12.', fu: '2026-12-02', done: false },
+    { id: 'c19', date: '2026-11-10', type: 'students', who: 'תלמידה מכיתה יא1', topic: 'בקשה למעבר מגמה — מביולוגיה לפיזיקה', summary: 'התלמידה מנמקת היטב, ציונים גבוהים במתמטיקה. הסברתי שהמעבר תלוי במקום ובהשלמת חומר. היא מוכנה להשלים בחופשה.', decisions: 'בדיקה מול עומר לביא על מקום בקבוצה; תשובה עד יום חמישי.', fu: '2026-11-19', done: false },
+    { id: 'c18', date: '2026-11-09', type: 'parents', who: P[6] + ' · ועד הורים', topic: 'מעורבות הורים — יריד מקצועות בפברואר', summary: 'הוועד מבקש להוביל יריד מקצועות עם הורים מהקהילה. רעיון מצוין; צריך תיאום עם רכז השכבה ותאריך שלא מתנגש עם הבגרויות.', decisions: 'ניר אביטל שותף להובלה; תאריך יעד — שבוע ראשון של פברואר.', fu: '2026-11-30', done: false },
+    { id: 'c17', date: '2026-11-06', type: 'external', who: X[3], topic: 'מעקב אחרי תלמידים בסיכון נשירה', summary: 'סקירה חודשית של ארבעה תלמידים. שיפור אצל שניים, אחד ללא שינוי, אחד דורש ביקור בית. הקב"ס יתאם עם המשפחה.', decisions: 'ביקור בית עד 20.11; עדכון בפגישה הבאה.', fu: '2026-11-20', done: false },
+    { id: 'c16', date: '2026-11-05', type: 'staff', who: T[9].name + ' · רכז תקשוב', topic: 'הצטיידות מעבדת המחשבים', summary: 'שמונה עמדות מיושנות. רועי הביא שתי הצעות מחיר. עדיף לפרוס בשני שלבים כדי לא לפגוע בשיעורים.', decisions: 'רועי מסכם הצעה סופית; אישור תקציבי מול שלומי.', fu: '2026-11-12', done: false },
+    { id: 'c15', date: '2026-11-04', type: 'students', who: 'תלמידה מכיתה יב1', topic: 'לחץ ועומס לקראת בגרויות החורף', summary: 'התלמידה ביקשה שיחה בעצמה. מרגישה עומס גדול משלושה מקצועות במקביל. הצעתי לבנות יחד לוח לימוד ולערב את היועצת.', decisions: 'פגישה עם היועצת השבוע; לוח לימוד עד סוף השבוע.', fu: '2026-11-20', done: false },
+    { id: 'c14', date: '2026-11-02', type: 'parents', who: P[2] + ' · הורי תלמיד בכיתה ח2', topic: 'מעבר דירה — המשך לימודים אצלנו', summary: 'המשפחה עוברת לעיר סמוכה ורוצה שהבן ימשיך ללמוד אצלנו. הסברתי את התהליך מול הרשות והסעות.', decisions: 'המזכירות מכינה מכתב לאגף החינוך; המשפחה מגישה בקשה.', fu: '2026-11-10', done: true },
+    { id: 'c13', date: '2026-10-28', type: 'students', who: 'תלמיד מכיתה ז2 · תלמיד חדש', topic: 'שיחת היכרות — קליטה בבית הספר', summary: 'שיחה קצרה ונעימה. התלמיד השתלב חברתית, מתקשה קצת באנגלית. ביקשתי מהמחנכת לחבר אותו לחונך משכבה י.', decisions: 'חונך אישי מתחיל בשבוע הבא; שיחת מעקב בעוד שבועיים.', fu: '2026-11-11', done: true },
+    { id: 'c12', date: '2026-10-27', type: 'external', who: X[2], topic: 'המשך תוכנית המנהיגות בשנה הבאה', summary: 'הקרן מרוצה מהתוצאות ושוקלת להרחיב לשתי שכבות. צריך להגיש דוח ביניים ותקציב מעודכן.', decisions: 'דוח ביניים עד אמצע נובמבר; ניר מרכז את הנתונים.', fu: '2026-11-15', done: false },
+    { id: 'c11', date: '2026-10-22', type: 'staff', who: T[19].name + ' · סגנית מנהלת', topic: 'מערכת השעות למחצית ב׳', summary: 'עברנו על אילוצי המורים החדשים ועל פיצול קבוצות במתמטיקה. אורית מציעה להקדים את סיום המערכת בשבועיים.', decisions: 'טיוטה ראשונה עד 10.12; שיחה עם הרכזים לפני פרסום.', fu: '2026-11-05', done: true },
+    { id: 'c10', date: '2026-10-20', type: 'parents', who: P[3] + ' · הורי תלמידה בכיתה ח1', topic: 'עומס שיעורי בית בשכבה ח', summary: 'ההורים העלו תחושה של עומס לא מתואם בין מקצועות. בקשה סבירה — נדרש תיאום בין המורים.', decisions: 'הנושא עולה בישיבת צוות ח; לוח שיעורי בית משותף לניסיון.', fu: '2026-11-03', done: true },
+    { id: 'c09', date: '2026-10-14', type: 'supervision', who: X[0], topic: 'דוח תוכנית העבודה — משוב', summary: 'המפקחת קיבלה את תוכנית העבודה. ביקשה חידוד של יעד השייכות ומדד לפולס הכיתתי. אין הערות נוספות.', decisions: 'עדכון היעד ושליחה מחדש.', fu: '2026-10-21', done: true },
+    { id: 'c08', date: '2026-10-13', type: 'parents', who: P[4] + ' · הורי תלמיד חדש בכיתה ז1', topic: 'שיחת היכרות — משפחה שהצטרפה השנה', summary: 'שיחה קצרה על ההסתגלות. ההורים מרוצים, ביקשו לדעת על חוגים ותנועת נוער.', decisions: 'המזכירות שולחת רשימת חוגים.', fu: '', done: false },
+    { id: 'c07', date: '2026-10-08', type: 'staff', who: T[6].name + ' · מחנכת ז2', topic: 'שיחת משוב חצי-שנתית', summary: 'תמר בשנה השנייה שלה אצלנו. ניהול כיתה מצוין, מבקשת להתפתח לתפקיד ריכוז. סיכמנו על ליווי של מיכל אדרי.', decisions: 'תמר מצטרפת לצוות ההובלה של שכבה ז מינואר.', fu: '', done: false },
+    { id: 'c06', date: '2026-10-06', type: 'students', who: 'תלמידה מכיתה י2 · מועצת התלמידים', topic: 'יוזמה: פרויקט מיחזור בית-ספרי', summary: 'המועצה מבקשת פחי מיחזור בכל קומה ויום שיא. יוזמה מצוינת, בעלות נמוכה. ביקשתי תוכנית קצרה בכתב.', decisions: 'תוכנית עד סוף אוקטובר; שלומי בודק עלות פחים.', fu: '2026-10-30', done: true },
+    { id: 'c05', date: '2026-10-01', type: 'external', who: X[1], topic: 'שיפוץ החצר האחורית — לוחות זמנים', summary: 'האגף אישר תקציב חלקי. העבודות יתחילו בחופשת חנוכה כדי לא להפריע ללימודים.', decisions: 'קבלן נכנס 14.12; שלומי איש הקשר.', fu: '2026-11-01', done: true },
+    { id: 'c04', date: '2026-09-29', type: 'staff', who: T[20].name + ' · מנהל אדמיניסטרטיבי', topic: 'תקציב אירועי שכבה לשנה', summary: 'חלוקה של תקציב האירועים בין השכבות לפי מספר תלמידים, עם רזרבה לטיולים.', decisions: 'טבלה מאושרת נשלחת לרכזי השכבות.', fu: '2026-10-06', done: true },
+    { id: 'c03', date: '2026-09-22', type: 'students', who: 'תלמיד מכיתה ח1', topic: 'אירוע חברתי בהפסקה — בירור', summary: 'שיחה עם התלמיד אחרי עימות מילולי בהפסקה. הבין את חלקו, התנצל. סיכמנו על שיחת פיוס בהנחיית היועצת.', decisions: 'שיחת פיוס השבוע; המחנכת מעדכנת את ההורים.', fu: '2026-10-06', done: true },
+    { id: 'c02', date: '2026-09-15', type: 'parents', who: P[5] + ' · הורי תלמידה בכיתה ז1', topic: 'בקשה להעברה בין כיתות מקבילות', summary: 'ההורים ביקשו העברה מסיבות חברתיות. הסברתי את השיקולים; סיכמנו לתת שלושה שבועות ואז לבחון שוב.', decisions: 'בחינה מחדש ב-1.10 עם המחנכת והיועצת.', fu: '2026-10-01', done: true },
+    { id: 'c01', date: '2026-09-08', type: 'supervision', who: X[0], topic: 'פתיחת שנה — פגישת תיאום', summary: 'הצגת יעדי השנה, מצבת הצוות והתוכניות החדשות. המפקחת ביקשה לקבל את תוכנית העבודה עד אמצע אוקטובר.', decisions: 'תוכנית עבודה עד 14.10.', fu: '2026-10-14', done: true }
+  ];
+}
+
+/* ─── מצב ─── */
+var convs, filter = 'all', recTimer = null, recSec = 0, typeTimer = null;
+function load() { try { var r = localStorage.getItem(KEY); convs = r ? JSON.parse(r) : seedData(); } catch (e) { convs = seedData(); } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(convs)); } catch (e) {} }
+function resetDemo() { localStorage.removeItem(KEY); convs = seedData(); filter = 'all'; document.getElementById('q').value = ''; render(); DemoShell.toast('הדמו אופס לנתוני ההתחלה'); }
+function esc(s) { return DemoShell.esc(s || ''); }
+function fmt(d) { return d ? DEMO.fmtDate(d) : ''; }
+function dayName(d) { return ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ש׳'][new Date(d).getDay()]; }
+function monthName(d) { return ['ינו׳', 'פבר׳', 'מרץ', 'אפר׳', 'מאי', 'יוני', 'יולי', 'אוג׳', 'ספט׳', 'אוק׳', 'נוב׳', 'דצמ׳'][new Date(d).getMonth()]; }
+function iso(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+function plusDays(n) { return iso(DEMO.addDays(TODAY, n)); }
+function fuState(c) { if (!c.fu) return 'none'; if (c.done) return 'done'; return c.fu < TODAY ? 'late' : 'open'; }
+function byId(id) { for (var i = 0; i < convs.length; i++) if (convs[i].id === id) return convs[i]; return null; }
+
+/* ─── רינדור ─── */
+function render() { renderKPIs(); renderTabs(); renderList(); renderFollowups(); renderTypes(); save(); }
+
+function renderKPIs() {
+  var month = 0, open = 0, late = 0, i;
+  for (i = 0; i < convs.length; i++) {
+    if (convs[i].date.slice(0, 7) === TODAY.slice(0, 7)) month++;
+    var s = fuState(convs[i]); if (s === 'open') open++; if (s === 'late') { open++; late++; }
+  }
+  document.getElementById('kpis').innerHTML =
+    '<div class="kpi" style="--c:var(--teal)"><b>' + month + '</b><span>שיחות החודש</span></div>' +
+    '<div class="kpi" style="--c:var(--yellow)"><b>' + open + '</b><span>פתוחות למעקב</span></div>' +
+    '<div class="kpi" style="--c:var(--fuchsia)"><b>' + late + '</b><span>מעקבים באיחור</span></div>' +
+    '<div class="kpi" style="--c:var(--navy)"><b>' + convs.length + '</b><span>שיחות מתועדות מתחילת השנה</span></div>';
+}
+
+function renderTabs() {
+  var h = '<button type="button" class="tab' + (filter === 'all' ? ' active' : '') + '" onclick="setFilter(\'all\')">הכול</button>';
+  ORDER.forEach(function (k) { h += '<button type="button" class="tab' + (filter === k ? ' active' : '') + '" onclick="setFilter(\'' + k + '\')">' + TYPES[k].label + '</button>'; });
+  document.getElementById('tabs').innerHTML = h;
+}
+function setFilter(k) { filter = k; renderTabs(); renderList(); }
+
+function renderList() {
+  var q = document.getElementById('q').value.trim().toLowerCase();
+  var rows = convs.filter(function (c) {
+    if (filter !== 'all' && c.type !== filter) return false;
+    if (q && [c.topic, c.who, c.summary, c.decisions, TYPES[c.type].label].join(' ').toLowerCase().indexOf(q) === -1) return false;
+    return true;
+  }).sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+  document.getElementById('countHint').textContent = rows.length + ' מתוך ' + convs.length + ' שיחות';
+  if (!rows.length) { document.getElementById('list').innerHTML = '<div class="emp">לא נמצאו שיחות מתאימות</div>'; return; }
+  var h = '';
+  rows.forEach(function (c) {
+    var t = TYPES[c.type], s = fuState(c), st = '';
+    if (s === 'open') st = '<span class="status info">מעקב</span><span class="fu-date">עד ' + fmt(c.fu) + '</span>';
+    else if (s === 'late') st = '<span class="status bad">באיחור</span><span class="fu-date">היה ' + fmt(c.fu) + '</span>';
+    else if (s === 'done') st = '<span class="status ok">הושלם</span>';
+    else st = '<span class="status muted">ללא מעקב</span>';
+    h += '<article class="conv' + (c.isNew ? ' new' : '') + '" style="--c:' + t.c + '" onclick="openView(\'' + c.id + '\')">' +
+      '<div class="d"><b>' + new Date(c.date).getDate() + '</b><small>' + monthName(c.date) + '</small></div>' +
+      '<div class="t"><h4>' + esc(c.topic) + '</h4><div class="who"><span class="chip-sm ' + t.chip + '">' + t.label + '</span> ' + esc(c.who) + '</div><p>' + esc(c.summary) + '</p></div>' +
+      '<div class="s">' + st + '</div></article>';
+  });
+  document.getElementById('list').innerHTML = h;
+}
+
+function renderFollowups() {
+  var end = plusDays(7);
+  var rows = convs.filter(function (c) { var s = fuState(c); return s === 'late' || (s === 'open' && c.fu <= end); })
+    .sort(function (a, b) { return a.fu < b.fu ? -1 : 1; });
+  document.getElementById('fuHint').textContent = rows.length ? rows.length + ' לטיפול' : '';
+  if (!rows.length) { document.getElementById('fuList').innerHTML = '<div class="emp" style="padding:16px">אין מעקבים פתוחים לשבוע הקרוב</div>'; return; }
+  var h = '';
+  rows.forEach(function (c) {
+    var late = fuState(c) === 'late';
+    h += '<div class="fu' + (late ? ' late' : '') + '"><div class="fday"><b>' + new Date(c.fu).getDate() + '</b><small>' + (late ? 'באיחור' : dayName(c.fu)) + '</small></div>' +
+      '<div class="fx" style="cursor:pointer" onclick="openView(\'' + c.id + '\')"><b>' + esc(c.topic) + '</b><small>' + esc(c.who) + '</small></div>' +
+      '<button type="button" class="chk" title="סימון כהושלם" onclick="markDone(\'' + c.id + '\')">' + SVG_CHECK + '</button></div>';
+  });
+  document.getElementById('fuList').innerHTML = h;
+}
+
+function renderTypes() {
+  var counts = {}, max = 1;
+  ORDER.forEach(function (k) { counts[k] = 0; });
+  convs.forEach(function (c) { counts[c.type]++; if (counts[c.type] > max) max = counts[c.type]; });
+  var h = '';
+  ORDER.forEach(function (k) {
+    h += '<div class="tr"><span>' + TYPES[k].label + '</span><div class="bar" style="--c:' + TYPES[k].c + '"><i style="width:' + Math.round(counts[k] / max * 100) + '%"></i></div><span class="num">' + counts[k] + '</span></div>';
+  });
+  document.getElementById('types').innerHTML = h;
+}
+
+function markDone(id) { var c = byId(id); if (!c) return; c.done = true; render(); DemoShell.toast('המעקב סומן כהושלם'); }
+function reopen(id) { var c = byId(id); if (!c) return; c.done = false; render(); DemoShell.toast('המעקב נפתח מחדש'); }
+
+/* ─── פירוט שיחה ─── */
+function openView(id) {
+  var c = byId(id); if (!c) return;
+  var t = TYPES[c.type], s = fuState(c);
+  var fuTxt = s === 'none' ? 'לא הוגדר מעקב' : (s === 'done' ? 'הושלם · ' + fmt(c.fu) : (s === 'late' ? 'באיחור · היה עד ' + fmt(c.fu) : 'פתוח · עד ' + fmt(c.fu)));
+  var body = '<div class="dt-meta"><span class="chip-sm ' + t.chip + '">' + t.label + '</span><span>' + dayName(c.date) + ' ' + fmt(c.date) + '</span><span>·</span><span>' + esc(c.who) + '</span></div>' +
+    '<div class="dt-block"><h5>סיכום השיחה</h5><p>' + esc(c.summary) + '</p></div>' +
+    (c.decisions ? '<div class="dt-block dec"><h5>החלטות וצעדים הבאים</h5><p>' + esc(c.decisions) + '</p></div>' : '') +
+    '<div class="dt-block"><h5>מעקב</h5><p><span class="status ' + (s === 'late' ? 'bad' : s === 'done' ? 'ok' : s === 'open' ? 'info' : 'muted') + '">' + fuTxt + '</span></p></div>' +
+    '<p style="font-size:12px;color:var(--gray);margin-top:6px">תועד על ידי המנהלת · נגיש למנהלת בלבד</p>';
+  var acts = '<button type="button" class="btn-sm ghost" onclick="DemoShell.closeModal(\'dlgView\')">סגירה</button>';
+  if (s === 'open' || s === 'late') acts += '<button type="button" class="btn-sm primary" onclick="markDone(\'' + c.id + '\');DemoShell.closeModal(\'dlgView\')">' + SVG_CHECK + 'סימון המעקב כהושלם</button>';
+  if (s === 'done') acts += '<button type="button" class="btn-sm" onclick="reopen(\'' + c.id + '\');DemoShell.closeModal(\'dlgView\')">פתיחת המעקב מחדש</button>';
+  var old = document.getElementById('dlgView'); if (old) old.parentNode.removeChild(old);
+  document.body.insertAdjacentHTML('beforeend', DemoShell.modalHTML('dlgView', esc(c.topic), body, acts));
+  setTimeout(function () { DemoShell.openModal('dlgView'); }, 10);
+}
+
+/* ─── תיעוד שיחה חדשה ─── */
+function whoOptions(type) {
+  var list = [];
+  if (type === 'students') DEMO.classes.forEach(function (k) { list.push('תלמיד/ה מכיתה ' + k); });
+  else if (type === 'parents') P.forEach(function (p) { list.push(p); });
+  else if (type === 'staff') T.forEach(function (x) { list.push(x.name + ' · ' + x.role); });
+  else if (type === 'supervision') list = [X[0], 'מדריכה מחוזית'];
+  else list = X.slice(1);
+  return list.map(function (w) { return '<option>' + esc(w) + '</option>'; }).join('');
+}
+function onTypeChange() { document.getElementById('fWho').innerHTML = whoOptions(document.getElementById('fType').value); }
+
+function openNew() {
+  var typeOpts = ORDER.map(function (k) { return '<option value="' + k + '">' + TYPES[k].label + '</option>'; }).join('');
+  var body = '<div class="form-grid">' +
+    '<label class="f">תאריך<input class="in" type="date" id="fDate" value="' + TODAY + '"></label>' +
+    '<label class="f">סוג השיחה<select class="in" id="fType" onchange="onTypeChange()">' + typeOpts + '</select></label>' +
+    '<label class="f span2">עם מי<select class="in" id="fWho">' + whoOptions('students') + '</select></label>' +
+    '<label class="f span2">נושא<input class="in" id="fTopic" placeholder="למשל: שיחת מעקב אחרי היעדרויות"></label>' +
+    '<div class="span2"><label class="f" style="margin-bottom:8px">הקלטה ותמלול (דמו)</label>' +
+      '<div class="rec" id="rec"><button type="button" class="btn-sm rec-go" id="recBtn" onclick="toggleRec()">' + SVG_MIC + 'הקלטה</button><span class="timer" id="recTimer">00:00</span><div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="st" id="recSt">לחצו להקלטת השיחה — התמלול נכנס אוטומטית להערות</span></div></div>' +
+    '<label class="f span2">הערות / תמלול<textarea class="in" id="fNotes" placeholder="מה נאמר בשיחה? אפשר גם להקליט למעלה"></textarea></label>' +
+    '<div class="span2"><div class="ai-row"><button type="button" class="btn-sm navy" id="aiBtn" onclick="aiSummarize()">' + SVG_SPARK + 'סכם שיחה (AI)</button><span style="font-size:12.5px;color:var(--gray)">מפיק סיכום · החלטות · משימות למעקב מתוך ההערות</span></div><div class="ai-out" id="aiOut"></div></div>' +
+    '<label class="f span2">החלטות וצעדים הבאים<textarea class="in" id="fDec" style="min-height:70px" placeholder="מה הוחלט? מה השלב הבא?"></textarea></label>' +
+    '<label class="f">תאריך מעקב (לא חובה)<input class="in" type="date" id="fFu"></label>' +
+    '<div class="f" style="justify-content:flex-end;font-weight:600;color:var(--gray);font-size:12.5px;padding-bottom:10px">תזכורת תופיע בכרטיס "מעקבים לשבוע הקרוב"</div>' +
+    '</div>';
+  var acts = '<button type="button" class="btn-sm ghost" onclick="closeNew()">ביטול</button><button type="button" class="btn-sm primary" onclick="saveNew()">שמירה</button>';
+  var old = document.getElementById('dlgNew'); if (old) old.parentNode.removeChild(old);
+  document.body.insertAdjacentHTML('beforeend', DemoShell.modalHTML('dlgNew', 'תיעוד שיחה חדשה', body, acts));
+  setTimeout(function () { DemoShell.openModal('dlgNew'); document.getElementById('fTopic').focus(); }, 10);
+}
+function closeNew() { stopRec(true); clearInterval(typeTimer); DemoShell.closeModal('dlgNew'); }
+
+/* הקלטה מדומה: טיימר + גלים, ובעצירה — "תמלול" מומצא לפי סוג ונושא */
+function toggleRec() { if (recTimer) stopRec(); else startRec(); }
+function startRec() {
+  recSec = 0; document.getElementById('rec').classList.add('on');
+  document.getElementById('recBtn').innerHTML = SVG_STOP + 'עצור';
+  document.getElementById('recSt').textContent = 'מקליט… בדמו אין גישה למיקרופון — התמלול מומצא';
+  recTimer = setInterval(function () { recSec++; document.getElementById('recTimer').textContent = ('0' + Math.floor(recSec / 60)).slice(-2) + ':' + ('0' + recSec % 60).slice(-2); }, 1000);
+}
+function stopRec(silent) {
+  if (!recTimer) return;
+  clearInterval(recTimer); recTimer = null;
+  var rec = document.getElementById('rec'); if (!rec) return;
+  rec.classList.remove('on');
+  document.getElementById('recBtn').innerHTML = SVG_MIC + 'הקלטה';
+  if (silent) return;
+  document.getElementById('recSt').textContent = 'התמלול הושלם — אפשר ללחוץ "סכם שיחה (AI)"';
+  var type = document.getElementById('fType').value, topic = document.getElementById('fTopic').value.trim() || 'הנושא שעל הפרק';
+  var tx = {
+    students: 'מנהלת: שלום, תודה שבאת. רציתי שנדבר על ' + topic + '. איך את/ה רואה את זה?\nתלמיד/ה: זה לא פשוט לי לאחרונה, אבל אני רוצה שזה יסתדר.\nמנהלת: חשוב לי שתדע/י שאנחנו כאן כדי לעזור. בואו נסכם — ננסה תוכנית לשבועיים, המחנכת מלווה, ונחזור לדבר בשבוע הבא.',
+    parents: 'מנהלת: תודה שהגעתם. הנושא שרציתי להעלות הוא ' + topic + '. מה אתם רואים בבית?\nהורים: אנחנו מודעים, ורוצים לשתף פעולה. חשוב לנו לקבל עדכון סדיר.\nמנהלת: מצידנו — המחנכת תעדכן פעם בשבוע, ונקבע פגישת מעקב משותפת בעוד שבועיים.',
+    staff: 'מנהלת: בואו נעבור על ' + topic + '. מה המצב כרגע?\nצוות: יש התקדמות, אבל צריך החלטה על משאבים ולוח זמנים.\nמנהלת: מסכימה. נגדיר יעד לשבועיים הקרובים, תחזרו אליי עם הצעה כתובה, ואני אבדוק את הצד התקציבי מול שלומי.',
+    supervision: 'מנהלת: תודה על הביקור והמשוב. בנוגע ל' + topic + ' — נעדכן את תוכנית העבודה ונשלח גרסה מעודכנת עד סוף החודש.\nפיקוח: מצוין. חשוב שיהיו מדדים כמותיים ולוח זמנים.\nמנהלת: יטופל. נשמח למשוב על הגרסה החדשה.',
+    external: 'מנהלת: תודה על שיתוף הפעולה. לגבי ' + topic + ' — נבדוק היתכנות מול הצוות ונחזור אליכם עם תשובה תוך שבועיים.\nגורם חוץ: נשמח. נשלח טיוטת הסכם ותקציב.\nמנהלת: מצוין, שלומי יהיה איש הקשר מצידנו.'
+  }[type];
+  var notes = document.getElementById('fNotes');
+  notes.value = (notes.value ? notes.value + '\n\n' : '') + '[תמלול הקלטה · ' + document.getElementById('recTimer').textContent + ']\n' + tx;
+  DemoShell.toast('התמלול נוסף להערות (דמו)');
+}
+
+/* סיכום AI מדומה: בונה סיכום · החלטות · משימות מתוך ההערות, עם אנימציית הקלדה */
+function aiSummarize() {
+  var notes = document.getElementById('fNotes').value.trim();
+  if (notes.length < 10) { DemoShell.toast('כתבו כמה מילים בהערות או הקליטו — ואז סכמו'); return; }
+  var type = document.getElementById('fType').value, who = document.getElementById('fWho').value, topic = document.getElementById('fTopic').value.trim() || 'הנושא שעלה';
+  var clean = notes.replace(/\[תמלול[^\]]*\]\n?/g, '').replace(/^(מנהלת|תלמיד\/ה|הורים|צוות|פיקוח|גורם חוץ):\s*/gm, '').replace(/\s+/g, ' ');
+  var parts = clean.split(/[.?!\n]/), first = '';
+  for (var pi = 0; pi < parts.length; pi++) { if (parts[pi].trim().length > 24) { first = parts[pi].trim(); break; } }
+  if (!first) first = parts[0].trim();
+  if (first.length > 120) first = first.slice(0, 117) + '…';
+  var decs = {
+    students: ['תוכנית ליווי לשבועיים בהובלת המחנכת', 'שיחת מעקב עם התלמיד/ה בשבוע הבא'],
+    parents: ['עדכון שבועי מהמחנכת להורים', 'פגישת מעקב משותפת בעוד שבועיים'],
+    staff: ['הצעה כתובה מהצוות תוך שבועיים', 'בדיקה תקציבית מול המנהל האדמיניסטרטיבי'],
+    supervision: ['עדכון תוכנית העבודה עם מדדים כמותיים', 'שליחת גרסה מעודכנת עד סוף החודש'],
+    external: ['בדיקת היתכנות מול הצוות', 'טיוטת הסכם ותקציב מהגורם החיצוני']
+  }[type];
+  var text = 'סיכום\nשיחה עם ' + who + ' בנושא "' + topic + '". ' + first + '. הטון היה ענייני וסוכמו צעדים ברורים להמשך.\n\n' +
+    'החלטות\n• ' + decs[0] + '\n• ' + decs[1] + '\n\n' +
+    'משימות למעקב\n• עד ' + fmt(plusDays(7)) + ' — ' + decs[0] + '\n• עד ' + fmt(plusDays(14)) + ' — ' + decs[1] + '\n• תזכורת למנהלת: לבדוק סטטוס ב-' + fmt(plusDays(14));
+  var out = document.getElementById('aiOut'), btn = document.getElementById('aiBtn');
+  out.className = 'ai-out show'; out.innerHTML = '<span class="cur"></span>'; btn.disabled = true; btn.style.opacity = '.6';
+  var i = 0; clearInterval(typeTimer);
+  typeTimer = setInterval(function () {
+    i += 3; var part = text.slice(0, i);
+    out.innerHTML = esc(part).replace(/^(סיכום|החלטות|משימות למעקב)$/gm, '<b>$1</b>').replace(/\n/g, '<br>') + (i < text.length ? '<span class="cur"></span>' : '');
+    if (i >= text.length) {
+      clearInterval(typeTimer); btn.disabled = false; btn.style.opacity = '';
+      document.getElementById('fDec').value = decs[0] + '; ' + decs[1] + '.';
+      if (!document.getElementById('fFu').value) document.getElementById('fFu').value = plusDays(14);
+      DemoShell.toast('הסיכום מולא בטופס — אפשר לערוך ולשמור');
+    }
+  }, 18);
+}
+
+function saveNew() {
+  var topic = document.getElementById('fTopic').value.trim(), notes = document.getElementById('fNotes').value.trim();
+  if (!topic) { DemoShell.toast('כתבו נושא לשיחה'); document.getElementById('fTopic').focus(); return; }
+  stopRec(true); clearInterval(typeTimer);
+  var out = document.getElementById('aiOut'), sum = notes;
+  if (out.classList.contains('show')) { var m = out.textContent.match(/סיכום\s*([\s\S]*?)\s*החלטות/); if (m) sum = m[1].trim(); }
+  if (!sum) sum = 'ללא הערות.';
+  convs.forEach(function (c) { delete c.isNew; });
+  convs.unshift({ id: 'c' + Date.now(), date: document.getElementById('fDate').value || TODAY, type: document.getElementById('fType').value, who: document.getElementById('fWho').value, topic: topic, summary: sum, decisions: document.getElementById('fDec').value.trim(), fu: document.getElementById('fFu').value || '', done: false, isNew: true });
+  DemoShell.closeModal('dlgNew'); filter = 'all'; document.getElementById('q').value = '';
+  render(); DemoShell.toast('השיחה נשמרה בדמו');
+  window.scrollTo({ top: document.getElementById('list').offsetTop - 120, behavior: 'smooth' });
+}
+
+/* ─── ייצוא CSV אמיתי (הורדה) ─── */
+function exportCSV() {
+  var q = function (s) { return '"' + String(s || '').replace(/"/g, '""') + '"'; };
+  var rows = [['תאריך', 'סוג', 'עם מי', 'נושא', 'סיכום', 'החלטות', 'תאריך מעקב', 'סטטוס מעקב'].map(q).join(',')];
+  convs.slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; }).forEach(function (c) {
+    var s = { none: '', open: 'פתוח', late: 'באיחור', done: 'הושלם' }[fuState(c)];
+    rows.push([fmt(c.date), TYPES[c.type].label, c.who, c.topic, c.summary, c.decisions, fmt(c.fu), s].map(q).join(','));
+  });
+  var blob = new Blob(['﻿' + rows.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'שיחות-מנהלת-דמו.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+  DemoShell.toast('קובץ CSV ירד — ' + convs.length + ' שיחות (נתוני דמו)');
+}
+
+load(); render();
+</script>
+</body>
+</html>

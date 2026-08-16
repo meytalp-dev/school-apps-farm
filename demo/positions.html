@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דמו · תכנון משרות ותקנים — חוות האפליקציות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+  /* ── ייחודי לדמו תכנון משרות ── */
+  @media (min-width: 981px) { .row.side { grid-template-columns: minmax(0, 1fr) 360px; } }
+  .main-col { display: grid; gap: 18px; min-width: 0; grid-template-columns: minmax(0, 1fr); }
+  .side-col { position: sticky; top: 88px; display: grid; gap: 18px; }
+  @media (max-width: 980px) { .side-col { position: static; } }
+
+  /* מתג תחזית */
+  .switch { display: inline-flex; align-items: center; gap: 10px; padding: 6px 12px 6px 8px; border-radius: 999px; border: 1.5px solid rgba(6,30,79,0.14); background: #fff; cursor: pointer; font-family: inherit; font-size: 13.5px; font-weight: 800; color: var(--navy); transition: all var(--motion-fast) var(--motion-ease); }
+  .switch:hover { border-color: var(--navy); transform: translateY(-1px); }
+  .switch i { width: 38px; height: 22px; border-radius: 999px; background: rgba(6,30,79,0.14); position: relative; transition: background var(--motion-fast); flex: 0 0 auto; }
+  .switch i::after { content: ''; position: absolute; top: 3px; right: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(6,30,79,0.25); transition: transform var(--motion-fast) var(--motion-ease); }
+  .switch.on { border-color: var(--fuchsia); color: var(--fuchsia); background: rgba(240,6,120,0.05); }
+  .switch.on i { background: var(--fuchsia); }
+  .switch.on i::after { transform: translateX(-16px); }
+
+  /* באנר מצב-תחזית */
+  .mode-note { display: none; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 14px; background: rgba(240,6,120,0.07); color: var(--navy); font-size: 13.5px; font-weight: 700; margin-bottom: 16px; }
+  .mode-note.show { display: flex; }
+  .mode-note b { color: var(--fuchsia); }
+
+  /* פערים לפי מקצוע */
+  .gaps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 22px; }
+  @media (max-width: 720px) { .gaps { grid-template-columns: 1fr; } }
+  .gap-row { display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+  .gap-row:last-child, .gap-row:nth-last-child(2) { border-bottom: none; }
+  .gap-row .nm { font-size: 13.5px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .gap-row .bar { height: 10px; }
+  .gap-row .bar.over > i { background: var(--gold); }
+  .gap-row .val { font-size: 12px; font-weight: 700; color: var(--gray); white-space: nowrap; font-variant-numeric: tabular-nums; display: flex; align-items: center; gap: 6px; }
+  .gap-row .val b { color: var(--navy); }
+  .gap-row .val .miss { color: var(--fuchsia); }
+  .gap-row .val .over { color: var(--gold); }
+  .gap-row .val .ok { color: #3E7F1E; }
+  .gap-row .icon-btn { width: 28px; height: 28px; color: var(--fuchsia); }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--gray); font-weight: 700; margin-top: 12px; }
+  .legend span::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-inline-end: 6px; vertical-align: -1px; background: var(--c); }
+
+  /* טבלה */
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+  .filters .in { padding: 8px 12px; font-size: 13.5px; }
+  .filters .search { min-width: 180px; flex: 1; }
+  .tbl td.name { font-weight: 800; white-space: nowrap; }
+  .tbl td.num { white-space: nowrap; }
+  .tbl td.name small { display: block; font-weight: 600; color: var(--gray); font-size: 11.5px; }
+  .tbl td .subj { display: flex; gap: 4px; flex-wrap: wrap; }
+  .tbl select, .tbl input { padding: 6px 8px; border-radius: 10px; font-size: 13px; }
+  .tbl input.hrs { width: 68px; min-width: 60px; text-align: center; font-weight: 700; }
+  .tbl select.st { min-width: 96px; font-weight: 800; border-color: transparent; }
+  .tbl select.st.ok { background: rgba(123,203,82,0.18); color: #3E7F1E; }
+  .tbl select.st.warn { background: rgba(244,180,27,0.2); color: #9A6700; }
+  .tbl select.st.bad { background: rgba(240,6,120,0.1); color: var(--fuchsia); }
+  .tbl select.st.muted { background: rgba(100,116,139,0.12); color: var(--gray); }
+  .tbl select.tp { min-width: 110px; }
+  .tbl td.notes { color: var(--gray); font-size: 12.5px; max-width: 220px; }
+  .tbl tr.leaving td { opacity: .55; }
+  .tbl tr.leaving td.name, .tbl tr.leaving td:nth-child(6) { opacity: 1; }
+  .tbl tr.open td { background: rgba(240,6,120,0.03); }
+  .tbl td .pct { color: var(--gray); font-weight: 600; font-size: 12px; margin-inline-start: 4px; }
+  .tbl td .up { color: var(--fuchsia); font-weight: 800; font-size: 12px; }
+  .tbl td .down { color: var(--gray); font-weight: 800; font-size: 12px; }
+  .tbl .acts { display: flex; gap: 2px; justify-content: flex-end; }
+  .empty { padding: 28px; text-align: center; color: var(--gray); font-size: 14px; }
+
+  /* לפי סוג משרה */
+  .types { display: grid; gap: 8px; }
+  .types .t { display: grid; grid-template-columns: 96px 1fr 44px; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; }
+  .types .t b { text-align: left; font-variant-numeric: tabular-nums; }
+
+  /* מודעת גיוס */
+  .jobpost { white-space: pre-wrap; font-family: inherit; font-size: 14px; line-height: 1.7; background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; color: var(--navy); max-height: 46vh; overflow: auto; }
+  .jobpost b { font-weight: 900; }
+</style>
+</head>
+<body>
+
+<main class="demo-main">
+  <div class="demo-head">
+    <div><h2>תכנון משרות ותקנים</h2><p>כמה שעות יש, כמה צריך ומי חסר — טבלת המשרות של בית ספר אימפקט, פערים לגיוס לפי מקצוע, ותחזית לשנה הבאה. משרה מלאה = 24 ש"ש.</p></div>
+    <div class="demo-toolbar">
+      <button type="button" class="btn-sm primary" onclick="openAdd()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>הוספת משרה</button>
+      <button type="button" class="switch" id="modeSwitch" onclick="toggleMode()" aria-pressed="false"><i></i><span>תחזית שנה"ב</span></button>
+      <button type="button" class="btn-sm ghost" onclick="resetDemo()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>איפוס דמו</button>
+    </div>
+  </div>
+
+  <div class="mode-note" id="modeNote">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+    <span>מצב <b>תחזית תשפ"ח</b>: מורים עוזבים יורדים מהחשבון, בקשות ההיקף לשנה הבאה נכנסות במקום ההיקף הנוכחי.</span>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="row side">
+    <div class="main-col">
+      <section class="card">
+        <div class="card-h"><h3>פערים לפי מקצוע</h3><span class="hint" id="gapsHint"></span></div>
+        <div class="gaps" id="gaps"></div>
+        <div class="legend"><span style="--c:var(--teal)">משובץ</span><span style="--c:var(--fuchsia)">חסר לגיוס</span><span style="--c:var(--gold)">עודף שעות</span></div>
+      </section>
+
+      <section class="card">
+        <div class="card-h"><h3>טבלת משרות</h3><span class="hint" id="tblHint"></span></div>
+        <div class="filters">
+          <div class="tabs" id="stTabs"></div>
+          <select class="in" id="fSubject" onchange="render()"><option value="">כל המקצועות</option></select>
+          <input class="in search" id="fSearch" placeholder="חיפוש לפי שם…" oninput="render()">
+        </div>
+        <div class="table-wrap"><table class="tbl">
+          <thead><tr><th>שם</th><th>מקצוע</th><th>היקף נוכחי</th><th>מבוקש שנה"ב</th><th>סוג</th><th>סטטוס</th><th>הערות</th><th></th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table></div>
+      </section>
+    </div>
+
+    <aside class="side-col">
+      <div id="ai"></div>
+      <section class="card">
+        <div class="card-h"><h3>לפי סוג משרה</h3><span class="hint">ש"ש</span></div>
+        <div class="types" id="types"></div>
+      </section>
+    </aside>
+  </div>
+</main>
+
+<div id="modals"></div>
+
+<script src="../apps-data.js"></script>
+<script src="../logos.js"></script>
+<script src="../store.js"></script>
+<script src="demo-data.js"></script>
+<script src="demo-shell.js"></script>
+<script>
+DemoShell.init('positions');
+
+/* ─── קבועים ─── */
+var FULL = 24; /* משרה מלאה בש"ש */
+var STORE_KEY = 'farm-demo-positions';
+var TYPES = ['תקן', 'חוזה', 'ממלא מקום', 'שעתי'];
+var STATUS = ['פעיל', 'מבוקש', 'פנוי', 'עוזב'];
+var ST_CLS = { 'פעיל': 'ok', 'מבוקש': 'warn', 'פנוי': 'bad', 'עוזב': 'muted' };
+/* תקן שעות שבועיות לכל מקצוע (מומצא) */
+var NEED = { 'מתמטיקה': 60, 'אנגלית': 62, 'עברית': 36, 'ספרות': 20, 'היסטוריה': 12, 'אזרחות': 12, 'תנ"ך': 14, 'מדעים': 22, 'ביולוגיה': 18, 'פיזיקה': 24, 'מחשבים': 22, 'חינוך גופני': 24, 'אמנות': 12, 'גיאוגרפיה': 10, 'ערבית': 14 };
+var SUBJ = DEMO.subjects.slice();
+var STAFF_SUBJ = ['ייעוץ', 'חינוך חברתי', 'הנהלה', 'מנהלה'];
+/* מקצועות קרובים — למי אפשר להציע שעות */
+var NEAR = { 'מתמטיקה': ['פיזיקה', 'מחשבים', 'מדעים'], 'פיזיקה': ['מתמטיקה', 'מדעים'], 'עברית': ['ספרות', 'תנ"ך'], 'ספרות': ['עברית'], 'אזרחות': ['היסטוריה', 'גיאוגרפיה'], 'היסטוריה': ['אזרחות'], 'מדעים': ['ביולוגיה', 'פיזיקה'], 'ביולוגיה': ['מדעים'], 'גיאוגרפיה': ['אזרחות'], 'תנ"ך': ['עברית'] };
+
+/* ─── בניית הנתונים מ-DEMO.teachers ─── */
+var OVR = {
+  t03: { alloc: { 'עברית': 16, 'ספרות': 10 } },
+  t04: { alloc: { 'היסטוריה': 12, 'אזרחות': 8 } },
+  t05: { alloc: { 'מדעים': 14, 'ביולוגיה': 10 } },
+  t06: { alloc: { 'פיזיקה': 12, 'מתמטיקה': 6 }, wanted: 24, type: 'חוזה', status: 'מבוקש', notes: 'מבקש הרחבה למשרה מלאה — מוכן לקחת מתמטיקה' },
+  t07: { wanted: 20, type: 'חוזה', status: 'מבוקש', notes: 'מבקשת תוספת 4 ש"ש בשנה"ב' },
+  t09: { type: 'שעתי' },
+  t11: { alloc: { 'תנ"ך': 14, 'עברית': 10 } },
+  t12: { alloc: { 'גיאוגרפיה': 10, 'אזרחות': 4 }, type: 'שעתי' },
+  t13: { wanted: 0, status: 'עוזב', notes: 'פורשת בסוף השנה — 22 ש"ש מתמטיקה לגיוס' },
+  t14: { wanted: 14, type: 'שעתי', status: 'מבוקש', notes: 'מבקש להגדיל ל-14 ש"ש' },
+  t15: { alloc: { 'ספרות': 10, 'עברית': 10 } },
+  t16: { alloc: { 'ביולוגיה': 8, 'מדעים': 8 }, type: 'ממלא מקום', notes: 'מחליף חל"ד עד פברואר' },
+  t18: { subjects: ['ייעוץ'] }, t19: { subjects: ['חינוך חברתי'] }, t20: { subjects: ['הנהלה'] }, t21: { subjects: ['מנהלה'] }, t22: { subjects: ['מנהלה'] }
+};
+function seedRows() {
+  var rows = DEMO.teachers.map(function (t) {
+    var o = OVR[t.id] || {};
+    var subjects = o.subjects || t.subjects.slice();
+    var alloc = o.alloc; if (!alloc) { alloc = {}; alloc[subjects[0]] = t.hours; }
+    return { id: t.id, name: t.name, subjects: subjects, hours: t.hours, wanted: (o.wanted != null ? o.wanted : t.hours), alloc: alloc,
+      type: o.type || 'תקן', status: o.status || 'פעיל', notes: o.notes || (t.role + (t.homeroom ? ' ' + t.homeroom : '')), full: t.subjects.length ? FULL : t.hours };
+  });
+  rows.push({ id: 'p23', name: '', subjects: ['פיזיקה'], hours: 0, wanted: 12, alloc: {}, type: 'תקן', status: 'פנוי', notes: 'משבצת חדשה — פתיחת מגמת פיזיקה 5 יח"ל', full: FULL });
+  rows.push({ id: 'p24', name: '', subjects: ['חינוך גופני'], hours: 0, wanted: 4, alloc: {}, type: 'שעתי', status: 'פנוי', notes: "קבוצת בנות ז'–ח'", full: FULL });
+  return rows;
+}
+var rows, mode = 'now', stFilter = '';
+function load() {
+  try { var s = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); if (s && s.length) { rows = s; return; } } catch (e) {}
+  rows = seedRows();
+}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(rows)); } catch (e) {} }
+
+/* ─── חישובים ─── */
+function isTeaching(s) { return NEED[s] != null; }
+function counted(r) { return mode === 'now' ? r.status !== 'פנוי' : (r.status !== 'פנוי' && r.status !== 'עוזב'); }
+function rowHours(r) { return mode === 'now' ? r.hours : r.wanted; }
+/* חלוקת שעות למקצועות — בתחזית מקנים לפי היחס הנוכחי */
+function rowAlloc(r) {
+  if (mode === 'now') return r.alloc;
+  var out = {}, tot = 0, k;
+  for (k in r.alloc) tot += r.alloc[k];
+  if (!tot) { r.subjects.forEach(function (s) { out[s] = r.wanted / r.subjects.length; }); return out; }
+  for (k in r.alloc) out[k] = Math.round(r.alloc[k] * r.wanted / tot);
+  return out;
+}
+function subjectStats() {
+  var st = {}, s;
+  for (s in NEED) st[s] = { need: NEED[s], got: 0, teachers: [] };
+  rows.forEach(function (r) {
+    if (!counted(r)) return;
+    var a = rowAlloc(r), k;
+    for (k in a) if (st[k] && a[k]) { st[k].got += a[k]; st[k].teachers.push({ r: r, h: a[k] }); }
+  });
+  for (s in st) st[s].gap = st[s].need - st[s].got;
+  return st;
+}
+function kpi() {
+  var st = subjectStats(), need = 0, cov = 0, gap = 0, gapSubj = 0, s;
+  for (s in st) { need += st[s].need; cov += Math.min(st[s].got, st[s].need); if (st[s].gap > 0) { gap += st[s].gap; gapSubj++; } }
+  var total = 0, teachers = 0, open = 0;
+  rows.forEach(function (r) {
+    if (counted(r)) { total += rowHours(r); if (r.name) teachers++; }
+    if (r.status === 'פנוי' || (mode === 'next' && r.status === 'עוזב')) open++;
+  });
+  return { total: total, pct: Math.round(cov / need * 100), teachers: teachers, open: open, gap: gap, gapSubj: gapSubj, st: st };
+}
+
+/* ─── רינדור ─── */
+function esc(s) { return DemoShell.esc(s == null ? '' : s); }
+function fmt(n) { return (Math.round(n * 10) / 10).toString(); }
+function render() {
+  var k = kpi();
+  document.getElementById('kpis').innerHTML =
+    '<div class="kpi" style="--c:var(--navy)"><b>' + fmt(k.total) + '</b><span>סה"כ ש"ש ' + (mode === 'now' ? 'השנה' : 'בתחזית') + '</span></div>'
+    + '<div class="kpi" style="--c:var(--teal)"><b>' + k.pct + '%</b><span>שיבוץ מול התקן</span></div>'
+    + '<div class="kpi" style="--c:var(--green)"><b>' + k.teachers + '</b><span>מורים ואנשי צוות משובצים</span></div>'
+    + '<div class="kpi" style="--c:var(--gold)"><b>' + k.open + '</b><span>משבצות ללא מורה</span></div>'
+    + '<div class="kpi" style="--c:var(--fuchsia)"><b>' + fmt(k.gap) + '</b><span>ש"ש לגיוס · ' + k.gapSubj + ' מקצועות</span></div>';
+  renderGaps(k.st); renderTable(); renderTypes();
+  document.getElementById('modeNote').classList.toggle('show', mode === 'next');
+  var sw = document.getElementById('modeSwitch'); sw.classList.toggle('on', mode === 'next'); sw.setAttribute('aria-pressed', mode === 'next');
+}
+function renderGaps(st) {
+  var list = Object.keys(st).map(function (s) { return { s: s, d: st[s] }; });
+  list.sort(function (a, b) { return b.d.gap - a.d.gap || b.d.need - a.d.need; });
+  var gaps = list.filter(function (x) { return x.d.gap > 0; }).length;
+  document.getElementById('gapsHint').textContent = gaps ? gaps + ' מקצועות בחוסר' : 'כל המקצועות מכוסים';
+  document.getElementById('gaps').innerHTML = list.map(function (x) {
+    var d = x.d, pct = Math.min(100, d.got / d.need * 100), over = d.got > d.need;
+    var tail = d.gap > 0 ? '<span class="miss">חסר ' + fmt(d.gap) + '</span>' : over ? '<span class="over">עודף ' + fmt(-d.gap) + '</span>' : '<span class="ok">מלא</span>';
+    var btn = d.gap > 0 ? '<button type="button" class="icon-btn" title="פרסום משרה" onclick="openJob(\'' + esc(x.s) + '\',' + d.gap + ')">' + ICO.post + '</button>' : '<span style="width:28px"></span>';
+    return '<div class="gap-row"><span class="nm" title="' + esc(x.s) + '">' + esc(x.s) + '</span>'
+      + '<div class="bar' + (over ? ' over' : '') + '" style="--c:' + (d.gap > 0 ? 'var(--fuchsia)' : 'var(--teal)') + '"><i style="width:' + pct + '%"></i></div>'
+      + '<span class="val"><b>' + fmt(d.got) + '</b>&nbsp;מ-' + d.need + ' · ' + tail + btn + '</span></div>';
+  }).join('');
+}
+function renderTable() {
+  var sub = document.getElementById('fSubject').value, q = (document.getElementById('fSearch').value || '').trim();
+  document.getElementById('stTabs').innerHTML = [''].concat(STATUS).map(function (s) {
+    var n = s ? rows.filter(function (r) { return r.status === s; }).length : rows.length;
+    return '<button type="button" class="tab' + (stFilter === s ? ' active' : '') + '" onclick="stFilter=\'' + s + '\';render()">' + (s || 'הכל') + ' <small style="opacity:.7">' + n + '</small></button>';
+  }).join('');
+  var list = rows.filter(function (r) {
+    if (stFilter && r.status !== stFilter) return false;
+    if (sub && r.subjects.indexOf(sub) < 0) return false;
+    if (q && (r.name + ' ' + r.notes).indexOf(q) < 0) return false;
+    return true;
+  });
+  document.getElementById('tblHint').textContent = list.length + ' מתוך ' + rows.length + ' משרות';
+  var opt = function (arr, v) { return arr.map(function (o) { return '<option' + (o === v ? ' selected' : '') + '>' + o + '</option>'; }).join(''); };
+  document.getElementById('tbody').innerHTML = list.length ? list.map(function (r) {
+    var pct = r.full ? Math.min(100, Math.round(r.hours / r.full * 100)) : 0;
+    var diff = r.wanted - r.hours, diffTag = r.status === 'פנוי' ? '' : diff > 0 ? ' <span class="up">+' + fmt(diff) + '</span>' : diff < 0 ? ' <span class="down">' + fmt(diff) + '</span>' : '';
+    return '<tr class="' + (r.status === 'עוזב' ? 'leaving' : r.status === 'פנוי' ? 'open' : '') + '">'
+      + '<td class="name">' + (r.name ? esc(r.name) : '<span style="color:var(--fuchsia)">— לא מאויש —</span>') + '</td>'
+      + '<td><span class="subj">' + r.subjects.map(function (s) { return '<span class="chip-sm ' + (isTeaching(s) ? 'teal' : 'gray') + '">' + esc(s) + '</span>'; }).join('') + '</span></td>'
+      + '<td class="num">' + (r.status === 'פנוי' ? '<span style="color:var(--gray)">—</span>' : fmt(r.hours) + ' ש"ש<span class="pct">' + pct + '%</span>') + '</td>'
+      + '<td><span style="display:inline-flex;align-items:center;gap:4px"><input class="hrs" type="number" min="0" max="40" value="' + r.wanted + '" onchange="upd(\'' + r.id + '\',\'wanted\',this.value)" aria-label="מבוקש שנה"ב">' + diffTag + '</span></td>'
+      + '<td><select class="tp" onchange="upd(\'' + r.id + '\',\'type\',this.value)">' + opt(TYPES, r.type) + '</select></td>'
+      + '<td><select class="st ' + ST_CLS[r.status] + '" onchange="upd(\'' + r.id + '\',\'status\',this.value)">' + opt(STATUS, r.status) + '</select></td>'
+      + '<td class="notes">' + esc(r.notes) + '</td>'
+      + '<td><div class="acts">' + ((r.status === 'פנוי' || r.status === 'עוזב') ? '<button type="button" class="icon-btn" title="פרסום משרה" style="color:var(--fuchsia)" onclick="openJob(\'' + esc(r.subjects[0]) + '\',' + (r.status === 'פנוי' ? r.wanted : r.hours) + ',\'' + r.type + '\')">' + ICO.post + '</button>' : '')
+      + '<button type="button" class="icon-btn" title="עריכה" onclick="openEdit(\'' + r.id + '\')">' + ICO.edit + '</button>'
+      + '<button type="button" class="icon-btn" title="מחיקה" onclick="del(\'' + r.id + '\')">' + ICO.trash + '</button></div></td></tr>';
+  }).join('') : '<tr><td colspan="8" class="empty">אין משרות שמתאימות לסינון.</td></tr>';
+}
+function renderTypes() {
+  var by = {}, max = 1;
+  TYPES.forEach(function (t) { by[t] = 0; });
+  rows.forEach(function (r) { if (counted(r)) by[r.type] += rowHours(r); });
+  TYPES.forEach(function (t) { if (by[t] > max) max = by[t]; });
+  var col = { 'תקן': 'var(--navy)', 'חוזה': 'var(--teal)', 'ממלא מקום': 'var(--gold)', 'שעתי': 'var(--fuchsia)' };
+  document.getElementById('types').innerHTML = TYPES.map(function (t) {
+    return '<div class="t"><span>' + t + '</span><div class="bar" style="--c:' + col[t] + '"><i style="width:' + (by[t] / max * 100) + '%"></i></div><b>' + fmt(by[t]) + '</b></div>';
+  }).join('');
+}
+
+/* ─── פעולות ─── */
+function find(id) { for (var i = 0; i < rows.length; i++) if (rows[i].id === id) return rows[i]; return null; }
+function upd(id, field, val) {
+  var r = find(id); if (!r) return;
+  if (field === 'wanted') { r.wanted = Math.max(0, Number(val) || 0); }
+  else { r[field] = val; if (field === 'status') { if (val === 'עוזב') r.wanted = 0; else if (!r.wanted && r.hours) r.wanted = r.hours; } }
+  save(); render(); DemoShell.toast('נשמר בדמו');
+}
+function del(id) {
+  var r = find(id); if (!r) return;
+  rows = rows.filter(function (x) { return x.id !== id; });
+  save(); render(); DemoShell.toast('המשרה הוסרה' + (r.name ? ' — ' + r.name : ''));
+}
+function toggleMode() { mode = mode === 'now' ? 'next' : 'now'; render(); }
+function resetDemo() { try { localStorage.removeItem(STORE_KEY); } catch (e) {} rows = seedRows(); mode = 'now'; stFilter = ''; document.getElementById('fSubject').value = ''; document.getElementById('fSearch').value = ''; render(); DemoShell.toast('הדמו אופס לנתוני ההתחלה'); }
+
+/* מודאל הוספה/עריכה */
+var editId = null;
+function formHTML() {
+  var opts = function (arr, v) { return arr.map(function (o) { return '<option' + (o === v ? ' selected' : '') + '>' + o + '</option>'; }).join(''); };
+  return '<div class="form-grid">'
+    + '<label class="f">שם המורה<input class="in" id="pfName" placeholder="ריק = משבצת פנויה"></label>'
+    + '<label class="f">מקצוע<select class="in" id="pfSubject">' + opts(SUBJ.concat(STAFF_SUBJ)) + '</select></label>'
+    + '<label class="f">היקף נוכחי (ש"ש)<input class="in" id="pfHours" type="number" min="0" max="40" value="0"></label>'
+    + '<label class="f">מבוקש לשנה"ב (ש"ש)<input class="in" id="pfWanted" type="number" min="0" max="40" value="24"></label>'
+    + '<label class="f">סוג משרה<select class="in" id="pfType">' + opts(TYPES) + '</select></label>'
+    + '<label class="f">סטטוס<select class="in" id="pfStatus">' + opts(STATUS) + '</select></label>'
+    + '<label class="f span2">הערות<input class="in" id="pfNotes" placeholder="למשל: פתיחת קבוצת מצוינות"></label>'
+    + '</div>';
+}
+function openAdd() {
+  editId = null;
+  document.getElementById('posModalTitle').textContent = 'הוספת משרה';
+  fillForm({ name: '', subjects: ['מתמטיקה'], hours: 0, wanted: 24, type: 'תקן', status: 'פנוי', notes: '' });
+  DemoShell.openModal('posModal');
+}
+function openEdit(id) {
+  var r = find(id); if (!r) return; editId = id;
+  document.getElementById('posModalTitle').textContent = 'עריכת משרה' + (r.name ? ' — ' + r.name : '');
+  fillForm(r); DemoShell.openModal('posModal');
+}
+function fillForm(r) {
+  document.getElementById('pfName').value = r.name; document.getElementById('pfSubject').value = r.subjects[0];
+  document.getElementById('pfHours').value = r.hours; document.getElementById('pfWanted').value = r.wanted;
+  document.getElementById('pfType').value = r.type; document.getElementById('pfStatus').value = r.status; document.getElementById('pfNotes').value = r.notes;
+}
+function savePos() {
+  var g = function (id) { return document.getElementById(id).value; };
+  var name = g('pfName').trim(), subj = g('pfSubject'), hours = Math.max(0, Number(g('pfHours')) || 0), wanted = Math.max(0, Number(g('pfWanted')) || 0);
+  var status = g('pfStatus'); if (!name && status !== 'פנוי') status = 'פנוי';
+  if (status === 'פנוי') hours = 0;
+  var r = editId ? find(editId) : null;
+  if (!r) { r = { id: 'p' + Date.now() }; rows.unshift(r); }
+  r.name = name; r.subjects = [subj]; r.hours = hours; r.wanted = wanted; r.type = g('pfType'); r.status = status; r.notes = g('pfNotes').trim();
+  r.alloc = {}; if (hours) r.alloc[subj] = hours; r.full = isTeaching(subj) ? FULL : (hours || FULL);
+  DemoShell.closeModal('posModal'); save(); render(); DemoShell.toast(editId ? 'המשרה עודכנה בדמו' : 'המשרה נוספה לטבלה');
+}
+
+/* מודעת גיוס */
+function jobText(subject, hours, type) {
+  hours = Math.round(hours) || FULL; type = type || 'תקן';
+  var pct = Math.min(100, Math.round(hours / FULL * 100));
+  var staff = !isTeaching(subject);
+  return '<b>גיוס לשנה"ל תשפ"ח</b>\n\nמחפש/ת מקום עבודה שבו רואים כל תלמיד — וכל מורה?\n\n'
+    + '<b>דרוש/ה: ' + (staff ? subject : 'מורה ל' + subject) + '</b>\n'
+    + 'בית ספר אימפקט | ' + type + ' | ' + hours + ' ש"ש (' + pct + '% משרה)\nראשון לציון | תחילת עבודה: 1.9.2027\n\n'
+    + 'שווה לעבוד אצלנו:\n- כיתות קטנות וצוות שהוא קהילה\n- ליווי אישי, השתלמויות והתפתחות מקצועית\n- חדשנות פדגוגית וכלי AI בכל חדר מורים\n- גב מהנהלה — ותכנון שנתי שקוף\n\n'
+    + 'דרישות:\n- תואר אקדמי ותעודת הוראה' + (staff ? ' או הכשרה רלוונטית' : ' ב' + subject) + '\n- ניסיון בחטיבת ביניים / חטיבה עליונה — יתרון\n- אהבה גדולה לתלמידים\n\n'
+    + 'לפרטים ופנייה: מזכירות בית ספר אימפקט | jobs@impact-school.example';
+}
+function openJob(subject, hours, type) {
+  document.getElementById('jobText').innerHTML = jobText(subject, hours, type);
+  DemoShell.openModal('jobModal');
+}
+function copyJob() {
+  var t = document.getElementById('jobText').innerText;
+  var done = function () { DemoShell.toast('המודעה הועתקה — אפשר להדביק בקבוצות הגיוס'); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, done); else done();
+}
+
+/* ─── סוכן AI (מדומה, מחשב מהנתונים) ─── */
+function nameOf(r) { return r.name || 'משבצת פנויה'; }
+function aiSubject(q) {
+  var keys = Object.keys(NEED), i;
+  for (i = 0; i < keys.length; i++) if (q.indexOf(keys[i]) >= 0) return keys[i];
+  if (q.indexOf('ספורט') >= 0) return 'חינוך גופני';
+  return null;
+}
+function aiAnswer(q) {
+  var k = kpi(), st = k.st, s = aiSubject(q), when = mode === 'now' ? 'השנה' : 'בתחזית לשנה"ב';
+  var has = function (arr) { for (var i = 0; i < arr.length; i++) if (q.indexOf(arr[i]) >= 0) return true; return false; };
+
+  /* מי יכול לקחת שעות במקצוע */
+  if (s && has(['מי יכול', 'מי יקח', 'מי ייקח', 'לקחת', 'להשלים', 'לכסות'])) {
+    var d = st[s], out = [], covered = 0;
+    if (d.gap <= 0) return 'ב' + s + ' אין פער ' + when + ' — משובצות ' + fmt(d.got) + ' מתוך ' + d.need + ' ש"ש' + (d.gap < 0 ? ', ואפילו עודף של ' + fmt(-d.gap) + ' ש"ש שאפשר להסיט למקצוע אחר.' : '.');
+    d.teachers.forEach(function (t) {
+      var free = FULL - rowHours(t.r);
+      if (t.r.status !== 'עוזב' && free > 0) { out.push('<li><b>' + esc(t.r.name) + '</b> — מלמד/ת כבר ' + fmt(t.h) + ' ש"ש ' + s + ', פנויות עוד ' + fmt(free) + ' ש"ש עד משרה מלאה</li>'); covered += free; }
+    });
+    (NEAR[s] || []).forEach(function (ns) {
+      st[ns].teachers.forEach(function (t) {
+        var free = FULL - rowHours(t.r);
+        if (t.r.status !== 'עוזב' && free > 0 && t.r.subjects.indexOf(s) < 0) { out.push('<li><b>' + esc(t.r.name) + '</b> (' + esc(ns) + ') — פנויות ' + fmt(free) + ' ש"ש; מקצוע קרוב, כדאי לבדוק הסמכה</li>'); covered += free; }
+      });
+    });
+    var leaving = rows.filter(function (r) { return r.status === 'עוזב' && r.subjects.indexOf(s) >= 0; });
+    var rest = Math.max(0, d.gap - covered);
+    return 'חסרות ' + when + ' <b>' + fmt(d.gap) + ' ש"ש ' + s + '</b>' + (leaving.length ? ' (בין השאר כי ' + leaving.map(function (r) { return esc(r.name); }).join(', ') + ' עוזב/ת)' : '') + '. מי יכול לקחת מהצוות הקיים:'
+      + (out.length ? '<ul>' + out.join('') + '</ul>' : '<ul><li>אף אחד מהצוות הנוכחי לא פנוי</li></ul>')
+      + (rest > 0 ? 'גם אחרי הרחבות פנימיות יישארו כ-<b>' + fmt(rest) + ' ש"ש לגיוס</b> — כדאי לפרסם משרה (הכפתור ליד ' + s + ' בכרטיס הפערים).' : 'ההרחבות הפנימיות יכולות לסגור את הפער בלי גיוס חיצוני.')
+      + (mode === 'now' && leaving.length ? (function () { mode = 'next'; var g = subjectStats()[s].gap; mode = 'now'; return g > d.gap ? '<br>שימו לב: בתחזית לשנה"ב הפער ב' + s + ' גדל ל-<b>' + fmt(g) + ' ש"ש</b>.' : ''; })() : '');
+  }
+  /* פערים / גיוס */
+  if (has(['פער', 'גיוס', 'לגייס', 'חסר', 'חוסר'])) {
+    var gaps = Object.keys(st).filter(function (x) { return st[x].gap > 0; }).sort(function (a, b) { return st[b].gap - st[a].gap; });
+    if (!gaps.length) return 'אין פערים ' + when + ' — כל המקצועות מכוסים מול התקן.';
+    return 'הפער לגיוס ' + when + ' הוא <b>' + fmt(k.gap) + ' ש"ש</b> ב-' + gaps.length + ' מקצועות:<ul>' + gaps.map(function (x) { return '<li><b>' + esc(x) + '</b> — חסר ' + fmt(st[x].gap) + ' ש"ש (' + fmt(st[x].got) + ' מתוך ' + st[x].need + ')</li>'; }).join('') + '</ul>'
+      + (mode === 'now' ? 'טיפ: הפעילו את מתג "תחזית שנה"ב" כדי לראות איך הפער גדל כשמורים עוזבים.' : 'זהו הפער אחרי הורדת העוזבים והכנסת בקשות ההיקף.');
+  }
+  /* סוגי משרה */
+  if (has(['תקן', 'חוזה', 'שעתי', 'ממלא', 'סוג'])) {
+    var by = {}; TYPES.forEach(function (t) { by[t] = { n: 0, h: 0 }; });
+    rows.forEach(function (r) { if (counted(r)) { by[r.type].n++; by[r.type].h += rowHours(r); } });
+    return 'חלוקה לפי סוג משרה ' + when + ':<ul>' + TYPES.map(function (t) { return '<li><b>' + t + '</b> — ' + by[t].n + ' משרות, ' + fmt(by[t].h) + ' ש"ש</li>'; }).join('') + '</ul>';
+  }
+  /* משרות פנויות */
+  if (has(['פנוי', 'פנויות', 'ללא מורה', 'לא מאויש', 'כמה משרות'])) {
+    var open = rows.filter(function (r) { return r.status === 'פנוי'; }), h = 0;
+    open.forEach(function (r) { h += r.wanted; });
+    var wanted = rows.filter(function (r) { return r.status === 'מבוקש'; });
+    return 'יש כרגע <b>' + open.length + ' משבצות פנויות</b> בסך ' + fmt(h) + ' ש"ש:<ul>' + open.map(function (r) { return '<li>' + esc(r.subjects[0]) + ' — ' + r.wanted + ' ש"ש (' + r.type + ')' + (r.notes ? ' · ' + esc(r.notes) : '') + '</li>'; }).join('') + '</ul>'
+      + (wanted.length ? 'בנוסף, ' + wanted.length + ' מורים ביקשו שינוי היקף לשנה"ב: ' + wanted.map(function (r) { return esc(r.name) + ' (' + r.hours + '→' + r.wanted + ')'; }).join(', ') + '.' : '');
+  }
+  /* עוזבים */
+  if (has(['עוזב', 'פורש', 'עוזבים', 'פורשים'])) {
+    var lv = rows.filter(function (r) { return r.status === 'עוזב'; });
+    if (!lv.length) return 'אין כרגע מורים בסטטוס "עוזב".';
+    return 'עוזבים בסוף השנה:<ul>' + lv.map(function (r) { return '<li><b>' + esc(r.name) + '</b> — ' + r.subjects.join(', ') + ', ' + r.hours + ' ש"ש (' + r.type + ')</li>'; }).join('') + '</ul>הש"ש שלהם כבר נספרות כפער בתחזית. שאלו אותי "מי יכול לקחת את שעות ה' + lv[0].subjects[0] + '".';
+  }
+  /* תחזית */
+  if (has(['תחזית', 'שנה הבאה', 'שנה"ב', 'תשפ"ח'])) {
+    var save = mode; mode = 'next'; var kn = kpi(); mode = 'now'; var kc = kpi(); mode = save;
+    return 'תחזית תשפ"ח לעומת השנה:<ul><li>סה"כ ש"ש: ' + fmt(kc.total) + ' → <b>' + fmt(kn.total) + '</b></li><li>שיבוץ מול התקן: ' + kc.pct + '% → <b>' + kn.pct + '%</b></li><li>ש"ש לגיוס: ' + fmt(kc.gap) + ' → <b>' + fmt(kn.gap) + '</b></li><li>משבצות ללא מורה: ' + kc.open + ' → <b>' + kn.open + '</b></li></ul>הפעילו את המתג למעלה כדי לראות את כל המסך במצב תחזית.';
+  }
+  /* פרסום */
+  if (has(['פרסם', 'פרסום', 'מודעה', 'מודעת'])) {
+    var g2 = Object.keys(st).filter(function (x) { return st[x].gap > 0; }).sort(function (a, b) { return st[b].gap - st[a].gap; });
+    if (!g2.length) return 'אין כרגע פער שדורש פרסום.';
+    return 'הכנתי טיוטת מודעה למקצוע עם הפער הגדול ביותר — <b>' + esc(g2[0]) + '</b> (' + fmt(st[g2[0]].gap) + ' ש"ש). <button type="button" class="btn-sm primary" style="margin-top:6px" onclick="openJob(\'' + esc(g2[0]) + '\',' + st[g2[0]].gap + ')">פתיחת המודעה</button>';
+  }
+  /* מקצוע ספציפי */
+  if (s) {
+    var ds = st[s];
+    return '<b>' + esc(s) + '</b> ' + when + ': תקן ' + ds.need + ' ש"ש, משובצות ' + fmt(ds.got) + ' — ' + (ds.gap > 0 ? '<b>חסר ' + fmt(ds.gap) + '</b>' : ds.gap < 0 ? 'עודף ' + fmt(-ds.gap) : 'מכוסה במלואו') + '.'
+      + (ds.teachers.length ? '<ul>' + ds.teachers.map(function (t) { return '<li>' + esc(nameOf(t.r)) + ' — ' + fmt(t.h) + ' ש"ש' + (t.r.status !== 'פעיל' ? ' (' + t.r.status + ')' : '') + '</li>'; }).join('') + '</ul>' : '');
+  }
+  /* סיכום כללי */
+  if (has(['סיכום', 'מצב', 'תמונה', 'סקירה', 'מה קורה'])) {
+    return 'תמונת מצב ' + when + ': <b>' + fmt(k.total) + ' ש"ש</b> ב-' + rows.length + ' משרות, ' + k.teachers + ' מורים ואנשי צוות, שיבוץ של ' + k.pct + '% מול התקן. לגיוס: ' + fmt(k.gap) + ' ש"ש ב-' + k.gapSubj + ' מקצועות, ' + k.open + ' משבצות ללא מורה.';
+  }
+  return null;
+}
+document.getElementById('ai').innerHTML = DemoShell.aiPanel('posAi', 'סוכן תכנון משרות', 'שואלים בשפה חופשית — התשובות מחושבות מהטבלה', ['מי יכול לקחת את שעות המתמטיקה?', 'מה הפער לגיוס?', 'כמה משרות פנויות?', 'מי עוזב בסוף השנה?', 'מה התחזית לשנה הבאה?']);
+DemoShell.aiRegister('posAi', aiAnswer);
+
+/* ─── אייקונים ─── */
+var ICO = {
+  post: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>',
+  edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+  trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>',
+  copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>'
+};
+
+/* ─── מודאלים + הפעלה ─── */
+document.getElementById('modals').innerHTML =
+  DemoShell.modalHTML('posModal', '<span id="posModalTitle">הוספת משרה</span>', formHTML(), '<button type="button" class="btn-sm ghost" onclick="DemoShell.closeModal(\'posModal\')">ביטול</button><button type="button" class="btn-sm primary" onclick="savePos()">שמירה</button>')
+  + DemoShell.modalHTML('jobModal', 'פרסום משרה — טיוטת מודעה', '<p style="color:var(--gray);font-size:13.5px;margin-bottom:12px">נוצר אוטומטית מהפער בטבלה. אפשר להעתיק ולהדביק בקבוצות גיוס, בדף הפייסבוק או באתר בית הספר.</p><pre class="jobpost" id="jobText"></pre>', '<button type="button" class="btn-sm ghost" onclick="DemoShell.closeModal(\'jobModal\')">סגירה</button><button type="button" class="btn-sm primary" onclick="copyJob()">' + ICO.copy + 'העתקת המודעה</button>');
+document.getElementById('fSubject').innerHTML += SUBJ.concat(STAFF_SUBJ).map(function (s) { return '<option>' + s + '</option>'; }).join('');
+
+load(); if (/[?&]mode=next/.test(location.search)) mode = 'next'; render();
+</script>
+</body>
+</html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דמו — ערכת מיתוג בית-ספרית — חוות האפליקציות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+  /* ─── פריסה: תוכן מימין, ניווט-סעיפים דביק משמאל ─── */
+  .bk-layout { display: grid; grid-template-columns: 1fr 210px; gap: 28px; align-items: start; }
+  .bk-nav { position: sticky; top: 92px; display: flex; flex-direction: column; gap: 2px; padding: 8px; background: var(--white); border: 1px solid var(--line); border-radius: 18px; }
+  .bk-nav a { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 12px; font-size: 13.5px; font-weight: 700; color: var(--gray); text-decoration: none; transition: all var(--motion-fast) var(--motion-ease); }
+  .bk-nav a::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: rgba(6,30,79,.14); transition: all var(--motion-fast); }
+  .bk-nav a:hover { color: var(--navy); background: rgba(6,30,79,.04); }
+  .bk-nav a.on { color: var(--navy); background: rgba(18,199,199,.12); }
+  .bk-nav a.on::before { background: var(--fuchsia); transform: scale(1.4); }
+  .bk-nav .nav-t { font-size: 11px; font-weight: 800; letter-spacing: .6px; color: var(--gray); padding: 8px 12px 4px; }
+  .bk-sections { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+  .bk-sections section.card { scroll-margin-top: 92px; padding: 28px; }
+  .sec-k { font-size: 11.5px; font-weight: 800; letter-spacing: 1px; color: var(--fuchsia); margin-bottom: 4px; }
+  .sec-h { font-size: 24px; font-weight: 900; letter-spacing: -.6px; line-height: 1.15; margin-bottom: 6px; }
+  .sec-p { color: var(--gray); font-size: 14.5px; max-width: 620px; margin-bottom: 20px; }
+  @media (max-width: 900px) { .bk-layout { grid-template-columns: 1fr; } .bk-nav { position: static; flex-direction: row; flex-wrap: wrap; } .bk-nav .nav-t { display: none; } .bk-sections section.card { padding: 20px 16px; } }
+
+  /* ─── סיפור ─── */
+  .story { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .story div { padding: 18px; border-radius: 16px; background: var(--bg); border: 1px solid var(--line); }
+  .story b { display: block; font-size: 15px; font-weight: 800; margin-bottom: 6px; }
+  .story p { font-size: 14px; line-height: 1.7; color: #334155; }
+  .story-line { margin-top: 18px; padding: 22px 26px; border-radius: 18px; background: var(--navy); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .story-line b { font-size: clamp(22px, 3vw, 30px); font-weight: 900; letter-spacing: -.8px; }
+  .story-line b i { font-style: normal; color: var(--fuchsia); }
+  .story-line small { color: rgba(255,255,255,.7); font-size: 13px; }
+  @media (max-width: 720px) { .story { grid-template-columns: 1fr; } }
+
+  /* ─── לוגו ─── */
+  .logo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .logo-card { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: var(--white); }
+  .logo-card .lh { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  .logo-card .lh b { font-size: 14px; font-weight: 800; }
+  .logo-card .lh small { color: var(--gray); font-size: 12px; }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; }
+  .tile { display: grid; place-items: center; padding: 20px 14px; min-height: 130px; }
+  .tile.light { background: var(--bg); }
+  .tile.dark { background: var(--navy); }
+  .tile svg { max-width: 100%; height: auto; }
+  .logo-card .la { display: flex; gap: 6px; padding: 10px 12px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+  .rules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 16px; }
+  .rule { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; padding: 12px 14px; border-radius: 14px; }
+  .rule.do { background: rgba(123,203,82,.12); } .rule.dont { background: rgba(240,6,120,.07); }
+  .rule svg { width: 18px; height: 18px; flex: 0 0 auto; margin-top: 2px; }
+  .rule.do svg { color: #3E7F1E; } .rule.dont svg { color: var(--fuchsia); }
+  @media (max-width: 720px) { .logo-grid, .rules { grid-template-columns: 1fr; } }
+
+  /* ─── צבעים ─── */
+  .pal-group { margin-bottom: 18px; }
+  .pal-group h4 { font-size: 13px; font-weight: 800; color: var(--gray); letter-spacing: .4px; margin-bottom: 10px; }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .sw { border-radius: 16px; overflow: hidden; border: 1px solid var(--line); cursor: pointer; background: var(--white); transition: transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast); }
+  .sw:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(6,30,79,.12); }
+  .sw i { display: block; height: 72px; }
+  .sw div { padding: 10px 12px; }
+  .sw b { display: block; font-size: 13.5px; font-weight: 800; }
+  .sw span { font-size: 12px; color: var(--gray); font-family: ui-monospace, Consolas, monospace; letter-spacing: .3px; direction: ltr; display: inline-block; }
+  .sw small { display: block; font-size: 11.5px; color: var(--gray); margin-top: 3px; }
+  .ratio { display: flex; height: 14px; border-radius: 999px; overflow: hidden; margin-top: 8px; }
+  .ratio i { display: block; height: 100%; }
+  .ratio-l { display: flex; justify-content: space-between; font-size: 12px; color: var(--gray); margin-top: 6px; }
+
+  /* ─── טיפוגרפיה ─── */
+  .type-row { display: grid; grid-template-columns: 120px 1fr 90px; align-items: baseline; gap: 16px; padding: 14px 0; border-bottom: 1px dashed var(--line); }
+  .type-row:last-child { border-bottom: none; }
+  .type-row .tk { font-size: 12px; font-weight: 800; color: var(--gray); }
+  .type-row .tv { font-size: 12px; color: var(--gray); font-family: ui-monospace, Consolas, monospace; text-align: left; }
+  .type-row .ts { line-height: 1.15; letter-spacing: -.5px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .weights { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .weights span { padding: 8px 14px; border-radius: 12px; background: var(--bg); border: 1px solid var(--line); font-size: 18px; }
+  @media (max-width: 720px) { .type-row { grid-template-columns: 1fr; gap: 4px; } .type-row .tv { text-align: right; } }
+
+  /* ─── אלמנטים ─── */
+  .el-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .el { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+  .el b { display: block; padding: 12px 14px; font-size: 14px; font-weight: 800; border-bottom: 1px solid var(--line); }
+  .el p { padding: 10px 14px; font-size: 12.5px; color: var(--gray); }
+  .pattern { height: 150px; background-color: var(--bg);
+    background-image: radial-gradient(circle at 12px 12px, rgba(6,30,79,.9) 3px, transparent 3.5px), radial-gradient(circle at 36px 36px, var(--fuchsia) 3px, transparent 3.5px), linear-gradient(135deg, transparent 46%, rgba(18,199,199,.35) 46%, rgba(18,199,199,.35) 54%, transparent 54%);
+    background-size: 48px 48px, 48px 48px, 48px 48px; }
+  .grad { height: 150px; background: linear-gradient(90deg, var(--navy) 0%, var(--teal) 55%, var(--fuchsia) 100%); position: relative; }
+  .grad::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 60%, rgba(6,30,79,.25)); }
+  .grad-bar { height: 8px; border-radius: 999px; background: linear-gradient(90deg, var(--navy), var(--teal), var(--fuchsia)); margin: 14px; }
+  @media (max-width: 720px) { .el-grid { grid-template-columns: 1fr; } }
+
+  /* ─── סלוגנים ─── */
+  .slogan-main { padding: 34px 26px; border-radius: 20px; background: linear-gradient(135deg, rgba(18,199,199,.12), rgba(240,6,120,.08)); text-align: center; margin-bottom: 16px; }
+  .slogan-main b { display: block; font-size: clamp(28px, 4.5vw, 46px); font-weight: 900; letter-spacing: -1.4px; line-height: 1.1; }
+  .slogan-main b i { font-style: normal; color: var(--fuchsia); }
+  .slogan-main small { display: block; margin-top: 8px; color: var(--gray); font-size: 13.5px; }
+  .sub-slogans { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .sub-slogans div { padding: 16px 18px; border-radius: 16px; border: 1px solid var(--line); background: var(--white); position: relative; }
+  .sub-slogans b { display: block; font-size: 19px; font-weight: 800; letter-spacing: -.4px; margin: 6px 0 4px; }
+  .sub-slogans p { font-size: 13px; color: var(--gray); }
+  @media (max-width: 640px) { .sub-slogans { grid-template-columns: 1fr; } }
+
+  /* ─── מילים + קול ─── */
+  .words { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .words > div { border-radius: 18px; padding: 18px; }
+  .words .on { background: rgba(123,203,82,.1); } .words .off { background: rgba(240,6,120,.06); }
+  .words h4 { font-size: 14px; font-weight: 800; margin-bottom: 12px; }
+  .words .on h4 { color: #3E7F1E; } .words .off h4 { color: var(--fuchsia); }
+  .wl { display: flex; flex-wrap: wrap; gap: 8px; }
+  .wl span { padding: 6px 12px; border-radius: 999px; background: var(--white); border: 1px solid var(--line); font-size: 13.5px; font-weight: 700; }
+  .words .off .wl span { text-decoration: line-through; text-decoration-color: rgba(240,6,120,.6); color: var(--gray); }
+  .voice { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .voice > div { border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+  .voice b { display: block; font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+  .voice p { font-size: 13px; color: var(--gray); margin-bottom: 12px; }
+  .ex { font-size: 13px; padding: 10px 12px; border-radius: 12px; margin-top: 8px; line-height: 1.55; }
+  .ex.y { background: rgba(123,203,82,.12); } .ex.n { background: rgba(240,6,120,.07); }
+  .ex small { display: block; font-size: 11px; font-weight: 800; margin-bottom: 2px; }
+  .ex.y small { color: #3E7F1E; } .ex.n small { color: var(--fuchsia); }
+  @media (max-width: 860px) { .voice { grid-template-columns: 1fr; } .words { grid-template-columns: 1fr; } }
+
+  /* ─── חוברת כיוונים ─── */
+  .dirs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .dir { border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: var(--white); transition: transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast); }
+  .dir:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(6,30,79,.1); }
+  .dir.chosen { border-color: var(--fuchsia); box-shadow: 0 0 0 3px rgba(240,6,120,.14); }
+  .dir .prev { height: 150px; display: grid; place-items: center; position: relative; }
+  .dir .prev svg { width: 64px; height: 64px; }
+  .dir .prev b { position: absolute; bottom: 12px; right: 14px; font-size: 20px; font-weight: 900; letter-spacing: -.5px; }
+  .dir { display: flex; flex-direction: column; } .dir .db { padding: 16px; display: flex; flex-direction: column; flex: 1; } .dir .db p { flex: 1; }
+  .dir .db h4 { font-size: 16px; font-weight: 800; }
+  .dir .db p { font-size: 13px; color: var(--gray); margin: 4px 0 12px; line-height: 1.6; }
+  .dir .vote { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .dir .vote .bar { flex: 1; }
+  .dir .vote span { font-size: 12.5px; font-weight: 800; min-width: 34px; text-align: left; font-variant-numeric: tabular-nums; }
+  .vote-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; flex-wrap: wrap; font-size: 13px; color: var(--gray); }
+  @media (max-width: 860px) { .dirs { grid-template-columns: 1fr; } }
+
+  /* ─── הורדות ─── */
+  .dl { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .dl > div { border: 1px solid var(--line); border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
+  .dl svg.ic { width: 28px; height: 28px; color: var(--navy); }
+  .dl b { font-size: 15px; font-weight: 800; }
+  .dl p { font-size: 13px; color: var(--gray); flex: 1; }
+  @media (max-width: 860px) { .dl { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<main class="demo-main">
+  <div class="demo-head">
+    <div><h2>ערכת המיתוג של בית ספר אימפקט</h2><p>מקום אחד לכל מי שמכין תוצר: לוגו, צבעים, פונטים, סלוגן וקול. מה שמופיע כאן — מזין את מחוללי התעודות, המודעות והמצגות.</p></div>
+    <div class="demo-toolbar">
+      <button type="button" class="btn-sm primary" onclick="BK.downloadAll()">הורדת הערכה</button>
+      <button type="button" class="btn-sm" onclick="BK.share()">שיתוף לצוות</button>
+      <button type="button" class="btn-sm ghost" onclick="BK.reset()">איפוס דמו</button>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi" style="--c:var(--navy)"><b>4</b><span>גרסאות לוגו</span></div>
+    <div class="kpi" style="--c:var(--teal)"><b>9</b><span>צבעי מותג</span></div>
+    <div class="kpi" style="--c:var(--fuchsia)"><b>5</b><span>סלוגנים לפי קהל</span></div>
+    <div class="kpi" style="--c:var(--yellow)"><b>3</b><span>כיוונים להצבעה</span></div>
+    <div class="kpi" style="--c:var(--green)"><b id="kpiUse">27</b><span>תוצרים שנוצרו מהערכה החודש</span></div>
+  </div>
+
+  <div class="bk-layout">
+    <div class="bk-sections" id="secs">
+
+      <!-- סיפור -->
+      <section class="card" id="s-story">
+        <div class="sec-k">01 · סיפור המותג</div>
+        <h3 class="sec-h">בית ספר שבו כל ילד מגלה שיש לו השפעה</h3>
+        <p class="sec-p">שלושה משפטים שכל אחד בצוות יכול לספר — למי שמגיע ליום פתוח, להורה חדש, למורה שמצטרפת.</p>
+        <div class="story">
+          <div><b>מאיפה באנו</b><p>אימפקט נולד מרעיון פשוט: למידה טובה משאירה סימן — על הלומד ועל הסביבה. לא ציון בלבד, אלא פרויקט שקורה באמת, בשכונה, בקהילה.</p></div>
+          <div><b>מה אנחנו עושים</b><p>כל תלמיד יוצא מכאן עם שלושה דברים: ידע שהוא יודע להשתמש בו, יצירה שהוא גאה בה, ופעולה אחת לפחות ששינתה משהו למישהו אחר.</p></div>
+          <div><b>מה מבדל אותנו</b><p>אצלנו המורים לא רק מלמדים — הם מלווים. הפרויקטים לא נגמרים בקיר הכיתה, ולתלמידים יש קול אמיתי בהחלטות שנוגעות להם.</p></div>
+        </div>
+        <div class="story-line"><b>לומדים. יוצרים. משפיעים<i>.</i></b><small>הנקודה הוורודה בסוף היא הסימן שלנו — הרגע שבו הלמידה הופכת להשפעה.</small></div>
+      </section>
+
+      <!-- לוגו -->
+      <section class="card" id="s-logo">
+        <div class="sec-k">02 · לוגו</div>
+        <h3 class="sec-h">הסימן: אות א׳ עם ניצוץ</h3>
+        <p class="sec-p">א׳ של אימפקט, קו נועז, ונקודת-ניצוץ ורודה — הרגע שבו משהו קורה. ארבע גרסאות, כל אחת לתפקיד אחר. כל גרסה ניתנת להורדה כ-SVG (וקטור, לכל גודל).</p>
+        <div class="logo-grid" id="logoGrid"></div>
+        <div class="rules">
+          <div class="rule do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg><span><b>שטח מרווח:</b> משאירים סביב הלוגו רווח בגובה האות א׳ לפחות.</span></div>
+          <div class="rule dont"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>לא מותחים</b> ולא משנים פרופורציות. לא מסובבים.</span></div>
+          <div class="rule do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg><span><b>על רקע צבעוני</b> — משתמשים בגרסה הלבנה בלבד.</span></div>
+          <div class="rule dont"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>לא מוסיפים</b> צל, מסגרת או אפקטים. הניצוץ תמיד ורוד.</span></div>
+        </div>
+      </section>
+
+      <!-- צבעים -->
+      <section class="card" id="s-colors">
+        <div class="sec-k">03 · צבעים</div>
+        <h3 class="sec-h">פלטת אימפקט</h3>
+        <p class="sec-p">שלושה צבעי ליבה, ניצוץ אחד וניטרלים. לחיצה על צבע — מעתיקה את הקוד.</p>
+        <div id="palette"></div>
+        <div class="pal-group">
+          <h4>יחס שימוש מומלץ בעמוד</h4>
+          <div class="ratio"><i style="flex:60;background:#F8FAFC;border:1px solid var(--line)"></i><i style="flex:20;background:#061E4F"></i><i style="flex:12;background:#12C7C7"></i><i style="flex:5;background:#F00678"></i><i style="flex:3;background:#F4B41B"></i></div>
+          <div class="ratio-l"><span>60% רקע בהיר</span><span>20% עומק</span><span>12% זרם</span><span>5% ניצוץ</span><span>3% ענבר</span></div>
+        </div>
+      </section>
+
+      <!-- טיפוגרפיה -->
+      <section class="card" id="s-type">
+        <div class="sec-k">04 · טיפוגרפיה</div>
+        <h3 class="sec-h">Heebo — פונט אחד לכל דבר</h3>
+        <p class="sec-p">משפחה אחת, שבעה גדלים, ארבעה משקלים. כותרות כבדות וצפופות; טקסט רץ נושם.</p>
+        <div id="typeScale"></div>
+        <div class="weights"><span style="font-weight:400">רגיל 400 — טקסט רץ</span><span style="font-weight:600">בינוני 600 — תוויות</span><span style="font-weight:800">מודגש 800 — כותרות</span><span style="font-weight:900">כבד 900 — סלוגן</span></div>
+      </section>
+
+      <!-- אלמנטים -->
+      <section class="card" id="s-elements">
+        <div class="sec-k">05 · אלמנטים גרפיים</div>
+        <h3 class="sec-h">אריח חוזר ופס גרדיאנט</h3>
+        <p class="sec-p">שני אלמנטים שנותנים "אימפקט" לכל תוצר בלי לוגו: אריח נקודות לרקעים ועטיפות, ופס גרדיאנט לכותרות ולמצגות.</p>
+        <div class="el-grid">
+          <div class="el"><b>אריח חוזר — נקודה, ניצוץ, קו</b><div class="pattern"></div><p>לרקעי מצגות, כריכות מחברות, נייר מכתבים. שקיפות 20–40% מעל רקע לבן.</p></div>
+          <div class="el"><b>גרדיאנט אימפקט — עומק → זרם → ניצוץ</b><div class="grad"></div><div class="grad-bar"></div><p>לפס עליון במסמכים, לכותרת שקף פתיחה, לבאנר. תמיד משמאל לימין באותו סדר.</p></div>
+        </div>
+      </section>
+
+      <!-- סלוגנים -->
+      <section class="card" id="s-slogans">
+        <div class="sec-k">06 · מערכת סלוגנים</div>
+        <h3 class="sec-h">סלוגן ראשי + ארבעה לפי קהל</h3>
+        <p class="sec-p">הראשי מופיע ליד הלוגו. תתי-הסלוגנים מותאמים למי שקורא — הורים, תלמידים, צוות וקהילה. לחיצה מעתיקה.</p>
+        <div class="slogan-main" onclick="BK.copy('לומדים. יוצרים. משפיעים.','הסלוגן הועתק')"><b>לומדים. יוצרים. משפיעים<i>.</i></b><small>הסלוגן הראשי · גרסה מינימלית: "משפיעים." · הנקודה האחרונה תמיד בפוקסיה</small></div>
+        <div class="sub-slogans" id="subSlogans"></div>
+      </section>
+
+      <!-- קול -->
+      <section class="card" id="s-voice">
+        <div class="sec-k">07 · קול המותג</div>
+        <h3 class="sec-h">איך אימפקט מדבר</h3>
+        <p class="sec-p">שלושה עקרונות — ולכל אחד דוגמה של "כך" ו"לא כך". ואחריהם: מילים שאנחנו אוהבים, ומילים שאנחנו מניחים בצד.</p>
+        <div class="voice" id="voice"></div>
+        <div class="words" style="margin-top:16px">
+          <div class="on"><h4>On-Brand — משתמשים</h4><div class="wl" id="wOn"></div></div>
+          <div class="off"><h4>Off-Brand — נמנעים</h4><div class="wl" id="wOff"></div></div>
+        </div>
+      </section>
+
+      <!-- חוברת כיוונים -->
+      <section class="card" id="s-dirs">
+        <div class="sec-k">08 · חוברת כיוונים להנהלה</div>
+        <h3 class="sec-h">שלושה כיוונים — ההנהלה מצביעה</h3>
+        <p class="sec-p">לפני שנועלים מותג, ההנהלה רואה כמה כיוונים זה לצד זה, קוראת ניתוח קצר ומצביעה. הכיוון שנבחר הופך לערכה שלמעלה. לחצו על "מצביעים" כדי לנסות.</p>
+        <div class="dirs" id="dirs"></div>
+        <div class="vote-foot"><span id="voteSum"></span><span>ההצבעה פתוחה עד 15.9 · 8 חברי הנהלה</span></div>
+      </section>
+
+      <!-- הורדות -->
+      <section class="card" id="s-dl">
+        <div class="sec-k">09 · הורדות</div>
+        <h3 class="sec-h">קבצים מוכנים לשימוש</h3>
+        <p class="sec-p">כל הקבצים נוצרים כאן, בדפדפן, מהערכה עצמה — כך שהם תמיד מעודכנים.</p>
+        <div class="dl">
+          <div><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg><b>לוגו PNG</b><p>הלוגו הרשמי ברזולוציה גבוהה (1600px) — למצגות, לוואטסאפ, למסמכי Word.</p><button type="button" class="btn-sm navy" onclick="BK.downloadPNG()">הורדת PNG</button></div>
+          <div><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 4v10l-7 4-7-4V7z"/><path d="M12 12l7-4M12 12v9M12 12L5 8"/></svg><b>לוגו SVG — כל הגרסאות</b><p>ארבע הגרסאות בקובץ אחד, לגרפיקאים ולדפוס.</p><button type="button" class="btn-sm navy" onclick="BK.downloadSVGAll()">הורדת SVG</button></div>
+          <div><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h6"/></svg><b>פלטת צבעים</b><p>קובץ טקסט עם שמות הצבעים, קודי HEX ו-CSS variables — להדבקה בכל כלי.</p><button type="button" class="btn-sm navy" onclick="BK.downloadPalette()">הורדת פלטה</button></div>
+        </div>
+      </section>
+
+    </div>
+
+    <nav class="bk-nav" id="bkNav" aria-label="סעיפי הערכה">
+      <span class="nav-t">סעיפים</span>
+      <a href="#s-story">סיפור</a><a href="#s-logo">לוגו</a><a href="#s-colors">צבעים</a><a href="#s-type">טיפוגרפיה</a><a href="#s-elements">אלמנטים</a><a href="#s-slogans">סלוגנים</a><a href="#s-voice">קול</a><a href="#s-dirs">חוברת כיוונים</a><a href="#s-dl">הורדות</a>
+    </nav>
+  </div>
+</main>
+
+<script src="../apps-data.js"></script>
+<script src="../logos.js"></script>
+<script src="../store.js"></script>
+<script src="demo-data.js"></script>
+<script src="demo-shell.js"></script>
+<script>
+DemoShell.init('brand-kit');
+
+var BK = (function () {
+  var KEY = 'farm-demo-brand-kit';
+  var toast = DemoShell.toast;
+
+  /* ─── הסימן: א׳ + ניצוץ (64×64) ─── */
+  function mark(c, spark, ripple) {
+    var s = '<g fill="none" stroke="' + c + '" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 10L50 54"/><path d="M45 8Q40 22 29 28"/><path d="M35 36Q28 44 19 56"/></g><circle cx="57" cy="5" r="4.5" fill="' + spark + '"/>';
+    if (ripple) s += '<g fill="none" stroke="' + spark + '" stroke-width="2.5" stroke-linecap="round" opacity=".7"><path d="M62 12a9 9 0 0 1-4 4"/><path d="M63 19a15 15 0 0 1-6 6"/></g>';
+    return s;
+  }
+  var HEEBO = 'font-family="Heebo, Arial, sans-serif"';
+  function svgWrap(w, h, inner) { return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" height="' + h + '">' + inner + '</svg>'; }
+
+  /* ארבע גרסאות · dark=true → גרסה לבנה על כהה */
+  var VARIANTS = [
+    { id: 'official', name: 'רשמי', use: 'מסמכים, אתר, תעודות', svg: function (dark) {
+      var c = dark ? '#FFFFFF' : '#061E4F', sub = dark ? 'rgba(255,255,255,.72)' : '#64748B';
+      return svgWrap(300, 84, '<g transform="translate(228,10)">' + mark(c, '#F00678') + '</g>'
+        + '<text x="214" y="42" text-anchor="start" ' + HEEBO + ' font-weight="900" font-size="30" letter-spacing="-1" fill="' + c + '" direction="rtl">בית ספר אימפקט</text>'
+        + '<text x="214" y="66" text-anchor="start" ' + HEEBO + ' font-weight="600" font-size="14" fill="' + sub + '" direction="rtl">לומדים. יוצרים. משפיעים<tspan fill="#F00678" font-weight="900">.</tspan></text>');
+    } },
+    { id: 'young', name: 'צעיר', use: 'חולצות, קפוצ׳ונים, רשתות', svg: function (dark) {
+      var bg = dark ? '#F00678' : '#12C7C7', c = dark ? '#FFFFFF' : '#061E4F', sp = dark ? '#FFFFFF' : '#F00678';
+      return svgWrap(270, 96, '<rect x="190" y="8" width="80" height="80" rx="24" fill="' + bg + '"/><g transform="translate(198,16)">' + mark(c, sp, true) + '</g>'
+        + '<text x="176" y="66" text-anchor="start" ' + HEEBO + ' font-weight="900" font-size="40" letter-spacing="-1.5" fill="' + (dark ? '#FFFFFF' : '#061E4F') + '" direction="rtl">אימפקט</text>');
+    } },
+    { id: 'icon', name: 'אייקון', use: 'פרופיל, פביקון, מדבקה', svg: function (dark) {
+      return svgWrap(96, 96, '<rect width="96" height="96" rx="28" fill="' + (dark ? '#FFFFFF' : '#061E4F') + '"/><g transform="translate(16,16)">' + mark(dark ? '#061E4F' : '#FFFFFF', '#F00678') + '</g>');
+    } },
+    { id: 'campaign', name: 'קמפיין', use: 'שלטים, יום פתוח, באנרים', svg: function (dark) {
+      var c = dark ? '#FFFFFF' : '#061E4F';
+      return svgWrap(300, 84, '<rect x="0" y="0" width="300" height="84" rx="0" fill="none"/><g transform="translate(236,14)" >' + mark(c, '#F00678') + '</g>'
+        + '<text x="222" y="60" text-anchor="start" ' + HEEBO + ' font-weight="900" font-size="46" letter-spacing="-2" fill="' + c + '" direction="rtl">משפיעים<tspan fill="#F00678">.</tspan></text>');
+    } }
+  ];
+
+  var COPY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h9"/></svg>';
+  var DL_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>';
+
+  function renderLogos() {
+    var h = '';
+    VARIANTS.forEach(function (v, i) {
+      h += '<div class="logo-card"><div class="lh"><b>' + v.name + '</b><small>' + v.use + '</small></div>'
+        + '<div class="tiles"><div class="tile light">' + v.svg(false) + '</div><div class="tile dark">' + v.svg(true) + '</div></div>'
+        + '<div class="la"><button type="button" class="btn-sm ghost" onclick="BK.copySVG(' + i + ')">' + COPY_ICON + 'העתק SVG</button>'
+        + '<button type="button" class="btn-sm ghost" onclick="BK.downloadSVG(' + i + ',false)">' + DL_ICON + 'הורד SVG</button>'
+        + '<button type="button" class="btn-sm ghost" onclick="BK.downloadSVG(' + i + ',true)">' + DL_ICON + 'גרסה לבנה</button></div></div>';
+    });
+    document.getElementById('logoGrid').innerHTML = h;
+  }
+
+  /* ─── פלטה ─── */
+  var PALETTE = [
+    { g: 'צבעי ליבה', items: [
+      { n: 'עומק', hex: '#061E4F', v: '--navy', d: 'טקסט, כותרות, רקע כהה' },
+      { n: 'זרם', hex: '#12C7C7', v: '--teal', d: 'מידע, קישורים, הדגשה רכה' },
+      { n: 'ניצוץ', hex: '#F00678', v: '--fuchsia', d: 'פעולה ראשית, הנקודה בסלוגן' } ] },
+    { g: 'צבע חם + תמיכה', items: [
+      { n: 'ענבר', hex: '#F4B41B', v: '--yellow', d: 'חגיגה, הצטיינות, שימו לב' },
+      { n: 'צמיחה', hex: '#7BCB52', v: '--green', d: 'הצלחה, התקדמות' },
+      { n: 'שקיעה', hex: '#FF7A1A', v: '--orange', d: 'רק לקמפיינים, במינון' } ] },
+    { g: 'ניטרלים', items: [
+      { n: 'לבן', hex: '#FFFFFF', v: '--white', d: 'רקע ראשי' },
+      { n: 'ערפל', hex: '#F8FAFC', v: '--bg', d: 'רקע משני, כרטיסים' },
+      { n: 'פלדה', hex: '#64748B', v: '--gray', d: 'טקסט משני, כיתובים' } ] }
+  ];
+  function renderPalette() {
+    var h = '';
+    PALETTE.forEach(function (g) {
+      h += '<div class="pal-group"><h4>' + g.g + '</h4><div class="swatches">';
+      g.items.forEach(function (c) {
+        var border = c.hex === '#FFFFFF' || c.hex === '#F8FAFC' ? ';box-shadow:inset 0 0 0 1px rgba(6,30,79,.1)' : '';
+        h += '<div class="sw" onclick="BK.copy(\'' + c.hex + '\',\'' + c.hex + ' הועתק\')" title="העתקה"><i style="background:' + c.hex + border + '"></i><div><b>' + c.n + '</b><span>' + c.hex + '</span><small>' + c.d + '</small></div></div>';
+      });
+      h += '</div></div>';
+    });
+    document.getElementById('palette').innerHTML = h;
+  }
+
+  /* ─── סולם טיפוגרפי ─── */
+  var TYPE = [
+    ['H1 · כותרת ראשית', 44, 900, -1.4, 'לומדים. יוצרים. משפיעים.'],
+    ['H2 · כותרת מסך', 32, 800, -.8, 'יום פתוח לכיתות ז׳'],
+    ['H3 · כותרת כרטיס', 24, 800, -.5, 'פרויקט הקהילה של ח2'],
+    ['H4 · תת-כותרת', 18, 700, -.2, 'מה קורה השבוע'],
+    ['גוף · טקסט רץ', 16, 400, 0, 'המורים לא רק מלמדים — הם מלווים. הפרויקטים לא נגמרים בקיר הכיתה.'],
+    ['קטן · תוויות', 14, 600, 0, 'עודכן לפני שעה · צוות שכבה ז׳'],
+    ['כיתוב · הערות', 12, 600, .3, 'התמונה: יריד המדע, תשפ"ז']
+  ];
+  function renderType() {
+    document.getElementById('typeScale').innerHTML = TYPE.map(function (t) {
+      return '<div class="type-row"><span class="tk">' + t[0] + '</span><span class="ts" style="font-size:' + t[1] + 'px;font-weight:' + t[2] + ';letter-spacing:' + t[3] + 'px">' + t[4] + '</span><span class="tv">' + t[1] + 'px / ' + t[2] + '</span></div>';
+    }).join('');
+  }
+
+  /* ─── סלוגנים לפי קהל ─── */
+  var SUBS = [
+    ['הורים', 'הילד שלכם משאיר סימן.', 'למכתבי הורים, ליום פתוח, לאתר', 'teal'],
+    ['תלמידים', 'מה תשנו השנה?', 'לחולצות, ללוח הכיתה, לרשתות', 'fuchsia'],
+    ['צוות', 'מלווים. לא רק מלמדים.', 'לחדר מורים, לגיוס צוות, לחתימת מייל', 'navy'],
+    ['קהילה', 'בית ספר שיוצא החוצה.', 'לשותפים, לרשות, לעיתונות', 'gold']
+  ];
+  function renderSubs() {
+    document.getElementById('subSlogans').innerHTML = SUBS.map(function (s) {
+      return '<div onclick="BK.copy(\'' + s[1] + '\',\'הסלוגן הועתק\')" style="cursor:pointer"><span class="chip-sm ' + s[3] + '">' + s[0] + '</span><b>' + s[1] + '</b><p>' + s[2] + '</p></div>';
+    }).join('');
+  }
+
+  /* ─── קול + מילים ─── */
+  var VOICE = [
+    ['ישיר וחם', 'משפטים קצרים, פנייה ישירה, בלי מליצות.', 'ביום שני נפגשים בשמונה. מביאים את הפרויקט.', 'הרינו מתכבדים להזמינכם לאירוע הצגת התוצרים אשר ייערך…'],
+    ['בטוח, לא מתנשא', 'אנחנו יודעים מה אנחנו עושים — ואומרים את זה בגובה העיניים.', 'תשעים אחוז מהתלמידים סיימו פרויקט אמיתי השנה. הנה מה שהם עשו.', 'בית הספר המוביל והחדשני ביותר באזור, ללא ספק.'],
+    ['מזמין לפעולה', 'כל טקסט נגמר במשהו שאפשר לעשות.', 'רוצים לראות מקרוב? יום פתוח ב-3.10 — נרשמים כאן.', 'לפרטים נוספים ניתן לפנות למזכירות בשעות הפעילות.']
+  ];
+  var W_ON = ['משפיעים', 'מלווים', 'יוצרים', 'שותפים', 'קהילה', 'פרויקט אמיתי', 'קול', 'סקרנות', 'ביחד', 'מנסים', 'לומדים מטעויות', 'משאירים סימן'];
+  var W_OFF = ['מצוינות', 'מוביל', 'חדשני', 'ייחודי', 'הטובים ביותר', 'ערכים', 'מסגרת', 'משמעת', 'הישגיות', 'עמידה ביעדים', 'סטנדרטים', 'פתרון כולל'];
+  function renderVoice() {
+    document.getElementById('voice').innerHTML = VOICE.map(function (v) {
+      return '<div><b>' + v[0] + '</b><p>' + v[1] + '</p><div class="ex y"><small>כך</small>' + v[2] + '</div><div class="ex n"><small>לא כך</small>' + v[3] + '</div></div>';
+    }).join('');
+    document.getElementById('wOn').innerHTML = W_ON.map(function (w) { return '<span>' + w + '</span>'; }).join('');
+    document.getElementById('wOff').innerHTML = W_OFF.map(function (w) { return '<span>' + w + '</span>'; }).join('');
+  }
+
+  /* ─── חוברת כיוונים + הצבעה ─── */
+  var DIRS = [
+    { id: 'spark', name: 'כיוון א׳ — "ניצוץ"', slogan: 'משפיעים.', bg: '#F00678', fg: '#FFFFFF', sp: '#F4B41B', desc: 'נועז, צעיר, פוקסיה מובילה. מתאים לבית ספר שרוצה להיראות אחרת מהשכנים. חשש: עלול להיתפס כפחות "רציני" מול הרשות.', base: 3 },
+    { id: 'flow', name: 'כיוון ב׳ — "זרם"', slogan: 'לומדים. יוצרים. משפיעים.', bg: '#12C7C7', fg: '#061E4F', sp: '#F00678', desc: 'רגוע ובהיר, טורקיז ולבן. משדר פתיחות וקהילה. חשש: דומה למותגים של רשתות חינוך אחרות.', base: 4 },
+    { id: 'depth', name: 'כיוון ג׳ — "עומק"', slogan: 'בית ספר שמשאיר סימן.', bg: '#061E4F', fg: '#FFFFFF', sp: '#F00678', desc: 'קלאסי וסמכותי, כחול עמוק עם ניצוץ אחד. עובד מצוין במסמכים ותעודות. חשש: פחות "מדבר" לתלמידים.', base: 1 }
+  ];
+  var state = load();
+  function load() { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.votes) return s; } catch (e) {} return { votes: { spark: 3, flow: 4, depth: 1 }, mine: null }; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function renderDirs() {
+    var total = 0; DIRS.forEach(function (d) { total += state.votes[d.id]; });
+    document.getElementById('dirs').innerHTML = DIRS.map(function (d) {
+      var n = state.votes[d.id], pct = total ? Math.round(n / total * 100) : 0, mine = state.mine === d.id;
+      return '<div class="dir' + (mine ? ' chosen' : '') + '"><div class="prev" style="background:' + d.bg + '"><svg viewBox="0 0 64 64">' + mark(d.fg, d.sp) + '</svg><b style="color:' + d.fg + '">' + d.slogan + '</b></div>'
+        + '<div class="db"><h4>' + d.name + '</h4><p>' + d.desc + '</p>'
+        + '<button type="button" class="btn-sm ' + (mine ? 'primary' : '') + '" onclick="BK.vote(\'' + d.id + '\')">' + (mine ? 'ההצבעה שלך' : 'מצביעים') + '</button>'
+        + '<div class="vote"><div class="bar" style="--c:' + (mine ? 'var(--fuchsia)' : 'var(--navy)') + '"><i style="width:' + pct + '%"></i></div><span>' + n + ' · ' + pct + '%</span></div></div></div>';
+    }).join('');
+    document.getElementById('voteSum').textContent = total + ' הצבעות עד כה' + (state.mine ? ' · הצבעתם ל' + DIRS.filter(function (d) { return d.id === state.mine; })[0].name.split(' — ')[1] : ' · טרם הצבעתם');
+  }
+  function vote(id) {
+    if (state.mine === id) { toast('כבר הצבעתם לכיוון הזה'); return; }
+    if (state.mine) state.votes[state.mine]--;
+    state.votes[id]++; state.mine = id; save(); renderDirs();
+    toast('ההצבעה נשמרה בדמו');
+  }
+
+  /* ─── scroll-spy ─── */
+  function spy() {
+    var links = document.querySelectorAll('#bkNav a'), secs = document.querySelectorAll('#secs section');
+    function upd() {
+      var y = window.scrollY + 140, cur = secs[0].id;
+      for (var i = 0; i < secs.length; i++) if (secs[i].offsetTop <= y) cur = secs[i].id;
+      if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 40) cur = secs[secs.length - 1].id;
+      for (var j = 0; j < links.length; j++) links[j].classList.toggle('on', links[j].getAttribute('href') === '#' + cur);
+    }
+    window.addEventListener('scroll', upd, { passive: true }); upd();
+  }
+
+  /* ─── העתקה / הורדות ─── */
+  function copy(text, msg) {
+    var done = function () { toast(msg || 'הועתק'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () { fallback(text); done(); });
+    else { fallback(text); done(); }
+  }
+  function fallback(text) { var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(ta); }
+  function dl(blob, name) { var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 800); }
+  function copySVG(i) { copy(VARIANTS[i].svg(false), 'ה-SVG הועתק'); }
+  function downloadSVG(i, dark) { var v = VARIANTS[i]; dl(new Blob([v.svg(!!dark)], { type: 'image/svg+xml' }), 'impact-logo-' + v.id + (dark ? '-white' : '') + '.svg'); toast('הקובץ ירד'); }
+  function downloadSVGAll() {
+    var y = 0, parts = VARIANTS.map(function (v) { var s = '<g transform="translate(0,' + y + ')">' + v.svg(false).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '') + '</g>'; y += 120; return s; });
+    dl(new Blob([svgWrap(320, y, parts.join(''))], { type: 'image/svg+xml' }), 'impact-logo-all.svg'); toast('כל הגרסאות ירדו בקובץ אחד');
+  }
+  function downloadPNG() {
+    var W = 1600, H = 448, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    var ctx = cv.getContext('2d'); ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, W, H);
+    var img = new Image();
+    img.onload = function () {
+      ctx.drawImage(img, 0, 0, W, H);
+      cv.toBlob(function (b) { dl(b, 'impact-logo-official.png'); toast('ה-PNG ירד'); }, 'image/png');
+    };
+    img.onerror = function () { toast('לא הצלחנו ליצור PNG בדפדפן הזה'); };
+    var svgIcon = svgWrap(300, 84, '<g transform="translate(228,10)">' + mark('#061E4F', '#F00678') + '</g>');
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgIcon);
+    /* הטקסט מצויר בקנבס — כדי ש-Heebo של העמוד ישמש גם ב-PNG */
+    ctx.direction = 'rtl'; ctx.textAlign = 'right'; ctx.fillStyle = '#061E4F';
+    ctx.font = '900 160px Heebo, Arial, sans-serif'; ctx.fillText('בית ספר אימפקט', 214 / 300 * W, 224);
+    ctx.font = '600 74px Heebo, Arial, sans-serif'; ctx.fillStyle = '#64748B'; ctx.fillText('לומדים. יוצרים. משפיעים', 214 / 300 * W - 22, 352);
+    ctx.fillStyle = '#F00678'; ctx.font = '900 74px Heebo, Arial, sans-serif'; ctx.fillText('.', 214 / 300 * W, 352);
+  }
+  function paletteText() {
+    var out = 'ערכת המיתוג — בית ספר אימפקט\nסלוגן: לומדים. יוצרים. משפיעים.\n\n';
+    PALETTE.forEach(function (g) { out += '## ' + g.g + '\n'; g.items.forEach(function (c) { out += c.n + '  ' + c.hex + '  ' + c.v + '  — ' + c.d + '\n'; }); out += '\n'; });
+    out += '## CSS\n:root {\n'; PALETTE.forEach(function (g) { g.items.forEach(function (c) { out += '  ' + c.v + ': ' + c.hex + ';\n'; }); }); out += '}\n\nפונט: Heebo (400 / 600 / 800 / 900)\n';
+    return out;
+  }
+  function downloadPalette() { dl(new Blob(['﻿' + paletteText()], { type: 'text/plain;charset=utf-8' }), 'impact-palette.txt'); toast('הפלטה ירדה'); }
+  function downloadAll() { downloadPalette(); setTimeout(downloadSVGAll, 300); setTimeout(downloadPNG, 700); }
+  function share() { copy(location.href.split('#')[0], 'הקישור לערכה הועתק — שלחו לצוות'); }
+  function reset() { try { localStorage.removeItem(KEY); } catch (e) {} state = load(); renderDirs(); toast('הדמו אופס'); }
+
+  renderLogos(); renderPalette(); renderType(); renderSubs(); renderVoice(); renderDirs(); spy();
+
+  return { copy: copy, copySVG: copySVG, downloadSVG: downloadSVG, downloadSVGAll: downloadSVGAll, downloadPNG: downloadPNG, downloadPalette: downloadPalette, downloadAll: downloadAll, share: share, reset: reset, vote: vote };
+})();
+</script>
+</body>
+</html>

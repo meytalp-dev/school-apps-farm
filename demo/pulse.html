@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דמו · פולס — מדד אקלים — חוות האפליקציות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+  .view { display: none; } .view.on { display: block; }
+  .row.two-one { grid-template-columns: 1.4fr 1fr; }
+  @media (max-width: 980px) { .row.two-one { grid-template-columns: 1fr; } }
+  .tabs-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+  .sel-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .sel-row .in { padding: 8px 12px; font-weight: 700; }
+  .seg { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(6,30,79,0.05); }
+  .seg button { border: none; background: transparent; font: inherit; font-size: 12.5px; font-weight: 800; color: var(--gray); padding: 6px 12px; border-radius: 999px; cursor: pointer; transition: all var(--motion-fast) var(--motion-ease); }
+  .seg button.on { background: #fff; color: var(--navy); box-shadow: 0 4px 12px rgba(6,30,79,0.1); }
+  /* radar */
+  .radar { display: block; width: 100%; max-width: 340px; margin: 0 auto; }
+  .radar text { font-family: Heebo, sans-serif; font-weight: 800; font-size: 12px; fill: var(--navy); }
+  .radar .tick { font-size: 9px; font-weight: 700; fill: var(--gray); }
+  .legend { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; font-size: 12.5px; font-weight: 700; color: var(--gray); margin-top: 8px; }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 4px; vertical-align: -2px; margin-inline-end: 5px; }
+  /* dim rows */
+  .dimrow { display: grid; grid-template-columns: 120px 1fr 44px 56px; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .dimrow:last-child { border-bottom: none; }
+  .dimrow b { font-variant-numeric: tabular-nums; font-size: 15px; }
+  .dimrow .d { font-size: 12px; font-weight: 800; }
+  .up { color: #3E7F1E; } .down { color: var(--fuchsia); } .flat { color: var(--gray); }
+  .dimname { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; }
+  /* trend chart */
+  .trend { display: block; width: 100%; height: auto; }
+  .trend text { font-family: Heebo, sans-serif; font-size: 11px; font-weight: 700; fill: var(--gray); }
+  .trend .lbl { font-size: 12.5px; fill: var(--navy); font-weight: 800; }
+  /* mini bar cell */
+  .mb { display: flex; align-items: center; gap: 8px; min-width: 96px; }
+  .mb .bar { flex: 1; height: 6px; }
+  .mb span { font-size: 12.5px; font-weight: 800; font-variant-numeric: tabular-nums; width: 26px; }
+  .tbl tbody tr.pick { cursor: pointer; }
+  .tbl tbody tr.sel { background: rgba(240,6,120,0.05); }
+  .th-sort { cursor: pointer; user-select: none; }
+  .th-sort:hover { color: var(--navy); }
+  /* questions */
+  .qgroup { margin-bottom: 14px; }
+  .qgroup-h { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 900; margin: 6px 0 4px; }
+  .qgroup-h .chip-sm { margin-inline-start: auto; }
+  .qrow { display: grid; grid-template-columns: 26px 1fr 130px 40px; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--line); font-size: 13.5px; }
+  .qrow:last-child { border-bottom: none; }
+  .qn { width: 26px; height: 26px; border-radius: 8px; background: rgba(6,30,79,0.06); display: grid; place-items: center; font-size: 12px; font-weight: 800; }
+  .qrow b { font-variant-numeric: tabular-nums; }
+  /* recommendations */
+  .rec { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .rec:last-child { border-bottom: none; }
+  .rec .status { flex: 0 0 auto; margin-top: 2px; }
+  .rec p { font-size: 13.5px; line-height: 1.6; }
+  .rec p b { display: block; font-weight: 800; margin-bottom: 2px; }
+  /* fill form */
+  .fq { display: grid; grid-template-columns: 30px 1fr auto; gap: 14px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .fq:last-child { border-bottom: none; }
+  .fq .qt { font-size: 15px; font-weight: 600; }
+  .fq .qt small { display: block; font-size: 11.5px; font-weight: 800; margin-top: 2px; }
+  .scale { display: flex; gap: 6px; }
+  .scale button { width: 40px; height: 40px; border-radius: 999px; border: 1.5px solid rgba(6,30,79,0.14); background: #fff; font: inherit; font-weight: 800; color: var(--navy); cursor: pointer; transition: all var(--motion-fast) var(--motion-ease); }
+  .scale button:hover { border-color: var(--navy); transform: translateY(-2px); box-shadow: 0 6px 14px rgba(6,30,79,0.1); }
+  .scale button.on { background: var(--c, var(--navy)); border-color: var(--c, var(--navy)); color: #fff; box-shadow: 0 6px 16px rgba(6,30,79,0.18); }
+  .scale-legend { display: flex; justify-content: space-between; font-size: 12px; color: var(--gray); font-weight: 700; padding: 10px 4px 0; }
+  .fill-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+  .fill-foot .prog { font-size: 13px; color: var(--gray); font-weight: 700; }
+  .stu-card { background: linear-gradient(135deg, rgba(18,199,199,0.12), rgba(240,6,120,0.08)); border-radius: 18px; padding: 16px 18px; margin-bottom: 14px; }
+  .stu-card h4 { font-size: 17px; font-weight: 900; letter-spacing: -.3px; }
+  .stu-card p { font-size: 13.5px; color: var(--gray); margin-top: 3px; }
+  @media (max-width: 720px) {
+    .dimrow { grid-template-columns: 96px 1fr 40px 48px; gap: 8px; }
+    .qrow { grid-template-columns: 26px 1fr 40px; } .qrow .bar { grid-column: 1 / -1; grid-row: 2; }
+    .fq { grid-template-columns: 30px 1fr; } .fq .scale { grid-column: 2; }
+    .scale button { width: 36px; height: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<main class="demo-main">
+  <div class="demo-head">
+    <div><h2>פולס — הדופק של בית הספר</h2><p>שאלון קצר של 10 שאלות שהתלמידים ממלאים שלוש פעמים בשנה. התוצאות מתורגמות למפת חמשת הממדים — לכל כיתה ולבית הספר כולו — ולהמלצות לפעולה.</p></div>
+    <div class="demo-toolbar">
+      <button type="button" class="btn-sm primary" onclick="showView('fill')">מילוי פולס</button>
+      <button type="button" class="btn-sm" onclick="window.print()">ייצוא להדפסה</button>
+      <button type="button" class="btn-sm ghost" onclick="resetDemo()">איפוס דמו</button>
+    </div>
+  </div>
+
+  <div class="tabs-row">
+    <div class="tabs">
+      <button type="button" class="tab active" data-v="school" onclick="showView('school')">מבט בית ספרי</button>
+      <button type="button" class="tab" data-v="class" onclick="showView('class')">מבט כיתתי</button>
+      <button type="button" class="tab" data-v="fill" onclick="showView('fill')">מילוי פולס</button>
+    </div>
+    <div class="sel-row">
+      <span class="hint" style="font-size:12.5px;color:var(--gray);font-weight:700">תקופת מדידה</span>
+      <div class="seg" id="perSeg"></div>
+    </div>
+  </div>
+
+  <!-- ===== מבט בית ספרי ===== -->
+  <section class="view on" id="v-school">
+    <div class="kpis" id="sKpis"></div>
+    <div class="row cols-2" style="margin-bottom:18px">
+      <div class="card">
+        <div class="card-h"><h3>מפת חמשת הממדים — בית ספרי</h3><span class="hint" id="sRadarHint"></span></div>
+        <div id="sRadar"></div>
+        <div class="legend"><span><i style="background:var(--navy)"></i>תקופה נוכחית</span><span><i style="background:rgba(6,30,79,0.18)"></i>תקופה קודמת</span></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>ממוצע לפי ממד</h3><span class="hint">שינוי לעומת התקופה הקודמת</span></div>
+        <div id="sDims"></div>
+      </div>
+    </div>
+    <div class="row two-one" style="margin-bottom:18px">
+      <div class="card">
+        <div class="card-h"><h3>מגמה לאורך השנה</h3><span class="hint">ממוצע בית ספרי בשלוש תקופות</span></div>
+        <div id="sTrend"></div>
+        <div class="legend" id="sTrendLegend"></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>המלצות למנהלת</h3><span class="hint">נוצר מהמספרים</span></div>
+        <div id="sRecs"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>השוואה בין כיתות</h3><span class="hint">לחיצה על כיתה פותחת את המבט הכיתתי · לחיצה על כותרת ממיינת</span></div>
+      <div class="table-wrap"><table class="tbl" id="cmpTbl"><thead></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- ===== מבט כיתתי ===== -->
+  <section class="view" id="v-class">
+    <div class="sel-row" style="margin-bottom:16px">
+      <label class="f" style="flex-direction:row;align-items:center;gap:8px">כיתה <select class="in" id="clsSel" onchange="setClass(this.value)"></select></label>
+      <span class="hint" style="font-size:12.5px;color:var(--gray);font-weight:700" id="clsMeta"></span>
+    </div>
+    <div class="kpis" id="cKpis"></div>
+    <div class="row cols-2" style="margin-bottom:18px">
+      <div class="card">
+        <div class="card-h"><h3>מפת ממדים — <span id="cName"></span></h3><span class="hint">מול הממוצע הבית ספרי</span></div>
+        <div id="cRadar"></div>
+        <div class="legend"><span><i style="background:var(--fuchsia)"></i>הכיתה</span><span><i style="background:rgba(6,30,79,0.18)"></i>בית הספר</span></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>המלצות לפעולה</h3><span class="hint">למחנכ/ת ולצוות</span></div>
+        <div id="cRecs"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>פירוט לפי שאלה</h3><span class="hint">ממוצע 1–5 · צבע לפי ממד</span></div>
+      <div id="cQs"></div>
+    </div>
+  </section>
+
+  <!-- ===== מילוי פולס ===== -->
+  <section class="view" id="v-fill">
+    <div class="row side">
+      <div class="card">
+        <div class="stu-card">
+          <h4>שלום! איך את/ה מרגיש/ה בבית הספר?</h4>
+          <p>10 משפטים קצרים. סמנו כמה כל משפט נכון לגביכם — 1 = בכלל לא, 5 = מאוד. אין תשובה נכונה, והתשובות אנונימיות.</p>
+        </div>
+        <div class="sel-row" style="margin-bottom:6px">
+          <label class="f" style="flex-direction:row;align-items:center;gap:8px">הכיתה שלי <select class="in" id="fillCls"></select></label>
+        </div>
+        <div id="fillQs"></div>
+        <div class="scale-legend"><span>1 — בכלל לא</span><span>3 — לפעמים</span><span>5 — מאוד</span></div>
+        <div class="fill-foot">
+          <span class="prog" id="fillProg">0 מתוך 10</span>
+          <div style="display:flex;gap:8px"><button type="button" class="btn-sm ghost" onclick="clearFill()">ניקוי</button><button type="button" class="btn-sm primary" onclick="submitFill()">שלח</button></div>
+        </div>
+      </div>
+      <aside>
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-h"><h3>מה קורה אחרי "שלח"</h3></div>
+          <p style="font-size:13.5px;line-height:1.7;color:var(--gray)">התשובה מצטרפת לממוצע הכיתה בתקופה הנוכחית ומעדכנת מיד את המפה הבית ספרית, את המבט הכיתתי ואת ההמלצות. בדמו — בזיכרון בלבד.</p>
+        </div>
+        <div class="card">
+          <div class="card-h"><h3>מצב המילוי — <span id="fillPer"></span></h3></div>
+          <div id="fillStatus"></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<script src="../apps-data.js"></script>
+<script src="../logos.js"></script>
+<script src="../store.js"></script>
+<script src="demo-data.js"></script>
+<script src="demo-shell.js"></script>
+<script>
+  DemoShell.init('pulse');
+
+  /* ───────── נתונים ───────── */
+  var DIMS = DEMO.dims;
+  var PERIODS = [{ id: 0, name: 'תקופה א', when: 'אוקטובר' }, { id: 1, name: 'תקופה ב', when: 'ינואר' }, { id: 2, name: 'תקופה ג', when: 'אפריל' }];
+  var QS = [
+    { d: 0, t: 'אני מרגיש/ה חלק מהכיתה שלי' },
+    { d: 0, t: 'יש לי למי לפנות כשקשה לי' },
+    { d: 1, t: 'מתייחסים אליי בכבוד בכיתה' },
+    { d: 1, t: 'אני מרגיש/ה שהמורים מקשיבים לי' },
+    { d: 2, t: 'אני רוצה ללמוד גם בלי שמכריחים אותי' },
+    { d: 2, t: 'מה שאני לומד/ת קשור לחיים שלי' },
+    { d: 3, t: 'אני מאמין/ה שאני יכול/ה להצליח בלימודים' },
+    { d: 3, t: 'אני לא מוותר/ת בקלות כשמשהו קשה' },
+    { d: 4, t: 'יש לי בחירה במה ואיך אני לומד/ת' },
+    { d: 4, t: 'אני לוקח/ת אחריות על הלמידה שלי' }
+  ];
+  var CLASS_SIZE = { 'ז1': 31, 'ז2': 30, 'ח1': 32, 'ח2': 29, 'ט1': 33, 'ט2': 31, 'י1': 30, 'י2': 28, 'יא1': 34, 'יב1': 26 };
+  /* R[cls][period] = { q: [10 ממוצעים], n: מספר משיבים } */
+  var R = {};
+  function genData() {
+    var rnd = DEMO.rng(2026);
+    R = {};
+    DEMO.classes.forEach(function (c, ci) {
+      var base = 3.35 + rnd() * 0.75;                     /* אופי כיתה */
+      var dimOff = DIMS.map(function () { return (rnd() - 0.5) * 0.9; });
+      var drift = 0.08 + rnd() * 0.3;                    /* שיפור לאורך השנה */
+      if (c === 'ח2') { dimOff[0] -= 0.9; dimOff[1] -= 0.5; }      /* כיתה עם קושי בשייכות/כבוד */
+      if (c === 'י2') { dimOff[2] -= 0.7; drift = -0.12; }          /* מוטיבציה יורדת */
+      if (c === 'יב1') { dimOff[4] += 0.6; dimOff[3] += 0.4; }      /* בוגרים עצמאיים */
+      if (c === 'ז1') { dimOff[0] += 0.5; base += 0.15; }
+      R[c] = PERIODS.map(function (p, pi) {
+        var q = QS.map(function (qq) {
+          var v = base + dimOff[qq.d] + drift * pi + (rnd() - 0.5) * 0.5;
+          if (c === 'י2' && qq.d === 2 && pi === 2) v -= 0.35;
+          return Math.round(Math.max(1.4, Math.min(4.9, v)) * 10) / 10;
+        });
+        var size = CLASS_SIZE[c] || 30;
+        var n = Math.round(size * (0.72 + rnd() * 0.24));
+        if (pi === 2 && c === 'ט2') n = Math.round(size * 0.48);   /* מילוי חלקי */
+        return { q: q, n: n };
+      });
+    });
+  }
+  genData();
+
+  /* ───────── חישובים ───────── */
+  function dimAvg(qarr, d) { var s = 0, k = 0; QS.forEach(function (q, i) { if (q.d === d) { s += qarr[i]; k++; } }); return s / k; }
+  function classDims(c, p) { return DIMS.map(function (_, d) { return dimAvg(R[c][p].q, d); }); }
+  function classAvg(c, p) { var a = classDims(c, p); return a.reduce(function (x, y) { return x + y; }, 0) / a.length; }
+  function schoolDims(p) { return DIMS.map(function (_, d) { var s = 0, w = 0; DEMO.classes.forEach(function (c) { s += dimAvg(R[c][p].q, d) * R[c][p].n; w += R[c][p].n; }); return s / w; }); }
+  function schoolAvg(p) { var a = schoolDims(p); return a.reduce(function (x, y) { return x + y; }, 0) / a.length; }
+  function schoolN(p) { var n = 0; DEMO.classes.forEach(function (c) { n += R[c][p].n; }); return n; }
+  function f1(v) { return (Math.round(v * 10) / 10).toFixed(1); }
+  function deltaHTML(d, suffix) { var s = suffix || ''; if (Math.abs(d) < 0.05) return '<span class="d flat">ללא שינוי' + s + '</span>'; return '<span class="d ' + (d > 0 ? 'up' : 'down') + '">' + (d > 0 ? '+' : '−') + f1(Math.abs(d)) + s + '</span>'; }
+  function statusOf(v) { return v >= 4 ? ['ok', 'חזק'] : v >= 3.4 ? ['info', 'יציב'] : v >= 3 ? ['warn', 'לשים לב'] : ['bad', 'דורש חיזוק']; }
+  function minIdx(a) { var m = 0; a.forEach(function (v, i) { if (v < a[m]) m = i; }); return m; }
+  function maxIdx(a) { var m = 0; a.forEach(function (v, i) { if (v > a[m]) m = i; }); return m; }
+
+  /* ───────── מצב ───────── */
+  var per = 2, cls = 'ח2', sortKey = 'name', sortDir = 1, view = 'school';
+
+  /* ───────── SVG: רדאר ───────── */
+  function radarSVG(main, ghost, color) {
+    var W = 320, cx = 160, cy = 160, Rr = 108, n = 5, s = '';
+    function pt(i, v) { var a = -Math.PI / 2 + i * 2 * Math.PI / n; return [cx + Math.cos(a) * Rr * v / 5, cy + Math.sin(a) * Rr * v / 5]; }
+    function poly(vals) { return vals.map(function (v, i) { return pt(i, v).join(','); }).join(' '); }
+    [1, 2, 3, 4, 5].forEach(function (lv) { s += '<polygon points="' + poly([lv, lv, lv, lv, lv]) + '" fill="none" stroke="rgba(6,30,79,0.09)" stroke-width="1"/>'; s += '<text class="tick" x="' + (cx + 4) + '" y="' + (cy - Rr * lv / 5 + 3) + '">' + lv + '</text>'; });
+    DIMS.forEach(function (d, i) { var p = pt(i, 5); s += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p[0] + '" y2="' + p[1] + '" stroke="rgba(6,30,79,0.1)"/>'; var l = pt(i, 6.35); s += '<text x="' + l[0] + '" y="' + (l[1] + 4) + '" text-anchor="middle">' + d.short + '</text>'; });
+    if (ghost) s += '<polygon points="' + poly(ghost) + '" fill="rgba(6,30,79,0.08)" stroke="rgba(6,30,79,0.25)" stroke-width="1.5" stroke-dasharray="4 3"/>';
+    s += '<polygon points="' + poly(main) + '" fill="' + color + '" fill-opacity=".14" stroke="' + color + '" stroke-width="2.5" stroke-linejoin="round"/>';
+    main.forEach(function (v, i) { var p = pt(i, v); s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="5" fill="' + DIMS[i].color + '" stroke="#fff" stroke-width="2"><title>' + DIMS[i].name + ': ' + f1(v) + '</title></circle>'; });
+    return '<svg class="radar" viewBox="0 0 ' + W + ' ' + W + '" role="img" aria-label="מפת חמשת הממדים">' + s + '</svg>';
+  }
+
+  /* ───────── SVG: מגמה ───────── */
+  function trendSVG(series) {
+    var W = 560, H = 230, L = 34, Rm = 24, T = 18, B = 34, y0 = 3, y1 = 4.5, s = '';
+    function X(i) { return W - Rm - i * (W - L - Rm) / 2; }   /* RTL: תקופה א מימין */
+    function Y(v) { return T + (y1 - v) * (H - T - B) / (y1 - y0); }
+    [3, 3.5, 4, 4.5].forEach(function (v) { s += '<line x1="' + L + '" x2="' + (W - Rm) + '" y1="' + Y(v) + '" y2="' + Y(v) + '" stroke="rgba(6,30,79,0.08)"/><text x="' + (L - 6) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + v + '</text>'; });
+    PERIODS.forEach(function (p, i) { s += '<text class="lbl" x="' + X(i) + '" y="' + (H - 12) + '" text-anchor="middle">' + p.name + '</text><text x="' + X(i) + '" y="' + (H - 0) + '" text-anchor="middle" style="font-size:10px">' + p.when + '</text>'; });
+    series.forEach(function (sr) {
+      var d = sr.v.map(function (v, i) { return (i ? 'L' : 'M') + X(i) + ' ' + Y(v); }).join(' ');
+      s += '<path d="' + d + '" fill="none" stroke="' + sr.c + '" stroke-width="' + (sr.bold ? 3.5 : 2) + '" stroke-linecap="round" stroke-linejoin="round"' + (sr.bold ? '' : ' opacity=".85"') + '/>';
+      sr.v.forEach(function (v, i) { s += '<circle cx="' + X(i) + '" cy="' + Y(v) + '" r="' + (sr.bold ? 5 : 3.5) + '" fill="' + sr.c + '" stroke="#fff" stroke-width="2"><title>' + sr.name + ' · ' + PERIODS[i].name + ': ' + f1(v) + '</title></circle>'; });
+      if (sr.bold) s += '<text class="lbl" x="' + (X(2) - 10) + '" y="' + (Y(sr.v[2]) - 10) + '" text-anchor="end" fill="' + sr.c + '">' + f1(sr.v[2]) + '</text>';
+    });
+    return '<svg class="trend" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="מגמה לאורך השנה">' + s + '</svg>';
+  }
+
+  /* ───────── המלצות (חוקים) ───────── */
+  var TIPS = [
+    'שיעורי חינוך של היכרות מחודשת, "מעגל בוקר" שבועי קצר, וזיהוי שקט של תלמידים בלי קבוצה.',
+    'אמנת כיתה שכותבים יחד, שיח על שפה וגבולות, ושיחות אישיות של המחנכ/ת עם 5–6 תלמידים.',
+    'לקשר למידה לחיים: פרויקט-בחירה קטן בכל מקצוע ושאלה שבועית "למה זה חשוב לי".',
+    'משוב על התקדמות ולא רק על ציון, משימות במדרגות ו"כרטיס חוזקות" לכל תלמיד.',
+    'בחירה אמיתית: סדר משימות, דרך הצגה, ומועצת כיתה שמחליטה על דבר אחד בחודש.'
+  ];
+  function classRecs(c, p) {
+    var out = [], dims = classDims(c, p), prev = p > 0 ? classDims(c, p - 1) : null, sch = schoolDims(p);
+    var lo = minIdx(dims), hi = maxIdx(dims);
+    if (dims[lo] < 3.4) out.push(['bad', 'לחזק', DIMS[lo].name + ' — ' + f1(dims[lo]) + ' (בית ספרי ' + f1(sch[lo]) + ')', TIPS[lo]]);
+    dims.forEach(function (v, i) { if (i !== lo && v < 3.2) out.push(['warn', 'לשים לב', DIMS[i].name + ' — ' + f1(v), TIPS[i]]); });
+    if (prev) dims.forEach(function (v, i) { var d = v - prev[i]; if (d <= -0.25) out.push(['warn', 'ירידה', DIMS[i].name + ' ירד ב-' + f1(-d) + ' מאז ' + PERIODS[p - 1].name, 'כדאי שיחה עם המחנכ/ת השבוע: מה השתנה בכיתה בחודשים האחרונים?']); });
+    QS.forEach(function (q, i) { var v = R[c][p].q[i]; if (v < 2.8) out.push(['bad', 'שאלה', '"' + q.t + '" — ' + f1(v), 'זה המשפט הנמוך ביותר בכיתה. מומלץ להביא אותו לשיח כיתתי פתוח (בלי שמות).']); });
+    var rate = R[c][p].n / (CLASS_SIZE[c] || 30);
+    if (rate < 0.6) out.push(['warn', 'מילוי', 'רק ' + Math.round(rate * 100) + '% מהתלמידים ענו', 'לתת 5 דקות בשיעור חינוך הקרוב — פחות מ-60% מילוי לא מייצג את הכיתה.']);
+    if (dims[hi] >= 4.2) out.push(['ok', 'חוזקה', DIMS[hi].name + ' — ' + f1(dims[hi]), 'חזק! אפשר לשלב תלמידים מהכיתה כמובילים ומנטורים לכיתות אחרות.']);
+    if (!out.length) out.push(['info', 'יציב', 'הכיתה יציבה בכל הממדים', 'להמשיך במעקב. הפולס הבא ב-' + (p < 2 ? PERIODS[p + 1].when : 'תחילת השנה הבאה') + '.']);
+    return out;
+  }
+  function schoolRecs(p) {
+    var out = [], sd = schoolDims(p), lo = minIdx(sd), hi = maxIdx(sd);
+    var weak = DEMO.classes.filter(function (c) { return classAvg(c, p) < 3.4; });
+    var drops = DEMO.classes.filter(function (c) { return p > 0 && classAvg(c, p) - classAvg(c, p - 1) <= -0.2; });
+    var lowFill = DEMO.classes.filter(function (c) { return R[c][p].n / (CLASS_SIZE[c] || 30) < 0.6; });
+    out.push(['info', 'מיקוד', 'הממד הנמוך בבית הספר: ' + DIMS[lo].name + ' (' + f1(sd[lo]) + ')', 'מומלץ שיהיה נושא ישיבת הצוות הקרובה. ' + TIPS[lo]]);
+    if (weak.length) out.push(['bad', 'כיתות', weak.join(', ') + ' — מתחת ל-3.4', 'שיחה עם המחנכים/ות ומיפוי צרכים; לפתוח את המבט הכיתתי של כל אחת.']);
+    if (drops.length) out.push(['warn', 'ירידה', drops.join(', ') + ' — ירדו מאז ' + PERIODS[p - 1].name, 'ירידה מדידה בין תקופות היא הסימן המוקדם ביותר. לבדוק מה קרה לפני שזה מתגלגל.']);
+    if (lowFill.length) out.push(['warn', 'מילוי', lowFill.join(', ') + ' — פחות מ-60% ענו', 'להזכיר למחנכ/ת; בלי מילוי מלא הנתון לא מייצג.']);
+    out.push(['ok', 'חוזקה', DIMS[hi].name + ' הוא הממד החזק (' + f1(sd[hi]) + ')', 'לספר על זה לצוות ולתלמידים — הצלחות ראויות להד.']);
+    return out;
+  }
+  function recsHTML(list) { return list.map(function (r) { return '<div class="rec"><span class="status ' + r[0] + '">' + r[1] + '</span><p><b>' + r[2] + '</b>' + r[3] + '</p></div>'; }).join(''); }
+
+  /* ───────── רינדור: בית ספרי ───────── */
+  function renderSchool() {
+    var sd = schoolDims(per), prev = per > 0 ? schoolDims(per - 1) : null, avg = schoolAvg(per), n = schoolN(per);
+    var lo = minIdx(sd), hi = maxIdx(sd), tot = 0; DEMO.classes.forEach(function (c) { tot += CLASS_SIZE[c]; });
+    var order = DEMO.classes.slice().sort(function (a, b) { return classAvg(a, per) - classAvg(b, per); });
+    document.getElementById('sKpis').innerHTML =
+      '<div class="kpi" style="--c:var(--navy)"><b>' + f1(avg) + '</b><span>ממוצע בית ספרי · ' + PERIODS[per].name + '</span>' + (prev ? deltaHTML(avg - schoolAvg(per - 1), ' מהתקופה הקודמת').replace('class="d', 'class="delta') : '<span class="delta flat">מדידה ראשונה</span>') + '</div>'
+      + '<div class="kpi" style="--c:var(--teal)"><b>' + n + '</b><span>תלמידים ענו · ' + Math.round(n / tot * 100) + '% מבית הספר</span></div>'
+      + '<div class="kpi" style="--c:' + DIMS[hi].color + '"><b style="font-size:20px">' + DIMS[hi].name + '</b><span>הממד החזק · ' + f1(sd[hi]) + '</span></div>'
+      + '<div class="kpi" style="--c:var(--fuchsia)"><b style="font-size:20px">' + DIMS[lo].name + '</b><span>דורש חיזוק · ' + f1(sd[lo]) + '</span></div>'
+      + '<div class="kpi" style="--c:var(--gold)"><b style="font-size:20px">' + order[0] + '</b><span>הכיתה עם הציון הנמוך · ' + f1(classAvg(order[0], per)) + '</span></div>';
+    document.getElementById('sRadar').innerHTML = radarSVG(sd, prev, '#061E4F');
+    document.getElementById('sRadarHint').textContent = PERIODS[per].name + (prev ? ' מול ' + PERIODS[per - 1].name : '');
+    document.getElementById('sDims').innerHTML = DIMS.map(function (d, i) {
+      return '<div class="dimrow"><span class="dimname"><i class="dot" style="background:' + d.color + '"></i>' + d.name + '</span><div class="bar" style="--c:' + d.color + '"><i style="width:' + (sd[i] / 5 * 100) + '%"></i></div><b>' + f1(sd[i]) + '</b>' + (prev ? deltaHTML(sd[i] - prev[i]) : '<span class="d flat">—</span>') + '</div>';
+    }).join('');
+    var series = DIMS.map(function (d, i) { return { name: d.name, c: d.color, v: PERIODS.map(function (_, p) { return schoolDims(p)[i]; }) }; });
+    series.push({ name: 'ממוצע בית ספרי', c: '#061E4F', bold: true, v: PERIODS.map(function (_, p) { return schoolAvg(p); }) });
+    document.getElementById('sTrend').innerHTML = trendSVG(series);
+    document.getElementById('sTrendLegend').innerHTML = series.map(function (s) { return '<span><i style="background:' + s.c + '"></i>' + s.name + '</span>'; }).join('');
+    document.getElementById('sRecs').innerHTML = recsHTML(schoolRecs(per));
+    renderTable();
+  }
+  function renderTable() {
+    var rows = DEMO.classes.map(function (c) { var d = classDims(c, per); return { c: c, d: d, avg: classAvg(c, per), n: R[c][per].n, size: CLASS_SIZE[c], ch: per > 0 ? classAvg(c, per) - classAvg(c, per - 1) : 0 }; });
+    rows.sort(function (a, b) {
+      var va = sortKey === 'name' ? DEMO.classes.indexOf(a.c) : sortKey === 'avg' ? a.avg : sortKey === 'ch' ? a.ch : sortKey === 'n' ? a.n / a.size : a.d[+sortKey.slice(1)];
+      var vb = sortKey === 'name' ? DEMO.classes.indexOf(b.c) : sortKey === 'avg' ? b.avg : sortKey === 'ch' ? b.ch : sortKey === 'n' ? b.n / b.size : b.d[+sortKey.slice(1)];
+      return (va - vb) * sortDir;
+    });
+    var arrow = function (k) { return sortKey === k ? (sortDir > 0 ? ' ▲' : ' ▼') : ''; };
+    var th = '<tr><th class="th-sort" onclick="sortBy(\'name\')">כיתה' + arrow('name') + '</th>' + DIMS.map(function (d, i) { return '<th class="th-sort" onclick="sortBy(\'d' + i + '\')">' + d.short + arrow('d' + i) + '</th>'; }).join('') + '<th class="th-sort" onclick="sortBy(\'avg\')">ממוצע' + arrow('avg') + '</th><th class="th-sort" onclick="sortBy(\'ch\')">שינוי' + arrow('ch') + '</th><th class="th-sort" onclick="sortBy(\'n\')">מילוי' + arrow('n') + '</th><th>מצב</th></tr>';
+    document.querySelector('#cmpTbl thead').innerHTML = th;
+    document.querySelector('#cmpTbl tbody').innerHTML = rows.map(function (r) {
+      var st = statusOf(r.avg), rate = Math.round(r.n / r.size * 100);
+      return '<tr class="pick' + (r.c === cls ? ' sel' : '') + '" onclick="openClass(\'' + r.c + '\')"><td style="font-weight:800">' + r.c + '</td>'
+        + r.d.map(function (v, i) { return '<td><div class="mb"><div class="bar" style="--c:' + DIMS[i].color + '"><i style="width:' + (v / 5 * 100) + '%"></i></div><span>' + f1(v) + '</span></div></td>'; }).join('')
+        + '<td class="num">' + f1(r.avg) + '</td><td>' + (per > 0 ? deltaHTML(r.ch) : '<span class="d flat">—</span>') + '</td>'
+        + '<td class="num" style="color:' + (rate < 60 ? 'var(--fuchsia)' : 'inherit') + '">' + r.n + '/' + r.size + ' <small style="color:var(--gray);font-weight:600">' + rate + '%</small></td>'
+        + '<td><span class="status ' + st[0] + '">' + st[1] + '</span></td></tr>';
+    }).join('');
+  }
+  function sortBy(k) { if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = k === 'name' ? 1 : -1; } renderTable(); }
+
+  /* ───────── רינדור: כיתתי ───────── */
+  function renderClass() {
+    var dims = classDims(cls, per), sch = schoolDims(per), prev = per > 0 ? classDims(cls, per - 1) : null, avg = classAvg(cls, per);
+    var lo = minIdx(dims), hi = maxIdx(dims), rec = R[cls][per], rate = Math.round(rec.n / CLASS_SIZE[cls] * 100), st = statusOf(avg);
+    var t = DEMO.teachers.filter(function (x) { return x.homeroom === cls; })[0];
+    document.getElementById('cName').textContent = cls;
+    document.getElementById('clsMeta').innerHTML = (t ? 'מחנכ/ת: ' + t.name + ' · ' : '') + CLASS_SIZE[cls] + ' תלמידים · <span class="status ' + st[0] + '">' + st[1] + '</span>';
+    document.getElementById('cKpis').innerHTML =
+      '<div class="kpi" style="--c:var(--fuchsia)"><b>' + f1(avg) + '</b><span>ממוצע הכיתה · בית ספרי ' + f1(schoolAvg(per)) + '</span>' + (prev ? deltaHTML(avg - classAvg(cls, per - 1), ' מ' + PERIODS[per - 1].name).replace('class="d', 'class="delta') : '') + '</div>'
+      + '<div class="kpi" style="--c:var(--teal)"><b>' + rec.n + '</b><span>ענו · ' + rate + '% מהכיתה</span></div>'
+      + '<div class="kpi" style="--c:' + DIMS[hi].color + '"><b style="font-size:20px">' + DIMS[hi].name + '</b><span>הממד החזק · ' + f1(dims[hi]) + '</span></div>'
+      + '<div class="kpi" style="--c:' + DIMS[lo].color + '"><b style="font-size:20px">' + DIMS[lo].name + '</b><span>הממד הנמוך · ' + f1(dims[lo]) + '</span></div>';
+    document.getElementById('cRadar').innerHTML = radarSVG(dims, sch, '#F00678');
+    document.getElementById('cRecs').innerHTML = recsHTML(classRecs(cls, per));
+    document.getElementById('cQs').innerHTML = DIMS.map(function (d, di) {
+      var gap = dims[di] - sch[di];
+      return '<div class="qgroup"><div class="qgroup-h"><i class="dot" style="background:' + d.color + '"></i>' + d.name + ' <span style="color:var(--gray);font-weight:700">· ' + f1(dims[di]) + '</span><span class="chip-sm ' + (gap >= 0.15 ? 'green' : gap <= -0.15 ? 'fuchsia' : 'gray') + '">' + (gap >= 0.15 ? 'מעל' : gap <= -0.15 ? 'מתחת ל' : 'כמו ') + 'בית הספר' + (Math.abs(gap) >= 0.15 ? ' ב-' + f1(Math.abs(gap)) : '') + '</span></div>'
+        + QS.map(function (q, i) { if (q.d !== di) return ''; var v = rec.q[i]; return '<div class="qrow"><span class="qn">' + (i + 1) + '</span><span>' + q.t + '</span><div class="bar" style="--c:' + d.color + '"><i style="width:' + (v / 5 * 100) + '%"></i></div><b style="color:' + (v < 2.8 ? 'var(--fuchsia)' : 'var(--navy)') + '">' + f1(v) + '</b></div>'; }).join('') + '</div>';
+    }).join('');
+    document.getElementById('clsSel').value = cls;
+  }
+  function setClass(c) { cls = c; renderClass(); renderTable(); }
+  function openClass(c) { cls = c; showView('class'); }
+
+  /* ───────── מילוי פולס ───────── */
+  var answers = {};
+  function renderFill() {
+    document.getElementById('fillQs').innerHTML = QS.map(function (q, i) {
+      var d = DIMS[q.d];
+      return '<div class="fq"><span class="qn">' + (i + 1) + '</span><div class="qt">' + q.t + '<small style="color:' + d.color + '">' + d.name + '</small></div><div class="scale" style="--c:' + d.color + '">' + [1, 2, 3, 4, 5].map(function (v) { return '<button type="button" class="' + (answers[i] === v ? 'on' : '') + '" onclick="pickAns(' + i + ',' + v + ')" aria-label="' + v + '">' + v + '</button>'; }).join('') + '</div></div>';
+    }).join('');
+    var k = Object.keys(answers).length;
+    document.getElementById('fillProg').textContent = k + ' מתוך 10';
+    document.getElementById('fillPer').textContent = PERIODS[per].name;
+    document.getElementById('fillStatus').innerHTML = DEMO.classes.map(function (c) { var r = R[c][per], pct = Math.round(r.n / CLASS_SIZE[c] * 100); return '<div class="dimrow" style="grid-template-columns:36px 1fr 60px"><span style="font-weight:800">' + c + '</span><div class="bar" style="--c:' + (pct < 60 ? 'var(--fuchsia)' : 'var(--teal)') + '"><i style="width:' + Math.min(100, pct) + '%"></i></div><b style="font-size:13px">' + r.n + '/' + CLASS_SIZE[c] + '</b></div>'; }).join('');
+  }
+  function pickAns(i, v) { answers[i] = v; renderFill(); }
+  function clearFill() { answers = {}; renderFill(); }
+  function submitFill() {
+    var missing = []; QS.forEach(function (_, i) { if (!answers[i]) missing.push(i + 1); });
+    if (missing.length) { DemoShell.toast('נשארו ' + missing.length + ' שאלות בלי תשובה (' + missing.slice(0, 4).join(', ') + (missing.length > 4 ? '…' : '') + ')'); return; }
+    var c = document.getElementById('fillCls').value, rec = R[c][per];
+    rec.q = rec.q.map(function (old, i) { return Math.round(((old * rec.n + answers[i]) / (rec.n + 1)) * 100) / 100; });
+    rec.n += 1;
+    answers = {};
+    DemoShell.toast('תודה! התשובה נוספה לממוצע של ' + c + ' — עכשיו ' + rec.n + ' תגובות בדמו');
+    renderAll();
+  }
+
+  /* ───────── ניווט + תקופות ───────── */
+  function showView(v) {
+    view = v;
+    ['school', 'class', 'fill'].forEach(function (k) { document.getElementById('v-' + k).classList.toggle('on', k === v); });
+    var tabs = document.querySelectorAll('.tabs .tab'); for (var i = 0; i < tabs.length; i++) tabs[i].classList.toggle('active', tabs[i].getAttribute('data-v') === v);
+    if (v === 'class') renderClass();
+    if (v === 'fill') renderFill();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function setPeriod(p) { per = p; renderPeriodSeg(); renderAll(); }
+  function renderPeriodSeg() { document.getElementById('perSeg').innerHTML = PERIODS.map(function (p) { return '<button type="button" class="' + (p.id === per ? 'on' : '') + '" onclick="setPeriod(' + p.id + ')">' + p.name + ' · ' + p.when + '</button>'; }).join(''); }
+  function renderAll() { renderSchool(); if (view === 'class') renderClass(); if (view === 'fill') renderFill(); }
+  function resetDemo() { genData(); answers = {}; per = 2; cls = 'ח2'; sortKey = 'name'; sortDir = 1; renderPeriodSeg(); renderAll(); DemoShell.toast('הדמו אופס לנתוני ההתחלה'); }
+
+  /* אתחול */
+  var opts = DEMO.classes.map(function (c) { return '<option value="' + c + '">' + c + '</option>'; }).join('');
+  document.getElementById('clsSel').innerHTML = opts;
+  document.getElementById('fillCls').innerHTML = opts;
+  document.getElementById('fillCls').value = 'ח2';
+  renderPeriodSeg();
+  renderSchool();
+  var h0 = location.hash.replace('#', ''); if (h0 === 'class' || h0 === 'fill') showView(h0);
+</script>
+</body>
+</html>

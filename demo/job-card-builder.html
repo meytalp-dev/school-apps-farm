@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דמו · מחולל מודעות גיוס — חוות האפליקציות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+  /* ─── פריסה: עורך (ימין) · תצוגה מקדימה (שמאל) ─── */
+  .jc-layout { display: grid; grid-template-columns: 400px minmax(0, 1fr); gap: 18px; align-items: start; }
+  @media (max-width: 980px) { .jc-layout { grid-template-columns: 1fr; } .jc-col.pv { order: -1; } }
+  .jc-col { display: grid; gap: 18px; }
+
+  /* עורך */
+  .jc-brand { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; background: rgba(6,30,79,0.04); font-size: 13px; font-weight: 700; color: var(--navy); }
+  .jc-brand i { width: 30px; height: 30px; border-radius: 9px; background: var(--navy); color: #fff; display: grid; place-items: center; }
+  .jc-brand i svg { width: 15px; height: 15px; }
+  .jc-brand small { display: block; font-size: 11.5px; color: var(--gray); font-weight: 600; }
+  .gchips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .gchip { border: 1.5px solid rgba(6,30,79,0.14); background: #fff; color: var(--navy); font-family: inherit; font-size: 13px; font-weight: 800; padding: 6px 12px; border-radius: 999px; cursor: pointer; transition: all var(--motion-fast) var(--motion-ease); }
+  .gchip:hover { border-color: var(--teal); }
+  .gchip.on { background: var(--teal); border-color: var(--teal); color: var(--navy); }
+  .jc-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+
+  /* רשימת מודעות */
+  .jlist { display: grid; gap: 8px; }
+  .jrow { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 14px; border: 1.5px solid var(--line); background: #fff; cursor: pointer; transition: all var(--motion-fast) var(--motion-ease); }
+  .jrow:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(6,30,79,0.08); border-color: rgba(6,30,79,0.16); }
+  .jrow.on { border-color: var(--fuchsia); box-shadow: 0 0 0 4px rgba(240,6,120,0.08); }
+  .jrow .sw { width: 34px; height: 34px; border-radius: 10px; flex: 0 0 auto; }
+  .jrow .sw.navy { background: linear-gradient(150deg, #061E4F, #0A3A8C); }
+  .jrow .sw.teal { background: linear-gradient(150deg, #075E5E, #12C7C7); }
+  .jrow .sw.fuchsia { background: linear-gradient(150deg, #F00678, #FF7A1A); }
+  .jrow .jt { flex: 1; min-width: 0; }
+  .jrow .jt b { display: block; font-size: 14px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .jrow .jt small { display: block; font-size: 11.5px; color: var(--gray); font-weight: 600; }
+  .jrow .icon-btn { flex: 0 0 auto; }
+
+  /* תצוגה מקדימה */
+  .pv-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .pv-head .tabs .tab { font-size: 13px; padding: 7px 14px; }
+  .pv-head .tab .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-inline-start: 6px; vertical-align: -1px; }
+  .stage { position: relative; width: 100%; overflow: hidden; border-radius: 22px; background: rgba(6,30,79,0.04); border: 1px solid var(--line); }
+  .stage-scale { position: absolute; top: 0; left: 0; transform-origin: top left; }
+  .pv-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+  .pv-actions .sep { flex: 1; }
+  .pv-boards { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 10px; font-size: 12.5px; color: var(--gray); font-weight: 600; }
+
+  /* ─── הכרזה עצמה: 1080×1080 (ריבוע) / 1080×1920 (סטורי) ─── */
+  .poster { width: 1080px; height: 1080px; position: relative; overflow: hidden; direction: rtl; font-family: 'Heebo', sans-serif; color: #fff; padding: 64px 72px; display: flex; flex-direction: column; box-shadow: 0 24px 60px rgba(6,30,79,0.25); }
+  .poster.story { height: 1920px; padding: 96px 84px; }
+  .poster.t-navy { background: linear-gradient(150deg, #061E4F 0%, #0B2F78 55%, #0A3A8C 100%); }
+  .poster.t-teal { background: linear-gradient(150deg, #054A4A 0%, #0B7A7A 55%, #12C7C7 130%); }
+  .poster.t-fuchsia { background: linear-gradient(150deg, #B0004F 0%, #F00678 55%, #FF7A1A 120%); }
+  .poster::before { content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse 520px 420px at 92% 6%, rgba(18,199,199,0.28) 0%, transparent 70%), radial-gradient(ellipse 560px 460px at 6% 96%, rgba(240,6,120,0.28) 0%, transparent 70%); }
+  .poster.t-fuchsia::before { background: radial-gradient(ellipse 520px 420px at 92% 6%, rgba(255,255,255,0.18) 0%, transparent 70%), radial-gradient(ellipse 560px 460px at 6% 96%, rgba(6,30,79,0.32) 0%, transparent 70%); }
+  .poster.t-teal::before { background: radial-gradient(ellipse 520px 420px at 92% 6%, rgba(255,255,255,0.14) 0%, transparent 70%), radial-gradient(ellipse 560px 460px at 6% 96%, rgba(6,30,79,0.32) 0%, transparent 70%); }
+  .poster .ring { position: absolute; left: -180px; bottom: -180px; width: 520px; height: 520px; border-radius: 50%; border: 44px solid rgba(255,255,255,0.07); pointer-events: none; }
+  .poster .ring2 { position: absolute; right: -120px; top: -140px; width: 360px; height: 360px; border-radius: 50%; border: 28px solid rgba(255,255,255,0.06); pointer-events: none; }
+  .poster > * { position: relative; z-index: 2; }
+  .p-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+  .p-brand { display: flex; align-items: center; gap: 16px; }
+  .p-brand .lg { width: 68px; height: 68px; border-radius: 20px; background: #fff; color: var(--navy); display: grid; place-items: center; box-shadow: 0 10px 30px rgba(6,30,79,0.25); }
+  .p-brand .lg svg { width: 36px; height: 36px; }
+  .p-brand b { display: block; font-size: 30px; font-weight: 900; letter-spacing: -.6px; line-height: 1.1; }
+  .p-brand small { display: block; font-size: 20px; font-weight: 600; opacity: .8; }
+  .p-pill { padding: 12px 24px; border-radius: 999px; background: #fff; color: var(--navy); font-size: 24px; font-weight: 900; letter-spacing: -.3px; box-shadow: 0 10px 30px rgba(6,30,79,0.2); }
+  .t-fuchsia .p-pill { color: var(--fuchsia); }
+  .t-teal .p-pill { color: #0B7A7A; }
+  .p-kicker { margin-top: 44px; font-size: 26px; font-weight: 700; opacity: .85; display: flex; align-items: center; gap: 12px; }
+  .p-kicker::before { content: ''; width: 44px; height: 4px; border-radius: 4px; background: var(--teal); }
+  .t-teal .p-kicker::before, .t-fuchsia .p-kicker::before { background: #fff; }
+  .p-title { margin-top: 10px; font-size: 82px; font-weight: 900; letter-spacing: -3px; line-height: 1.02; word-break: break-word; }
+  .p-title.empty { opacity: .45; }
+  .p-chips { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 26px; }
+  .p-chip { display: inline-flex; align-items: center; gap: 10px; padding: 10px 22px; border-radius: 999px; background: rgba(255,255,255,0.14); border: 2px solid rgba(255,255,255,0.35); font-size: 24px; font-weight: 800; }
+  .p-chip svg { width: 22px; height: 22px; }
+  .p-body { margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .p-box { background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.22); border-radius: 30px; padding: 26px 30px; overflow: hidden; }
+  .p-box h4 { font-size: 26px; font-weight: 900; letter-spacing: -.4px; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .p-box h4 svg { width: 26px; height: 26px; }
+  .p-box ul { list-style: none; }
+  .p-box li { font-size: 24px; font-weight: 500; line-height: 1.5; padding: 4px 30px 4px 0; position: relative; }
+  .p-box li::before { content: ''; position: absolute; right: 4px; top: 16px; width: 12px; height: 12px; border-radius: 50%; background: var(--teal); }
+  .t-teal .p-box li::before, .t-fuchsia .p-box li::before { background: #fff; }
+  .p-foot { margin-top: auto; padding-top: 24px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+  .p-contact { display: flex; align-items: center; gap: 18px; }
+  .p-contact .av { width: 72px; height: 72px; border-radius: 50%; background: #fff; color: var(--navy); font-size: 28px; font-weight: 900; display: grid; place-items: center; }
+  .t-fuchsia .p-contact .av { color: var(--fuchsia); } .t-teal .p-contact .av { color: #0B7A7A; }
+  .p-contact b { display: block; font-size: 26px; font-weight: 900; }
+  .p-contact span { display: block; font-size: 21px; font-weight: 600; opacity: .9; direction: ltr; text-align: right; unicode-bidi: plaintext; }
+  .p-start { text-align: left; }
+  .p-start small { display: block; font-size: 19px; font-weight: 600; opacity: .8; }
+  .p-start b { display: block; font-size: 26px; font-weight: 900; letter-spacing: -.4px; }
+  .p-credit { margin-top: 20px; font-size: 16px; opacity: .55; font-weight: 600; text-align: center; }
+  /* סטורי: יותר אוויר, טור אחד */
+  .poster.story .p-kicker { margin-top: 90px; font-size: 32px; }
+  .poster.story .p-title { font-size: 104px; margin-top: 16px; }
+  .poster.story .p-chips { margin-top: 40px; }
+  .poster.story .p-chip { font-size: 28px; padding: 14px 26px; }
+  .poster.story .p-body { grid-template-columns: 1fr; margin-top: 56px; gap: 26px; }
+  .poster.story .p-box { padding: 32px 36px; }
+  .poster.story .p-box h4 { font-size: 32px; }
+  .poster.story .p-box li { font-size: 30px; }
+  .poster.story .p-foot { padding-top: 44px; }
+  .poster.story .p-contact b { font-size: 32px; } .poster.story .p-contact span { font-size: 25px; }
+  .poster.story .p-credit { font-size: 20px; }
+</style>
+</head>
+<body>
+
+<main class="demo-main">
+  <div class="demo-head">
+    <div><h2>מחולל מודעות גיוס</h2><p>ממלאים תפקיד, היקף ודרישות — ומקבלים מודעת דרושים מעוצבת במיתוג בית הספר, מוכנה לוואטסאפ ולקבוצות המורים. כל שינוי בטופס מתעדכן מיד בתצוגה.</p></div>
+    <div class="demo-toolbar">
+      <button type="button" class="btn-sm primary" onclick="newJob()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>מודעה חדשה</button>
+      <button type="button" class="btn-sm ghost" onclick="resetDemo()">איפוס דמו</button>
+    </div>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="jc-layout">
+    <!-- ימין: עורך + רשימת מודעות -->
+    <div class="jc-col">
+      <section class="card">
+        <div class="card-h"><h3 id="edTitle">עריכת מודעה</h3><span class="hint">התצוגה מתעדכנת תוך כדי הקלדה</span></div>
+        <div class="form-grid">
+          <div class="span2 jc-brand"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-4 7 4v13M9 21v-6h6v6"/></svg></i><div>בית ספר אימפקט<small>מוסד קבוע במודעה · ראשון לציון · תשפ"ז</small></div></div>
+          <label class="f span2">תפקיד<input class="in" id="fTitle" placeholder="למשל: מורה למתמטיקה" oninput="onEdit()"></label>
+          <label class="f">מקצוע<select class="in" id="fSubject" onchange="onEdit()"></select></label>
+          <label class="f">היקף משרה<select class="in" id="fScope" onchange="onEdit()"></select></label>
+          <div class="f span2"><span>שכבות</span><div class="gchips" id="fGrades"></div></div>
+          <label class="f span2">דרישות (שורה לכל דרישה)<textarea class="in" id="fReq" rows="3" oninput="onEdit()"></textarea></label>
+          <label class="f span2">מה אנחנו מציעים (שורה לכל שורה)<textarea class="in" id="fOffer" rows="3" oninput="onEdit()"></textarea></label>
+          <label class="f span2">איש/אשת קשר<select class="in" id="fContact" onchange="onContact()"></select></label>
+          <label class="f">תחילת עבודה<input class="in" id="fStart" placeholder="ספטמבר 2026" oninput="onEdit()"></label>
+          <label class="f">טלפון<input class="in" id="fPhone" dir="ltr" oninput="onEdit()"></label>
+          <label class="f span2">אימייל<input class="in" id="fEmail" dir="ltr" oninput="onEdit()"></label>
+        </div>
+        <div class="jc-actions">
+          <button type="button" class="btn-sm primary" onclick="saveJob()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>שמירה לארכיון</button>
+          <button type="button" class="btn-sm ghost" onclick="newJob()">נקה טופס</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-h"><h3>ארכיון המודעות</h3><span class="hint" id="jcount"></span></div>
+        <div class="jlist" id="jlist"></div>
+      </section>
+    </div>
+
+    <!-- שמאל: תצוגה מקדימה (במובייל — ראשונה) -->
+    <div class="jc-col pv">
+      <section class="card">
+        <div class="pv-head">
+          <div class="tabs" id="tplTabs">
+            <button type="button" class="tab active" data-tpl="navy" onclick="setTpl('navy')"><span class="dot" style="background:#061E4F"></span>כחול עמוק</button>
+            <button type="button" class="tab" data-tpl="teal" onclick="setTpl('teal')"><span class="dot" style="background:#12C7C7"></span>טורקיז</button>
+            <button type="button" class="tab" data-tpl="fuchsia" onclick="setTpl('fuchsia')"><span class="dot" style="background:#F00678"></span>פוקסיה</button>
+          </div>
+          <div class="tabs" id="fmtTabs">
+            <button type="button" class="tab active" data-fmt="square" onclick="setFmt('square')">ריבוע 1:1</button>
+            <button type="button" class="tab" data-fmt="story" onclick="setFmt('story')">סטורי 9:16</button>
+          </div>
+        </div>
+        <div class="stage" id="stage">
+          <div class="stage-scale" id="stageScale">
+            <div class="poster t-navy" id="poster">
+              <div class="ring"></div><div class="ring2"></div>
+              <div class="p-top">
+                <div class="p-brand"><div class="lg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-4 7 4v13M9 21v-6h6v6"/></svg></div><div><b>בית ספר אימפקט</b><small>ראשון לציון</small></div></div>
+                <div class="p-pill">דרושים · תשפ"ז</div>
+              </div>
+              <div class="p-kicker">מצטרפים לצוות שלנו</div>
+              <div class="p-title" id="pTitle"></div>
+              <div class="p-chips" id="pChips"></div>
+              <div class="p-body">
+                <div class="p-box"><h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 5 5.6.8-4 3.9.9 5.6-4.9-2.6-4.9 2.6.9-5.6-4-3.9 5.6-.8z"/></svg>מה אנחנו מציעים</h4><ul id="pOffer"></ul></div>
+                <div class="p-box"><h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>מה אנחנו מחפשים</h4><ul id="pReq"></ul></div>
+              </div>
+              <div class="p-foot">
+                <div class="p-contact"><div class="av" id="pAv"></div><div><b id="pName"></b><span id="pPhone"></span><span id="pEmail"></span></div></div>
+                <div class="p-start"><small>תחילת עבודה</small><b id="pStart"></b></div>
+              </div>
+              <div class="p-credit">בית ספר אימפקט · ראשון לציון · הצטרפו למקום שבו רואים כל תלמיד</div>
+            </div>
+          </div>
+        </div>
+        <div class="pv-actions">
+          <button type="button" class="btn-sm navy" onclick="copyText()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>העתק טקסט</button>
+          <button type="button" class="btn-sm" id="dlBtn" onclick="downloadImage()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 19h16"/></svg>הורד כתמונה</button>
+          <button type="button" class="btn-sm primary" onclick="shareWA()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-5A8 8 0 1 1 21 12z"/></svg>שיתוף בוואטסאפ</button>
+        </div>
+        <div class="pv-boards">העתק ופתח לוח דרושים:
+          <button type="button" class="btn-sm ghost" onclick="openBoard('לוח המשרות של משרד החינוך')">משרד החינוך</button>
+          <button type="button" class="btn-sm ghost" onclick="openBoard('קבוצת המורים האזורית')">קבוצת מורים</button>
+          <button type="button" class="btn-sm ghost" onclick="openBoard('אתר בית הספר')">אתר בית הספר</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<script src="../apps-data.js"></script>
+<script src="../logos.js"></script>
+<script src="../store.js"></script>
+<script src="demo-data.js"></script>
+<script src="demo-shell.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js" defer onerror="window.__h2cFailed=true"></script>
+<script>
+  DemoShell.init('job-card-builder');
+  var esc = DemoShell.esc;
+  var KEY = 'farm-demo-job-card-builder';
+  var SCOPES = ['משרה מלאה', '75% משרה', '50% משרה', 'שעות בודדות', 'מילוי מקום'];
+  var CONTACTS = [
+    { name: 'אורית חדד', role: 'סגנית מנהלת', phone: '053-4445566', email: 'orit@impact-school.co.il' },
+    { name: DEMO.school.principal, role: DEMO.school.principalTitle, phone: '053-1122334', email: 'ronit@impact-school.co.il' },
+    { name: 'שלומי ביטון', role: 'מנהל אדמיניסטרטיבי', phone: '053-5556677', email: 'office@impact-school.co.il' }
+  ];
+  var OFFER_DEFAULT = 'צוות שמלווה ותומך — לא לבד\nכיתות קטנות, רואים כל תלמיד\nליווי אישי בשנה הראשונה\nהתפתחות מקצועית וטכנולוגיה בכיתה';
+  var SEED = [
+    { id: 'j1', title: 'מורה למתמטיקה', subject: 'מתמטיקה', scope: 'משרה מלאה', grades: ['ז', 'ח', 'ט'], req: 'תעודת הוראה במתמטיקה\nניסיון בחטיבת ביניים — יתרון\nאהבה למספרים ולילדים', offer: OFFER_DEFAULT, start: 'ספטמבר 2026', contact: 0, tpl: 'navy', status: 'פורסמה', date: '2026-06-14', leads: 9 },
+    { id: 'j2', title: 'מורה לאנגלית', subject: 'אנגלית', scope: '75% משרה', grades: ['י', 'יא', 'יב'], req: 'תואר באנגלית ותעודת הוראה\nניסיון בהכנה לבגרות 5 יח"ל\nיכולת עבודה בצוות', offer: 'צוות אנגלית מגובש ורכזת מלווה\nחדר מורים חם ותומך\nגמישות במערכת', start: 'ספטמבר 2026', contact: 0, tpl: 'teal', status: 'פורסמה', date: '2026-06-21', leads: 6 },
+    { id: 'j3', title: 'יועץ/ת חינוכי/ת', subject: 'ייעוץ', scope: '50% משרה', grades: ['ז', 'ח'], req: 'תואר שני בייעוץ חינוכי\nניסיון עם גיל ההתבגרות\nרגישות, סבלנות ויוזמה', offer: 'צוות טיפולי משלים\nליווי הדרכה קבוע\nמקום שבו הקשבה היא ערך', start: 'נובמבר 2026', contact: 1, tpl: 'fuchsia', status: 'טיוטה', date: '2026-07-02', leads: 0 },
+    { id: 'j4', title: 'מורה לפיזיקה', subject: 'פיזיקה', scope: 'שעות בודדות', grades: ['יא', 'יב'], req: 'תואר בפיזיקה או הנדסה\nתעודת הוראה — יתרון\nהתלהבות מניסויים', offer: 'מעבדה חדשה ומאובזרת\nקבוצות קטנות של 5 יח"ל\nאפשרות להרחבת היקף', start: 'ספטמבר 2026', contact: 2, tpl: 'navy', status: 'פורסמה', date: '2026-07-09', leads: 3 }
+  ];
+
+  var state = load();
+  var draftGrades = [];
+  var curTpl = 'navy', curFmt = 'square';
+
+  function load() {
+    try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.jobs) return s; } catch (e) {}
+    return { jobs: JSON.parse(JSON.stringify(SEED)), cur: 'j1' };
+  }
+  function persist() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function resetDemo() { localStorage.removeItem(KEY); state = { jobs: JSON.parse(JSON.stringify(SEED)), cur: 'j1' }; loadJob('j1'); renderList(); DemoShell.toast('הדמו אופס'); }
+  function findJob(id) { for (var i = 0; i < state.jobs.length; i++) if (state.jobs[i].id === id) return state.jobs[i]; return null; }
+  function $(id) { return document.getElementById(id); }
+  function lines(s) { return String(s || '').split(/\n/).map(function (x) { return x.trim(); }).filter(Boolean); }
+  function gradesText(g) { if (!g || !g.length) return ''; return g.length === 1 ? 'שכבה ' + g[0] + '\'' : 'שכבות ' + g[0] + '\'–' + g[g.length - 1] + '\''; }
+
+  /* ─── טופס ─── */
+  function fillSelect(id, arr, val) { $(id).innerHTML = arr.map(function (o) { return '<option' + (o === val ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join(''); }
+  function initForm() {
+    fillSelect('fSubject', ['כללי'].concat(DEMO.subjects, ['ייעוץ', 'חינוך מיוחד']), 'כללי');
+    fillSelect('fScope', SCOPES, SCOPES[0]);
+    $('fContact').innerHTML = CONTACTS.map(function (c, i) { return '<option value="' + i + '">' + esc(c.name + ' · ' + c.role) + '</option>'; }).join('');
+    $('fGrades').innerHTML = DEMO.grades.map(function (g) { return '<button type="button" class="gchip" data-g="' + g + '" onclick="toggleGrade(\'' + g + '\')">' + g + '\'</button>'; }).join('');
+  }
+  function toggleGrade(g) {
+    var i = draftGrades.indexOf(g);
+    if (i > -1) draftGrades.splice(i, 1); else draftGrades.push(g);
+    draftGrades.sort(function (a, b) { return DEMO.grades.indexOf(a) - DEMO.grades.indexOf(b); });
+    paintGrades(); onEdit();
+  }
+  function paintGrades() {
+    var btns = $('fGrades').querySelectorAll('.gchip');
+    for (var i = 0; i < btns.length; i++) btns[i].classList.toggle('on', draftGrades.indexOf(btns[i].getAttribute('data-g')) > -1);
+  }
+  function onContact() { var c = CONTACTS[+$('fContact').value]; $('fPhone').value = c.phone; $('fEmail').value = c.email; onEdit(); }
+  function readForm() {
+    return { title: $('fTitle').value.trim(), subject: $('fSubject').value, scope: $('fScope').value, grades: draftGrades.slice(), req: $('fReq').value, offer: $('fOffer').value, start: $('fStart').value.trim(), contact: +$('fContact').value, phone: $('fPhone').value.trim(), email: $('fEmail').value.trim() };
+  }
+  function fillForm(j) {
+    $('fTitle').value = j.title || ''; fillSelect('fSubject', ['כללי'].concat(DEMO.subjects, ['ייעוץ', 'חינוך מיוחד']), j.subject || 'כללי'); fillSelect('fScope', SCOPES, j.scope || SCOPES[0]);
+    draftGrades = (j.grades || []).slice(); paintGrades();
+    $('fReq').value = j.req || ''; $('fOffer').value = j.offer || ''; $('fStart').value = j.start || '';
+    $('fContact').value = String(j.contact || 0); var c = CONTACTS[j.contact || 0];
+    $('fPhone').value = j.phone || c.phone; $('fEmail').value = j.email || c.email;
+    $('edTitle').textContent = j.id ? 'עריכת מודעה' : 'מודעה חדשה';
+  }
+  function onEdit() { renderPreview(); }
+
+  function loadJob(id) {
+    var j = findJob(id); if (!j) return;
+    state.cur = id; fillForm(j); if (j.tpl) setTpl(j.tpl, true); renderList(); renderPreview();
+  }
+  function newJob() {
+    state.cur = null;
+    fillForm({ title: '', subject: 'כללי', scope: SCOPES[0], grades: [], req: 'תעודת הוראה\nניסיון — יתרון\nראש גדול ויוזמה', offer: OFFER_DEFAULT, start: 'ספטמבר 2026', contact: 0 });
+    renderList(); renderPreview(); $('fTitle').focus();
+  }
+  function saveJob() {
+    var d = readForm();
+    if (!d.title) { DemoShell.toast('כתבו קודם שם תפקיד'); $('fTitle').focus(); return; }
+    var j = state.cur ? findJob(state.cur) : null;
+    if (!j) { j = { id: 'j' + Date.now(), status: 'טיוטה', date: '2026-08-16', leads: 0 }; state.jobs.unshift(j); state.cur = j.id; }
+    for (var k in d) j[k] = d[k];
+    j.tpl = curTpl;
+    persist(); renderList(); renderKpis(); DemoShell.toast('נשמר בדמו');
+  }
+  function delJob(id, ev) {
+    ev.stopPropagation();
+    state.jobs = state.jobs.filter(function (j) { return j.id !== id; });
+    if (state.cur === id) { state.cur = state.jobs.length ? state.jobs[0].id : null; if (state.cur) loadJob(state.cur); else newJob(); }
+    persist(); renderList(); renderKpis(); DemoShell.toast('המודעה נמחקה');
+  }
+  function publishToggle(id, ev) {
+    ev.stopPropagation(); var j = findJob(id); if (!j) return;
+    j.status = j.status === 'פורסמה' ? 'טיוטה' : 'פורסמה'; persist(); renderList(); renderKpis();
+    DemoShell.toast(j.status === 'פורסמה' ? 'סומנה כפורסמה' : 'הוחזרה לטיוטה');
+  }
+
+  /* ─── רשימה + KPI ─── */
+  function renderList() {
+    var el = $('jlist');
+    if (!state.jobs.length) { el.innerHTML = '<div class="hint" style="padding:8px 4px">אין עדיין מודעות בארכיון. שמרו את הראשונה.</div>'; $('jcount').textContent = ''; return; }
+    el.innerHTML = state.jobs.map(function (j) {
+      var st = j.status === 'פורסמה' ? '<span class="status ok">פורסמה</span>' : '<span class="status muted">טיוטה</span>';
+      return '<div class="jrow' + (j.id === state.cur ? ' on' : '') + '" onclick="loadJob(\'' + j.id + '\')">'
+        + '<span class="sw ' + (j.tpl || 'navy') + '"></span>'
+        + '<div class="jt"><b>' + esc(j.title) + '</b><small>' + esc(j.scope) + (j.grades && j.grades.length ? ' · ' + esc(gradesText(j.grades)) : '') + ' · ' + DEMO.fmtDate(j.date) + (j.leads ? ' · ' + j.leads + ' פניות' : '') + '</small></div>'
+        + '<span onclick="publishToggle(\'' + j.id + '\', event)" title="שינוי סטטוס" style="cursor:pointer">' + st + '</span>'
+        + '<button type="button" class="icon-btn" title="מחיקה" onclick="delJob(\'' + j.id + '\', event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>'
+        + '</div>';
+    }).join('');
+    $('jcount').textContent = state.jobs.length + ' מודעות · לחיצה טוענת לעריכה';
+  }
+  function renderKpis() {
+    var pub = 0, leads = 0;
+    state.jobs.forEach(function (j) { if (j.status === 'פורסמה') pub++; leads += j.leads || 0; });
+    $('kpis').innerHTML =
+      '<div class="kpi" style="--c:var(--navy)"><b>' + state.jobs.length + '</b><span>מודעות בארכיון</span></div>'
+      + '<div class="kpi" style="--c:var(--green)"><b>' + pub + '</b><span>מודעות שפורסמו</span></div>'
+      + '<div class="kpi" style="--c:var(--fuchsia)"><b>' + leads + '</b><span>פניות שהתקבלו</span></div>'
+      + '<div class="kpi" style="--c:var(--teal)"><b>3</b><span>תבניות במיתוג בית הספר</span></div>'
+      + '<div class="kpi" style="--c:var(--yellow)"><b>&lt;1<small style="font-size:14px;font-weight:700"> דק׳</small></b><span>ממילוי הפרטים למודעה מוכנה</span></div>';
+  }
+
+  /* ─── תצוגה מקדימה ─── */
+  var ICO_SUBJ = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/></svg>';
+  var ICO_SCOPE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+  var ICO_GRADE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>';
+  function renderPreview() {
+    var d = readForm();
+    var t = $('pTitle'); t.textContent = d.title || 'שם התפקיד'; t.classList.toggle('empty', !d.title);
+    var chips = [];
+    if (d.subject && d.subject !== 'כללי') chips.push(ICO_SUBJ + esc(d.subject));
+    chips.push(ICO_SCOPE + esc(d.scope));
+    if (d.grades.length) chips.push(ICO_GRADE + esc(gradesText(d.grades)));
+    $('pChips').innerHTML = chips.map(function (c) { return '<span class="p-chip">' + c + '</span>'; }).join('');
+    var max = curFmt === 'story' ? 6 : 4;
+    $('pOffer').innerHTML = lines(d.offer).slice(0, max).map(function (l) { return '<li>' + esc(l) + '</li>'; }).join('') || '<li>כאן יופיע מה בית הספר מציע</li>';
+    $('pReq').innerHTML = lines(d.req).slice(0, max).map(function (l) { return '<li>' + esc(l) + '</li>'; }).join('') || '<li>כאן יופיעו הדרישות</li>';
+    var c = CONTACTS[d.contact] || CONTACTS[0];
+    $('pAv').textContent = c.name.charAt(0); $('pName').textContent = c.name + ' · ' + c.role;
+    $('pPhone').textContent = d.phone; $('pEmail').textContent = d.email;
+    $('pStart').textContent = d.start || 'בהקדם';
+  }
+  function setTpl(t, silent) {
+    curTpl = t;
+    var p = $('poster'); p.className = 'poster t-' + t + (curFmt === 'story' ? ' story' : '');
+    var tabs = $('tplTabs').querySelectorAll('.tab');
+    for (var i = 0; i < tabs.length; i++) tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tpl') === t);
+    if (!silent) { var j = state.cur ? findJob(state.cur) : null; if (j) { j.tpl = t; persist(); renderList(); } }
+  }
+  function setFmt(f) {
+    curFmt = f;
+    var tabs = $('fmtTabs').querySelectorAll('.tab');
+    for (var i = 0; i < tabs.length; i++) tabs[i].classList.toggle('active', tabs[i].getAttribute('data-fmt') === f);
+    setTpl(curTpl, true); renderPreview(); fitStage();
+  }
+  function fitStage() {
+    var stage = $('stage'), w = stage.clientWidth; if (!w) return;
+    var H = curFmt === 'story' ? 1920 : 1080;
+    var maxH = window.innerWidth < 720 ? 640 : 760;
+    var s = Math.min(w / 1080, maxH / H);
+    var sc = $('stageScale');
+    sc.style.transform = 'scale(' + s + ')';
+    sc.style.left = Math.max(0, (w - 1080 * s) / 2) + 'px';
+    stage.style.height = Math.round(H * s) + 'px';
+  }
+  window.addEventListener('resize', fitStage);
+
+  /* ─── טקסט לשיתוף ─── */
+  function buildText() {
+    var d = readForm(); var c = CONTACTS[d.contact] || CONTACTS[0];
+    var t = 'דרושים · בית ספר אימפקט, ראשון לציון · תשפ"ז\n\n' + (d.title || 'שם התפקיד') + '\n';
+    var meta = [];
+    if (d.subject && d.subject !== 'כללי') meta.push(d.subject);
+    meta.push(d.scope); if (d.grades.length) meta.push(gradesText(d.grades));
+    t += meta.join(' | ') + '\n';
+    var off = lines(d.offer); if (off.length) t += '\nמה אנחנו מציעים:\n' + off.map(function (l) { return '- ' + l; }).join('\n') + '\n';
+    var rq = lines(d.req); if (rq.length) t += '\nמה אנחנו מחפשים:\n' + rq.map(function (l) { return '- ' + l; }).join('\n') + '\n';
+    t += '\nתחילת עבודה: ' + (d.start || 'בהקדם') + '\nלפרטים ופנייה: ' + c.name + ' (' + c.role + ')\n' + d.phone + ' | ' + d.email;
+    return t;
+  }
+  function copyText(cb) {
+    var txt = buildText();
+    function done() { DemoShell.toast('הטקסט הועתק ללוח'); if (cb) cb(); }
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(txt).then(done, function () { fallbackCopy(txt); done(); }); }
+    else { fallbackCopy(txt); done(); }
+  }
+  function fallbackCopy(txt) { var ta = document.createElement('textarea'); ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(ta); }
+  function shareWA() { window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(buildText()), '_blank', 'noopener'); DemoShell.toast('נפתח וואטסאפ עם טקסט המודעה'); }
+  function openBoard(name) { copyText(function () { DemoShell.toast('הועתק. במערכת האמיתית נפתח כאן ' + name); }); }
+
+  function downloadImage() {
+    if (typeof html2canvas !== 'function') { DemoShell.toast('ייצוא תמונה זמין רק עם חיבור לרשת — נסו שוב'); return; }
+    var btn = $('dlBtn'), sc = $('stageScale'), stage = $('stage'), poster = $('poster');
+    var H = curFmt === 'story' ? 1920 : 1080;
+    var t0 = sc.style.transform, l0 = sc.style.left, ov = stage.style.overflow;
+    btn.disabled = true; btn.style.opacity = '.6';
+    sc.style.transform = 'none'; sc.style.left = '0'; stage.style.overflow = 'visible';
+    html2canvas(poster, { scale: 1, useCORS: true, backgroundColor: null, width: 1080, height: H, windowWidth: 1080, windowHeight: H }).then(function (cv) {
+      var a = document.createElement('a'); a.download = 'modaat-giyus-impact-' + curFmt + '.png'; a.href = cv.toDataURL('image/png'); document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      DemoShell.toast('התמונה ירדה — מוכנה לפרסום');
+    }, function () { DemoShell.toast('לא הצלחנו להפיק תמונה בדפדפן הזה'); }).then(function () {
+      sc.style.transform = t0; sc.style.left = l0; stage.style.overflow = ov; btn.disabled = false; btn.style.opacity = '';
+    });
+  }
+
+  /* ─── הפעלה ─── */
+  initForm();
+  renderKpis();
+  (function () { var q = location.search; var m = /[?&]tpl=(navy|teal|fuchsia)/.exec(q); if (m) curTpl = m[1]; m = /[?&]fmt=(square|story)/.exec(q); if (m) curFmt = m[1]; })();
+  if (state.cur && findJob(state.cur)) loadJob(state.cur); else if (state.jobs.length) loadJob(state.jobs[0].id); else newJob();
+  if (/[?&](tpl|fmt)=/.test(location.search)) { var m0 = /[?&]tpl=(navy|teal|fuchsia)/.exec(location.search); if (m0) setTpl(m0[1], true); setFmt(curFmt); }
+  fitStage();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitStage);
+</script>
+</body>
+</html>

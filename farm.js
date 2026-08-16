@@ -7,6 +7,7 @@ var activeCat = 'all', query = '';
 var SVG_FLIP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg>';
 var SVG_TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>';
 var SVG_SEARCH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
+var SVG_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>';
 var SVG_SPARK = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8z"/><path d="M19 14l.9 2.6L22.5 17.5l-2.6.9L19 21l-.9-2.6-2.6-.9 2.6-.9z" opacity=".7"/></svg>';
 
 var CAT_DESC = {
@@ -81,12 +82,24 @@ function starCard(app, i) {
     +   '<h3><a href="' + detailHref(app) + '">' + app.name + '</a></h3>'
     +   '<p>' + app.tagline + '</p>'
     +   '<ul class="app-feats">' + feats + '</ul>'
-    +   '<div class="star-actions">' + addBtnHTML(app.id) + '<a class="more" href="' + detailHref(app) + '">לפרטים המלאים <span aria-hidden="true">←</span></a></div>'
+    +   '<div class="star-actions">' + addBtnHTML(app.id) + (hasDemo(app.id) ? '<a class="demo-link" href="' + demoHref(app.id) + '">' + SVG_PLAY + 'נסו עכשיו</a>' : '<a class="more" href="' + detailHref(app) + '">לפרטים המלאים <span aria-hidden="true">←</span></a>') + '</div>'
     + '</div></article>';
 }
 function renderFeatured() {
   var el = document.getElementById('starsGrid'); if (!el) return;
   el.innerHTML = FEATURED.map(function (id, i) { var a = getApp(id); return a ? starCard(a, i) : ''; }).join('');
+}
+
+/* ── דמואים חיים ── */
+function renderDemos() {
+  var el = document.getElementById('demosGrid'); if (!el) return;
+  el.innerHTML = DEMOS.map(function (id, i) {
+    var a = getApp(id); if (!a) return '';
+    var L = getLogo(id);
+    return '<a class="demo-tile reveal tilt" href="' + demoHref(id) + '" style="--c1:' + L.c1 + ';--c2:' + L.c2 + ';--reveal-delay:' + (i * 70) + 'ms">'
+      + logoSVG(a, 64) + '<b>' + a.name + '</b><span>' + a.tagline.split('.')[0] + '.</span>'
+      + '<i class="demo-play">' + SVG_PLAY + 'נסו עכשיו</i></a>';
+  }).join('');
 }
 
 /* ── צ'יפים + חיפוש ── */
@@ -113,7 +126,7 @@ function cardHTML(app, idx) {
   return '<article class="app-card reveal tilt" tabindex="0" aria-label="' + app.name + '" data-id="' + app.id + '" style="--c1:' + L.c1 + ';--c2:' + L.c2 + ';--reveal-delay:' + (idx % 4) * 70 + 'ms">'
     + '<div class="app-card-inner">'
     +   '<div class="app-face app-face-front">'
-    +     '<div class="app-media">' + tagsHTML(app.id)
+    +     '<div class="app-media">' + tagsHTML(app.id) + (hasDemo(app.id) ? '<span class="demo-ribbon">' + SVG_PLAY + 'דמו חי</span>' : '')
     +       '<a class="app-logo-wrap" href="' + detailHref(app) + '" data-vt="' + vtName(app.id) + '">' + logoSVG(app, 84) + '</a>'
     +       '<div class="app-name">' + app.name + '</div>'
     +       (bundle || '<span class="app-kicker">' + c.name + '</span>')
@@ -125,7 +138,7 @@ function cardHTML(app, idx) {
     +       '<div class="app-back-head">' + logoSVG(app, 40) + '<h3>' + app.name + '</h3></div>'
     +       '<p>' + app.tagline + '</p>'
     +       '<ul class="app-feats">' + feats + '</ul>'
-    +       '<div class="app-back-actions">' + addBtnHTML(app.id) + '<a class="more" href="' + detailHref(app) + '">לפרטים המלאים <span aria-hidden="true">←</span></a></div>'
+    +       '<div class="app-back-actions">' + addBtnHTML(app.id) + (hasDemo(app.id) ? '<a class="demo-link" href="' + demoHref(app.id) + '">' + SVG_PLAY + 'נסו עכשיו</a>' : '<a class="more" href="' + detailHref(app) + '">לפרטים המלאים <span aria-hidden="true">←</span></a>') + '</div>'
     +     '</div>'
     +   '</div>'
     + '</div></article>';
@@ -201,6 +214,6 @@ function addAll(ids) {
 })();
 
 /* ── הרצה ── */
-renderStats(); renderDay(); renderFeatured(); renderChips(); renderCatalog();
+renderStats(); renderDay(); renderFeatured(); renderDemos(); renderChips(); renderCatalog();
 if (window.observeReveal) observeReveal();
 var badge = document.getElementById('navBadge'); if (badge) badge.textContent = APPS.length + ' מערכות · בוחרים רק מה שצריך';

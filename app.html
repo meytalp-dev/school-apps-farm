@@ -78,6 +78,7 @@
 <script src="store.js"></script>
 <script src="brand.js"></script>
 <script>
+var SVG_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>';
 var SVG_FEAT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>';
 
 function miniCard(id) {
@@ -128,7 +129,7 @@ function renderDetail() {
     +   '<p class="detail-desc">' + app.desc + '</p>'
     +   '<h2>מה הכלי נותן</h2>'
     +   '<ul class="features">' + feats + '</ul>'
-    +   '<div class="detail-actions">' + addBtnHTML(app.id)
+    +   '<div class="detail-actions">' + (typeof hasDemo === 'function' && hasDemo(app.id) ? '<a class="btn-primary" href="demo/' + app.id + '.html">' + SVG_PLAY + 'נסו עכשיו — דמו חי</a>' : '') + addBtnHTML(app.id)
     +     '<a class="btn-outline" href="index.html#catalog">לכל הכלים</a></div>'
     +   relatedHTML(app)
     + '</div>'
