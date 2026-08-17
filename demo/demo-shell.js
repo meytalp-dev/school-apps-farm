@@ -16,7 +16,7 @@ var DemoShell = (function () {
     var bar = document.createElement('header');
     bar.className = 'demo-bar';
     bar.innerHTML = '<div class="demo-bar-inner">'
-      + '<a class="demo-back" href="../index.html#catalog">' + SVG_BACK + '<span>לחוות האפליקציות</span></a>'
+      + '<a class="demo-back" href="../catalog.html">' + SVG_BACK + '<span>לחוות האפליקציות</span></a>'
       + '<div class="demo-brand">' + logoSVG(app, 40) + '<div><h1>' + app.name + '</h1><small>' + (opts.subtitle || DEMO.school.name + ' · ' + DEMO.school.year) + '</small></div></div>'
       + '<span class="demo-badge">דמו — נתונים מומצאים</span>'
       + '<div class="demo-actions">' + addBtnHTML(app.id) + '<a class="btn-outline" href="../app.html?id=' + app.id + '">לפרטי המערכת</a></div>'

@@ -5,7 +5,7 @@
  */
 
 /* ── הכוכבים — 6 כרטיסים גדולים מעל הקטלוג ── */
-var FEATURED = ['student-file', 'attendance', 'pulse', 'parent-meetings', 'group-broadcast', 'investment-bank'];
+var FEATURED = ['student-file', 'attendance', 'pulse', 'parent-meetings', 'broadcast', 'investment-bank'];
 
 /* ── דמואים חיים (demo/<id>.html) ── */
 var DEMOS = ['pulse', 'positions', 'gantt', 'my-conversations', 'resources', 'job-card-builder', 'brand-kit'];
@@ -16,7 +16,7 @@ function demoHref(id) { return 'demo/' + id + '.html'; }
 var TAGS = {
   'student-file': ['popular'], 'attendance': ['popular'], 'tardiness': ['popular'], 'pulse': ['popular'],
   'monthly-reports': ['popular'], 'investment-bank': ['popular'], 'incident': ['popular'],
-  'parent-meetings': ['new'], 'group-broadcast': ['new'], 'teacher-assessment': ['new'], 'brand-kit': ['new'],
+  'parent-meetings': ['new'], 'broadcast': ['new'], 'teacher-assessment': ['new'], 'brand-kit': ['new'],
   'curriculum': ['ai'], 'positions': ['ai'], 'my-conversations': ['ai'], 'risk': ['ai'], 'planning-hub': ['ai']
 };
 var TAG_LABEL = { 'new': 'חדש', 'popular': 'מבוקש', 'ai': 'כולל AI' };
@@ -26,7 +26,7 @@ var BUNDLES = {
   'hub-teachers':   ['monthly-reports', 'conversations', 'attendance', 'investment-bank', 'annual-plan', 'student-file', 'parent-meetings', 'lessons-library'],
   'hub-counselors': ['counselor-dashboard', 'monthly-reports', 'shiluv', 'therapy', 'student-file', 'pulse', 'incident'],
   'hub-manu':       ['directory', 'tardiness', 'discipline', 'attendance', 'broadcast', 'transportation'],
-  'role-dashboard': ['tasks', 'gantt', 'calendar', 'planning-form', 'student-file']
+  'role-dashboard': ['tasks', 'gantt', 'calendar', 'annual-plan', 'student-file']
 };
 
 /* ── מפת קשרים: מי מדבר עם מי (מוצג בדף הפירוט) ── */
@@ -34,6 +34,7 @@ var LINKS = {
   'student-file': ['conversations', 'risk', 'monthly-reports', 'bagrut', 'journey', 'parent-meetings', 'investment-bank'],
   'attendance': ['tardiness', 'risk', 'monthly-reports', 'broadcast'],
   'tardiness': ['attendance', 'discipline', 'directory'],
+  'directory': ['broadcast', 'parent-meetings', 'student-file', 'admission'],
   'discipline': ['incident', 'student-file', 'conversations'],
   'incident': ['discipline', 'counselor-dashboard', 'my-conversations'],
   'risk': ['attendance', 'bagrut', 'discipline', 'conversations', 'counselor-dashboard'],
@@ -41,22 +42,21 @@ var LINKS = {
   'monthly-reports': ['student-file', 'attendance', 'counselor-dashboard'],
   'pulse': ['teacher-assessment', 'lessons-library', 'life-skills'],
   'parent-meetings': ['student-file', 'conversations', 'broadcast'],
-  'group-broadcast': ['broadcast', 'calendar', 'parent-meetings'],
-  'broadcast': ['group-broadcast', 'roster', 'transportation'],
+  'broadcast': ['directory', 'calendar', 'parent-meetings', 'transportation'],
   'investment-bank': ['student-file', 'journey', 'cert-generator'],
   'curriculum': ['positions', 'timetable', 'annual-plan'],
   'positions': ['curriculum', 'job-card-builder', 'budget'],
-  'timetable': ['curriculum', 'duties', 'staff-calendar'],
+  'timetable': ['curriculum', 'duties', 'calendar'],
   'exams': ['exam-prep-form', 'bagrut'],
   'strategy': ['swot', 'competitors', 'planning-hub'],
-  'planning-hub': ['planning-form', 'annual-plan', 'positions'],
+  'planning-hub': ['annual-plan', 'gantt', 'positions'],
   'brand-kit': ['cert-generator', 'zoom-bg', 'job-card-builder', 'landing-recruitment', 'greeting-cards'],
   'landing-recruitment': ['parent-testimonials', 'admission', 'brand-kit'],
   'competitors': ['swot', 'strategy', 'landing-recruitment'],
   'counselor-dashboard': ['shiluv', 'therapy', 'student-file', 'incident'],
   'teacher-feedback': ['teacher-assessment', 'teacher-plan'],
   'handbook': ['roles', 'handover'],
-  'handover': ['handbook', 'roles', 'planning-form']
+  'handover': ['handbook', 'roles', 'annual-plan']
 };
 
 /* ── "יום בחיי מנהלת" — סקשן סיפורי לפני הקטלוג ── */
@@ -64,7 +64,7 @@ var DAY = [
   { time: '07:30', app: 'tardiness',       text: 'שער בית הספר. שני תלמידים מאחרים — נרשמים ב-QR, ההורים מקבלים וואטסאפ, ההשלמה נקבעת במרכז הלמידה. בלי ויכוח.' },
   { time: '08:15', app: 'incident',        text: 'היועצת ממלאת דיווח אירוע חריג. את מאשרת מהנייד — והוא כבר בתיק התלמיד ובלוח המשימות.' },
   { time: '10:00', app: 'curriculum',      text: 'מורה למתמטיקה הודיעה שהיא עוזבת. סוכן ה-AI מציג מי יכול לקחת את השעות ומה הפער לגיוס.' },
-  { time: '12:30', app: 'group-broadcast', text: 'שינוי בהסעות מחר. הודעה אחת — ל-14 קבוצות הורים בבת אחת. שתי דקות.' },
+  { time: '12:30', app: 'broadcast',       text: 'שינוי בהסעות מחר. הודעה אחת — ל-14 קבוצות הורים בבת אחת. שתי דקות.' },
   { time: '16:00', app: 'parent-meetings', text: 'אסיפות הורים בעוד שבוע. ההורים כבר בוחרים שעות בעצמם; המחנכות רואות לו״ז מלא.' },
   { time: '19:00', app: 'monthly-reports', text: 'הדוח החודשי לפיקוח? נבנה מעצמו מהנתונים של החודש. את רק קוראת ומאשרת.' }
 ];
@@ -73,7 +73,7 @@ var DAY = [
 var QUIZ = {
   pains: [
     { id: 'attendance', label: 'נוכחות, איחורים ומשמעת', apps: ['attendance', 'tardiness', 'discipline', 'incident'] },
-    { id: 'parents',    label: 'קשר עם הורים',            apps: ['parent-meetings', 'group-broadcast', 'broadcast', 'directory'] },
+    { id: 'parents',    label: 'קשר עם הורים',            apps: ['parent-meetings', 'broadcast', 'directory', 'transportation'] },
     { id: 'students',   label: 'מעקב אחרי תלמידים',       apps: ['student-file', 'risk', 'conversations', 'bagrut'] },
     { id: 'staff',      label: 'צוות — שיבוץ, משוב, דוחות', apps: ['curriculum', 'timetable', 'teacher-feedback', 'monthly-reports', 'duties'] },
     { id: 'climate',    label: 'אקלים ורגש',              apps: ['pulse', 'investment-bank', 'life-skills', 'morning-openings'] },
@@ -84,7 +84,7 @@ var QUIZ = {
   sizes: [
     { id: 'small', label: 'עד 200 תלמידים', boost: ['directory', 'parent-meetings', 'investment-bank'] },
     { id: 'mid',   label: '200–500',         boost: ['attendance', 'timetable', 'monthly-reports'] },
-    { id: 'large', label: 'מעל 500',          boost: ['roster', 'risk', 'curriculum', 'positions'] }
+    { id: 'large', label: 'מעל 500',          boost: ['directory', 'risk', 'curriculum', 'positions'] }
   ],
   counselor: [
     { id: 'yes', label: 'כן', boost: ['counselor-dashboard', 'shiluv', 'therapy'] },

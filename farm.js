@@ -1,8 +1,25 @@
 /**
- * חוות האפליקציות — לוגיקת דף הבית
- * hero-stats · "יום בחיי מנהלת" · הכוכבים · חיפוש+סינון · קטלוג · שאלון "בנו את הסל" · מצב-מצגת
+ * חוות האפליקציות — לוגיקה משותפת לדף-הבית (index.html) ולקטלוג (catalog.html)
+ * דף-הבית: hero-stats · "יום בחיי מנהלת" · הכוכבים · דמואים · אריחי-קטגוריות
+ * קטלוג:  חיפוש+סינון (?cat= / ?q=) · כרטיסי flip · שאלון "בנו את הסל" · מצב-מצגת
+ * כל render* בודק שהאלמנט קיים — כך אותו קובץ משרת את שני הדפים.
  */
 var activeCat = 'all', query = '';
+(function () {
+  var p = new URLSearchParams(location.search);
+  var c = p.get('cat');
+  if (c && CATEGORIES.some(function (x) { return x.id === c; })) activeCat = c;
+  if (p.get('q')) query = p.get('q').trim().toLowerCase();
+})();
+function syncUrl() {
+  if (!document.getElementById('chips') || !history.replaceState) return;
+  var qs = [];
+  if (activeCat !== 'all') qs.push('cat=' + encodeURIComponent(activeCat));
+  if (query) qs.push('q=' + encodeURIComponent(query));
+  var present = new URLSearchParams(location.search).get('present');
+  if (present) qs.push('present=' + present);
+  history.replaceState(null, '', location.pathname + (qs.length ? '?' + qs.join('&') : '') + location.hash);
+}
 
 var SVG_FLIP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg>';
 var SVG_TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>';
@@ -13,13 +30,14 @@ var SVG_SPARK = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
 var CAT_DESC = {
   students:   'כל מה שקשור לתלמיד — מהקבלה ועד המסע האישי.',
   attendance: 'נוכחות, איחורים ומשמעת — בזמן אמת, בלי טפסים.',
-  staff:      'מערכת, תורנויות, דוחות ומשוב — הצוות מסודר.',
+  staff:      'מערכת, תורנויות, דוחות, בחינות ומשוב — הצוות מסודר.',
   pedagogy:   'אקלים, שיעורי חינוך וחיזוקים — הלב של בית הספר.',
-  planning:   'תוכנית שנתית, משרות, תקציב, בחינות ואסטרטגיה — התמונה הגדולה.',
+  planning:   'תוכנית שנתית, משרות, תקציב ואסטרטגיה — התמונה הגדולה.',
   counseling: 'דשבורד יועצת, סלי שילוב ומטפלים — הטיפול מנוהל.',
-  operations: 'משימות, לוחות, נהלים, הודעות והסעות — התפעול היומי זורם.',
+  parents:    'אלפון, וואטסאפ, אסיפות הורים והסעות — הקשר עם הבית, מסודר.',
+  operations: 'משימות, לוחות, נהלים, שיחות ומשאבים — התפעול היומי זורם.',
   marketing:  'מיתוג, מתחרים, SWOT, המלצות הורים ודף נחיתה — הסיפור של בית הספר, כתוב ומעוצב.',
-  generators: 'תעודות, רקעים, ברכות וסטיקרים — עיצוב במיתוג בית הספר, בלי מעצב.',
+  generators: 'תעודות, מודעות גיוס, רקעים, ברכות וסטיקרים — עיצוב במיתוג בית הספר, בלי מעצב.',
   kits:       'ערכות מוכנות לפי תפקיד — כמה מערכות, כניסה אחת.'
 };
 
@@ -90,6 +108,22 @@ function renderFeatured() {
   el.innerHTML = FEATURED.map(function (id, i) { var a = getApp(id); return a ? starCard(a, i) : ''; }).join('');
 }
 
+/* ── אריחי-קטגוריות (דף-הבית → catalog.html?cat=) ── */
+function renderCatTiles() {
+  var el = document.getElementById('catTiles'); if (!el) return;
+  el.innerHTML = CATEGORIES.map(function (c, i) {
+    var apps = APPS.filter(function (a) { return a.cat === c.id; });
+    var ids = FEATURED.filter(function (id) { return apps.some(function (a) { return a.id === id; }); });
+    apps.forEach(function (a) { if (ids.length < 4 && ids.indexOf(a.id) === -1) ids.push(a.id); });
+    return '<a class="cat-tile reveal" href="catalog.html?cat=' + c.id + '" style="--c:' + c.color + ';--reveal-delay:' + (i % 3) * 70 + 'ms">'
+      + '<div class="cat-tile-top"><span class="cat-tile-count"><b>' + apps.length + '</b> מערכות</span><div class="cat-tile-logos">' + ids.map(function (id) { var x = getApp(id); return '<span class="mini-logo" title="' + x.name + '">' + logoSVG(x, 26) + '</span>'; }).join('') + '</div></div>'
+      + '<h3>' + c.name + '</h3>'
+      + (CAT_DESC[c.id] ? '<p>' + CAT_DESC[c.id] + '</p>' : '')
+      + '<span class="cat-tile-more">לכל המערכות בתחום <span aria-hidden="true">←</span></span>'
+      + '</a>';
+  }).join('');
+}
+
 /* ── דמואים חיים ── */
 function renderDemos() {
   var el = document.getElementById('demosGrid'); if (!el) return;
@@ -116,7 +150,7 @@ function matches(app, q) {
   var hay = (app.name + ' ' + app.tagline + ' ' + app.desc + ' ' + app.features.join(' ') + ' ' + getCategory(app.cat).name).toLowerCase();
   return q.split(/\s+/).every(function (w) { return hay.indexOf(w) !== -1; });
 }
-function onSearch(v) { query = (v || '').trim().toLowerCase(); renderCatalog(); }
+function onSearch(v) { query = (v || '').trim().toLowerCase(); renderCatalog(); syncUrl(); }
 
 /* ── כרטיס-קטלוג (flip בלחיצה, tilt ב-hover) ── */
 function cardHTML(app, idx) {
@@ -167,7 +201,15 @@ function renderCatalog() {
   if (window.observeReveal) observeReveal(body);
   if (query) { var els = body.querySelectorAll('.reveal'); for (var k = 0; k < els.length; k++) els[k].classList.add('is-visible'); }
 }
-function setCat(id) { activeCat = id; renderChips(); renderCatalog(); }
+function setCat(id) {
+  activeCat = id; renderChips(); renderCatalog(); syncUrl();
+  var sec = document.getElementById('catalog');
+  if (sec && sec.getBoundingClientRect().top < 0) window.scrollTo({ top: sec.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' });
+}
+function renderCatCount() {
+  var el = document.getElementById('catCount'); if (!el) return;
+  el.textContent = APPS.length + ' מערכות ב-' + CATEGORIES.length + ' תחומים. חפשו לפי צורך, סננו לפי תחום — והוסיפו לסל רק מה שמדבר אליכם.';
+}
 
 /* ── שאלון "בנו את הסל" ── */
 var quizState = { pains: [], size: 'mid', counselor: 'yes' };
@@ -214,6 +256,10 @@ function addAll(ids) {
 })();
 
 /* ── הרצה ── */
-renderStats(); renderDay(); renderFeatured(); renderDemos(); renderChips(); renderCatalog();
+renderStats(); renderDay(); renderFeatured(); renderDemos(); renderCatTiles(); renderCatCount();
+if (document.getElementById('chips')) {
+  renderChips(); renderCatalog();
+  var qEl = document.getElementById('q'); if (qEl && query) qEl.value = query;
+}
 if (window.observeReveal) observeReveal();
-var badge = document.getElementById('navBadge'); if (badge) badge.textContent = APPS.length + ' מערכות · בוחרים רק מה שצריך';
+var badge = document.getElementById('navBadge'); if (badge && document.getElementById('catTiles')) badge.textContent = APPS.length + ' מערכות · בוחרים רק מה שצריך';

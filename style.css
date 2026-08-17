@@ -844,3 +844,81 @@ footer.site::before {
 .detail-actions .btn-primary { padding: 12px 22px; font-size: 15px; }
 .detail-actions .btn-primary svg { width: 16px; height: 16px; }
 @media (max-width: 720px) { .demos { padding: 10px 16px 64px; } .demos-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } .demo-tile { padding: 20px 12px 18px; } }
+
+/* ═══ v4 — פיצול: דף-בית (index) + קטלוג (catalog.html) ═══ */
+/* ניווט: קישור-טקסט לצד ה-CTA */
+.nav-actions { display: inline-flex; align-items: center; gap: 22px; }
+.nav-link {
+  font-size: 15px; font-weight: 700; color: var(--navy); text-decoration: none; white-space: nowrap;
+  position: relative; padding: 4px 0;
+}
+.nav-link::after { content: ''; position: absolute; right: 0; left: 0; bottom: -2px; height: 2px; border-radius: 2px; background: var(--fuchsia); transform: scaleX(0); transform-origin: right; transition: transform var(--motion-fast) var(--motion-ease); }
+.nav-link:hover { color: var(--fuchsia); }
+.nav-link:hover::after { transform: scaleX(1); }
+@media (max-width: 720px) { .nav-actions { gap: 12px; } .nav-link { font-size: 13.5px; } }
+
+/* אריחי-קטגוריות בדף-הבית */
+.cats { position: relative; padding: 24px 24px 96px; background: var(--bg); border-top: 1px solid var(--line); overflow: hidden; }
+.cats-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+.cats .section-head { padding: 56px 0 36px; }
+.cats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.cat-tile {
+  --c: var(--teal);
+  position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 10px;
+  padding: 24px 24px 26px; border-radius: 24px; text-decoration: none; color: var(--navy);
+  background: var(--white); border: 1px solid rgba(6,30,79,0.08);
+  box-shadow: 0 12px 36px rgba(6,30,79,0.06);
+  transition: transform var(--motion-fast) var(--motion-ease), box-shadow 320ms var(--motion-ease), border-color 320ms var(--motion-ease);
+}
+.cat-tile::after { content: ''; position: absolute; right: 0; bottom: 0; left: 0; height: 3px; background: var(--c); transform: scaleX(.22); transform-origin: right; transition: transform 420ms var(--motion-ease); }
+.cat-tile:hover { transform: translateY(-5px); box-shadow: 0 24px 56px rgba(6,30,79,0.12); border-color: color-mix(in srgb, var(--c) 32%, white); }
+.cat-tile:hover::after { transform: scaleX(1); }
+.cat-tile-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.cat-tile-count { display: inline-flex; align-items: baseline; gap: 5px; padding: 6px 12px; border-radius: 999px; background: color-mix(in srgb, var(--c) 10%, white); color: color-mix(in srgb, var(--c) 78%, var(--navy)); font-size: 12.5px; font-weight: 700; }
+.cat-tile-count b { font-size: 16px; font-weight: 900; letter-spacing: -.3px; font-variant-numeric: tabular-nums; }
+.cat-tile-logos { display: flex; gap: 6px; }
+.cat-tile-logos .mini-logo .app-logo { box-shadow: 0 6px 14px rgba(6,30,79,0.14); }
+.cat-tile:hover .mini-logo:nth-child(1) { transform: translateY(-3px); }
+.cat-tile:hover .mini-logo:nth-child(2) { transform: translateY(-3px); transition-delay: 40ms; }
+.cat-tile:hover .mini-logo:nth-child(3) { transform: translateY(-3px); transition-delay: 80ms; }
+.cat-tile:hover .mini-logo:nth-child(4) { transform: translateY(-3px); transition-delay: 120ms; }
+.cat-tile h3 { font-size: 21px; font-weight: 900; letter-spacing: -.5px; line-height: 1.2; margin-top: 4px; }
+.cat-tile p { font-size: 14.5px; color: var(--gray); line-height: 1.65; }
+.cat-tile-more { margin-top: auto; padding-top: 6px; font-size: 13.5px; font-weight: 700; color: var(--navy); display: inline-flex; align-items: center; gap: 4px; transition: color var(--motion-fast), gap var(--motion-fast); }
+.cat-tile:hover .cat-tile-more { color: var(--fuchsia); gap: 8px; }
+.cats-more { display: flex; justify-content: center; margin-top: 34px; }
+@media (max-width: 980px) { .cats-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 720px) {
+  .cats { padding: 10px 16px 72px; }
+  .cats .section-head { padding: 40px 0 24px; }
+  .cats-grid { grid-template-columns: 1fr; gap: 12px; }
+  .cat-tile { padding: 20px 20px 22px; border-radius: 20px; }
+  .cat-tile h3 { font-size: 19px; }
+}
+
+/* דף הקטלוג — כותרת קומפקטית */
+.cat-hero { position: relative; overflow: hidden; background: var(--white); padding: calc(var(--nav-h) + 52px) 24px 36px; text-align: center; }
+.cat-hero-bg { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.cat-hero-bg::before { content: ''; position: absolute; top: -260px; right: -180px; width: 640px; height: 640px; background: radial-gradient(ellipse, rgba(18,199,199,0.09) 0%, transparent 68%); animation: impactDrift 18s var(--motion-ease) infinite alternate; }
+.cat-hero-bg::after { content: ''; position: absolute; bottom: -220px; left: 20%; width: 520px; height: 520px; background: radial-gradient(ellipse, rgba(240,6,120,0.06) 0%, transparent 68%); animation: impactDrift 22s var(--motion-ease) infinite alternate-reverse; }
+.cat-hero-inner { position: relative; z-index: 2; max-width: 760px; margin: 0 auto; }
+.cat-hero h1 { font-size: clamp(32px, 4.6vw, 52px); font-weight: 900; color: var(--navy); letter-spacing: -1.6px; line-height: 1.1; margin: 8px 0 12px; }
+.cat-hero h1 em { font-style: normal; color: var(--fuchsia); }
+.cat-hero .hero-sub { margin-bottom: 26px; }
+.cat-hero .search-wrap { margin-bottom: 14px; }
+.cat-hero-hint { font-size: 14px; color: var(--gray); }
+.cat-hero-hint a { color: var(--fuchsia); font-weight: 700; text-decoration: none; }
+.cat-hero-hint a:hover { text-decoration: underline; }
+.cat-hero-inner > * { opacity: 0; transform: translateY(18px); animation: heroRise var(--motion-soft) var(--motion-ease) forwards; }
+.cat-hero-inner .hero-tag { animation-delay: .08s; }
+.cat-hero-inner h1 { animation-delay: .18s; }
+.cat-hero-inner .hero-sub { animation-delay: .28s; }
+.cat-hero-inner .search-wrap { animation-delay: .38s; }
+.cat-hero-inner .cat-hero-hint { animation-delay: .48s; }
+.page-catalog .catalog { padding-top: 12px; border-top: 0; }
+.page-catalog .cat-chips { padding-top: 6px; }
+.cta-compact { padding-top: 72px; padding-bottom: 72px; }
+@media (max-width: 720px) {
+  .cat-hero { padding: calc(var(--nav-h) + 30px) 16px 24px; }
+  .cat-hero h1 { letter-spacing: -1px; }
+}
