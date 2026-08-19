@@ -528,6 +528,9 @@ footer.site::before {
   transition: opacity 520ms var(--motion-ease), visibility 520ms;
 }
 .isl-loader.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
+/* fail-safe: גם אם JS לא רץ — הלואדר נעלם אחרי 4 שניות */
+.isl-loader { animation: islAutoHide 0s linear 4s forwards; }
+@keyframes islAutoHide { to { opacity: 0; visibility: hidden; pointer-events: none; } }
 .isl-loader .brand-lockup-mark { width: 92px; height: 109px; }
 .isl-loader .brand-lockup-mark path { stroke-dasharray: 260; stroke-dashoffset: 260; animation: islDraw 1.15s var(--motion-ease) forwards; }
 .isl-loader .brand-lockup-mark g:nth-of-type(2) path { animation-delay: .55s; stroke-dasharray: 160; stroke-dashoffset: 160; }

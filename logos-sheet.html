@@ -12,7 +12,7 @@ h2{font-size:14px;letter-spacing:2px;color:#12C7C7;margin:34px 0 14px}
 </style></head><body>
 <h1>גיליון לוגואים</h1><p>לוגו ייחודי לכל מערכת — לביקורת. מקור: logos.js</p>
 <div id="s"></div>
-<script src="apps-data.js"></script><script src="logos.js"></script>
+<script src="apps-data.js?v=5"></script><script src="logos.js?v=5"></script>
 <script>
 var h='';for(var i=0;i<CATEGORIES.length;i++){var c=CATEGORIES[i];h+='<h2>'+c.name+'</h2><div class="g">';
 for(var j=0;j<APPS.length;j++){if(APPS[j].cat!==c.id)continue;h+='<div class="t">'+logoSVG(APPS[j],96)+'<b>'+APPS[j].name+'</b></div>';}h+='</div>';}
