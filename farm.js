@@ -124,16 +124,23 @@ function renderCatTiles() {
   }).join('');
 }
 
-/* ── דמואים חיים ── */
+/* ── דמואים חיים — כרטיסי-דפדפן עם צילום אמיתי (assets/demos/<id>.jpg) ── */
 function renderDemos() {
   var el = document.getElementById('demosGrid'); if (!el) return;
   el.innerHTML = DEMOS.map(function (id, i) {
     var a = getApp(id); if (!a) return '';
     var L = getLogo(id);
-    return '<a class="demo-tile reveal tilt" href="' + demoHref(id) + '" style="--c1:' + L.c1 + ';--c2:' + L.c2 + ';--reveal-delay:' + (i * 70) + 'ms">'
-      + logoSVG(a, 64) + '<b>' + a.name + '</b><span>' + a.tagline.split('.')[0] + '.</span>'
-      + '<i class="demo-play">' + SVG_PLAY + 'נסו עכשיו</i></a>';
+    return '<a class="demo-card reveal' + (i === 0 ? ' is-wide' : '') + '" href="' + demoHref(id) + '" style="--c1:' + L.c1 + ';--reveal-delay:' + (i * 70) + 'ms">'
+      + '<span class="demo-shot"><span class="browser-bar"><i></i><i></i><i></i><em>impact-school / ' + id + '</em></span><img src="assets/demos/' + id + '.jpg" alt="צילום-מסך: ' + a.name + '" loading="lazy" decoding="async"></span>'
+      + '<span class="demo-caption">' + logoSVG(a, 44) + '<div><b>' + a.name + '</b><small>' + a.tagline.split('.')[0] + '.</small></div><i class="demo-play">' + SVG_PLAY + 'נסו עכשיו</i></span>'
+      + '</a>';
   }).join('');
+}
+
+/* ── סימנים "מודבקים" על שולחן-העבודה ב-hero ── */
+function renderStageMarks() {
+  var el = document.getElementById('stageMarks'); if (!el) return;
+  el.innerHTML = ['attendance', 'student-file', 'gantt'].map(function (id) { var a = getApp(id); return a ? '<span>' + logoSVG(a, 52) + '</span>' : ''; }).join('');
 }
 
 /* ── צ'יפים + חיפוש ── */
@@ -256,7 +263,7 @@ function addAll(ids) {
 })();
 
 /* ── הרצה ── */
-renderStats(); renderDay(); renderFeatured(); renderDemos(); renderCatTiles(); renderCatCount();
+renderStats(); renderDay(); renderFeatured(); renderDemos(); renderStageMarks(); renderCatTiles(); renderCatCount();
 if (document.getElementById('chips')) {
   renderChips(); renderCatalog();
   var qEl = document.getElementById('q'); if (qEl && query) qEl.value = query;

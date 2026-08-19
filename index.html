@@ -46,15 +46,30 @@
     <span class="hero-fp-static" data-brand-mark style="--mark-fp:#061E4F;--mark-heart:#F00678" aria-hidden="true"></span>
     <div class="hero-reveal-light" aria-hidden="true"><span data-brand-mark></span></div>
     <div class="hero-inner">
-      <div class="hero-tag"><span class="tag-dot"></span>נבנה על ידי מנהלת בית ספר — מתוך היום-יום, לא מהמשרד</div>
-      <h1>מרכיבים את מערכת הניהול<br><em>שמתאימה בדיוק לבית הספר שלכם</em></h1>
-      <p class="hero-sub">עשרות מערכות שנולדו מצורך אמיתי בשטח ורצות היום בבית ספר חי — וכל אחת עומדת בפני עצמה.
-      בוחרים אחת, שתיים או עשר — בלי להתחייב למערכת ענק ובלי לשלם על מה שלא צריך.</p>
-      <div class="hero-btns">
-        <button type="button" class="btn-primary" onclick="openQuiz()">3 שאלות — ונרכיב לכם סל</button>
-        <a class="btn-outline" href="catalog.html">לכל המערכות</a>
+      <div class="hero-copy">
+        <div class="hero-tag"><span class="tag-dot"></span>נבנה על ידי מנהלת בית ספר — מתוך היום-יום, לא מהמשרד</div>
+        <h1>מרכיבים את מערכת הניהול שמתאימה <em>בדיוק</em> לבית הספר שלכם</h1>
+        <p class="hero-sub">עשרות מערכות שנולדו מצורך אמיתי בשטח ורצות היום בבית ספר חי — וכל אחת עומדת בפני עצמה.
+        בוחרים אחת, שתיים או עשר — בלי להתחייב למערכת ענק ובלי לשלם על מה שלא צריך.</p>
+        <div class="hero-btns">
+          <button type="button" class="btn-primary" onclick="openQuiz()">3 שאלות — ונרכיב לכם סל</button>
+          <a class="btn-outline" href="catalog.html">לכל המערכות</a>
+        </div>
+        <div class="hero-stats" id="heroStats"></div>
       </div>
-      <div class="hero-stats" id="heroStats"></div>
+      <div class="hero-stage" aria-hidden="true">
+        <div class="stage-mat"></div>
+        <div class="stage-pill">בוחרים כאב <b>←</b> מקבלים פתרון</div>
+        <a class="stage-browser" href="demo/pulse.html" tabindex="-1">
+          <span class="browser-bar"><i></i><i></i><i></i><em>impact-school / pulse</em></span>
+          <img src="assets/demos/pulse.jpg" alt="" loading="eager" decoding="async">
+        </a>
+        <div class="stage-marks" id="stageMarks"></div>
+        <div class="stage-heart">
+          <svg viewBox="80 104 122 104" fill="none"><path d="M88 135C100 111 126 112 140 136C154 111 181 111 194 136C181 163 156 184 141 199C127 184 102 164 88 135Z" fill="#F00678" opacity=".16"/><g stroke="#F00678" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M88 135C100 111 126 112 140 136C154 111 181 111 194 136"/><path d="M88 135C102 164 127 184 141 199C156 184 181 163 194 136"/></g></svg>
+        </div>
+        <div class="stage-note">61 מערכות. בוחרים שלוש.<small>ומתחילים תוך שבועיים</small></div>
+      </div>
     </div>
   </section>
 
@@ -73,7 +88,7 @@
     <div class="stars-inner">
       <div class="section-head reveal">
         <div class="section-label"><span class="dot"></span>הכוכבים</div>
-        <h2 class="section-title">שש מערכות שכדאי להתחיל מהן</h2>
+        <h2 class="section-title">שש מערכות שכדאי <em>להתחיל מהן</em></h2>
         <p class="section-sub">אלה שמנהלות מבקשות קודם — ואלה שמורגשות כבר בשבוע הראשון.</p>
       </div>
       <div class="stars-grid" id="starsGrid"></div>
@@ -84,7 +99,7 @@
     <div class="demos-inner">
       <div class="section-head reveal">
         <div class="section-label"><span class="dot"></span>לא מאמינים? נסו</div>
-        <h2 class="section-title">שבע מערכות — פתוחות לניסיון עכשיו</h2>
+        <h2 class="section-title">שבע מערכות — פתוחות לניסיון <em>עכשיו</em></h2>
         <p class="section-sub">דמו חי עם נתונים מומצאים של "בית ספר אימפקט". לוחצים, מסננים, מוסיפים — כמו במערכת האמיתית.</p>
       </div>
       <div class="demos-grid" id="demosGrid"></div>
@@ -95,7 +110,7 @@
     <div class="cats-inner">
       <div class="section-head reveal">
         <div class="section-label"><span class="dot"></span>הקטלוג המלא</div>
-        <h2 class="section-title">מה מכביד עליכם היום? התחילו משם</h2>
+        <h2 class="section-title">מה מכביד עליכם היום? <em>התחילו משם</em></h2>
         <p class="section-sub">כל המערכות מסודרות לפי תחום. לוחצים על תחום — ומגיעים ישר למערכות שלו.</p>
       </div>
       <div class="cats-grid" id="catTiles"></div>
@@ -110,7 +125,7 @@
       <div class="trust-grid">
         <div class="trust-who reveal">
           <div class="section-label"><span class="dot"></span>מי בנה את זה</div>
-          <h2 class="section-title">מנהלת בית ספר — לא חברת תוכנה</h2>
+          <h2 class="section-title">מנהלת בית ספר — <em>לא</em> חברת תוכנה</h2>
           <p>כל מערכת כאן נולדה מבעיה שהייתה לי ביום שלישי בבוקר, ונבנתה עד שפתרה אותה. הן רצות היום בבית ספר אמיתי, עם צוות אמיתי ותלמידים אמיתיים — ומתעדכנות כל שבוע ממה שקורה בשטח.</p>
           <p class="trust-note">בלי מודולים שאף אחד לא ביקש. בלי הטמעה של חצי שנה. בלי מחלקת שירות שלא מבינה מה זה "יום הורים".</p>
         </div>

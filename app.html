@@ -122,9 +122,10 @@ function renderDetail() {
   box.innerHTML = '<article class="detail-card has-stage reveal is-visible" style="--c:' + c.color + '">'
     + '<div class="detail-stage" style="--c1:' + L.c1 + ';--c2:' + L.c2 + '">'
     +   logoSVG(app, 112)
-    +   '<h1>' + app.name + '</h1>'
-    +   '<span class="cat-tag" style="color:' + c.color + ';background:' + c.color + '1a;border-color:' + c.color + '3d">' + c.name + '</span>'
+    +   '<div class="detail-stage-text"><span class="cat-tag" style="--c:' + c.color + '">' + c.name + '</span>'
+    +   '<h1>' + app.name + '</h1></div>'
     + '</div>'
+    + (typeof hasDemo === 'function' && hasDemo(app.id) ? '<a class="detail-shot" href="demo/' + app.id + '.html" aria-label="דמו חי: ' + app.name + '"><span class="browser-bar"><i></i><i></i><i></i><em>impact-school / ' + app.id + '</em></span><img src="assets/demos/' + app.id + '.jpg" alt="צילום-מסך מהדמו החי של ' + app.name + '" loading="lazy"><span class="detail-shot-cta">' + SVG_PLAY + 'נסו עכשיו — דמו חי</span></a>' : '')
     + '<div class="detail-body">'
     +   '<p class="detail-desc">' + app.desc + '</p>'
     +   '<h2>מה הכלי נותן</h2>'

@@ -394,26 +394,124 @@ var LOGOS = {
   /* ── שליחה מרוכזת לקבוצות ── */
 };
 
-/* לוגו-ברירת-מחדל למערכת חדשה שעוד אין לה סמל */
-var LOGO_FALLBACK = { c1: '#12C7C7', c2: '#061E4F', svg:
-  '<rect x="14" y="14" width="16" height="16" rx="5" fill="#fff"/><rect x="34" y="14" width="16" height="16" rx="5" fill="#fff" opacity=".7"/>'
-  + '<rect x="14" y="34" width="16" height="16" rx="5" fill="#fff" opacity=".7"/><rect x="34" y="34" width="16" height="16" rx="5" fill="#fff" opacity=".45"/>' };
+/* ═══ v5 — מערכת-סימנים "סטודיו" ═══
+ * במקום אריח-גרדיאנט מבריק לכל מערכת (61 גרדיאנטים = רעש), כל מערכת מקבלת סימן בשפה אחת:
+ *   נייר-אריח בגוון-התחום העדין · פס-סימון (highlighter) בצבע-התחום · גליף דיו-navy בקו אחיד (מ-apps-data.js icon).
+ * 11 תחומים = 11 גוונים. כולם משפחה אחת; כל תחום מזוהה. המילון LOGOS הישן נשמר למעלה לגיבוי בלבד.
+ */
+function _hexMix(hex, hex2, t) {
+  function p(h) { h = h.replace('#', ''); return [parseInt(h.substr(0, 2), 16), parseInt(h.substr(2, 2), 16), parseInt(h.substr(4, 2), 16)]; }
+  var a = p(hex), b = p(hex2), o = '#';
+  for (var i = 0; i < 3; i++) o += ('0' + Math.round(a[i] + (b[i] - a[i]) * t).toString(16)).slice(-2);
+  return o;
+}
+function _hash(str) { var h = 0; for (var i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0; return h; }
 
-function getLogo(id) { return LOGOS[id] || LOGO_FALLBACK; }
+/* ═══ גליפים ייעודיים (24×24, קו-דיו) למערכות שהיו עם סמל-placeholder ב-apps-data.js ═══
+ * אותו קו, אותה משפחה — כל מערכת עם סמל משלה. עוקף את app.icon כשקיים כאן. */
+var GLYPHS = {
+  /* אלפון ומצבת תלמידים — כרטיסיה עם לשוניות */
+  'directory': '<path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 4v17"/><path d="M11 9h6M11 13h6M11 17h4"/>',
+  /* ציונים וזכאות לבגרות — כובע-סיום */
+  'bagrut': '<path d="M2.5 9.5 12 5l9.5 4.5L12 14z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M21.5 9.5V15"/>',
+  /* דשבורד יועצת — לוח עם לב */
+  'counselor-dashboard': '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M12 17.5c-1.6-1.2-3.5-2.7-3.5-4.2a1.9 1.9 0 0 1 3.5-1 1.9 1.9 0 0 1 3.5 1c0 1.5-1.9 3-3.5 4.2z"/>',
+  /* סלי שילוב — סל */
+  'shiluv': '<path d="M3.5 10h17l-1.6 9a2 2 0 0 1-2 1.6H7.1a2 2 0 0 1-2-1.6z"/><path d="M8 10 12 3.5 16 10"/><path d="M9.5 14v3M12 14v3M14.5 14v3"/>',
+  /* מערכת מטפלים וטיפולים — יד תומכת + לב קטן */
+  'therapy': '<path d="M4 14.5c2-1 4-1.5 6-.5l4.5 1.6a1.6 1.6 0 0 1-1 3l-4-.9"/><path d="M13.5 17.6 18 16.2c1.3-.4 2.5.4 2.5 1.6L14 20.5 6 18.5v-6"/><path d="M14 4.6c-1-1.2-3-1-3.6.6-.5 1.4 1 3.1 3.6 5 2.6-1.9 4.1-3.6 3.6-5-.6-1.6-2.6-1.8-3.6-.6z"/>',
+  /* פולס צוות — הערכה עצמית — פעימה בתוך אדם */
+  'teacher-assessment': '<circle cx="12" cy="7" r="3.5"/><path d="M4.5 21c.6-4 3.8-6 7.5-6s6.9 2 7.5 6"/><path d="M8.5 17.5h1.6l1-1.6 1.6 3.2 1-1.6h1.8"/>',
+  /* תוכנית למידה אישית למורה — מסלול עם דגל */
+  'teacher-plan': '<path d="M5 20V5"/><path d="M5 5h11l-2.5 3.5L16 12H5"/><path d="M12 20c2-3 6-2 7-6"/>',
+  /* ניהול משימות למנהלת — רשימת V */
+  'tasks': '<path d="m4 6 1.5 1.5L8 5"/><path d="M11 6h9"/><path d="m4 12 1.5 1.5L8 11"/><path d="M11 12h9"/><path d="m4 18 1.5 1.5L8 17"/><path d="M11 18h6"/>',
+  /* לוח גאנט — פסים מדורגים */
+  'gantt': '<path d="M4 4v16h16"/><path d="M7.5 8h6"/><path d="M10.5 12h7"/><path d="M8.5 16h5"/>',
+  /* לוח אירועים ומועדים — לוח-שנה עם כוכב */
+  'calendar': '<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><path d="m12 11.8.9 1.9 2.1.3-1.5 1.5.4 2.1-1.9-1-1.9 1 .4-2.1-1.5-1.5 2.1-.3z"/>',
+  /* הגדרות תפקידים ואחריות — עץ-ארגוני */
+  'roles': '<rect x="9" y="3" width="6" height="4.5" rx="1.2"/><rect x="3" y="15.5" width="6" height="4.5" rx="1.2"/><rect x="15" y="15.5" width="6" height="4.5" rx="1.2"/><path d="M12 7.5v4M6 15.5v-2.5h12v2.5"/>',
+  /* ספר בית הספר הדיגיטלי — ספר פתוח */
+  'handbook': '<path d="M12 6.5c-1.6-1.6-4.2-2-8-2v14c3.8 0 6.4.4 8 2 1.6-1.6 4.2-2 8-2v-14c-3.8 0-6.4.4-8 2z"/><path d="M12 6.5v14"/>',
+  /* תעסוקה ומעסיקים — תיק עבודה */
+  'employment': '<rect x="3" y="7.5" width="18" height="12.5" rx="2"/><path d="M8.5 7.5V5.5A1.5 1.5 0 0 1 10 4h4a1.5 1.5 0 0 1 1.5 1.5v2"/><path d="M3 12.5h18M12 11.5v2"/>',
+  /* שיחות מנהלת — שתי בועות */
+  'my-conversations': '<path d="M3.5 5.5A1.5 1.5 0 0 1 5 4h8a1.5 1.5 0 0 1 1.5 1.5v5A1.5 1.5 0 0 1 13 12H8l-3.5 3v-3A1.5 1.5 0 0 1 3.5 10.5z"/><path d="M17 9h2a1.5 1.5 0 0 1 1.5 1.5v5A1.5 1.5 0 0 1 19 17h-1v3l-3.5-3H12"/>',
+  /* בנות שירות ומתנדבים — אדם עם לב */
+  'bnot-sherut': '<circle cx="9.5" cy="7.5" r="3.5"/><path d="M2.5 20c.6-3.7 3.4-5.5 7-5.5 1.1 0 2.1.2 3 .5"/><path d="M17.5 13.6c-.9-1-2.6-.8-3 .5-.4 1.2.9 2.6 3 4.2 2.1-1.6 3.4-3 3-4.2-.4-1.3-2.1-1.5-3-.5z"/>',
+  /* גיוס משאבים ושותפויות — לחיצת-יד */
+  'resources': '<path d="M10 14a4 4 0 0 0 5.6.4l3-3a4 4 0 0 0-5.6-5.6l-1.4 1.4"/><path d="M14 10a4 4 0 0 0-5.6-.4l-3 3a4 4 0 0 0 5.6 5.6l1.4-1.4"/>',
+  /* שליחה מרוכזת בוואטסאפ — מגפון */
+  'broadcast': '<path d="M4 10v4a1 1 0 0 0 1 1h3l8 4V5L8 9H5a1 1 0 0 0-1 1z"/><path d="M8 15v4.5"/><path d="M19.5 9.5a3.5 3.5 0 0 1 0 5"/>',
+  /* הסעות תלמידים — אוטובוס */
+  'transportation': '<rect x="3.5" y="4.5" width="17" height="13" rx="2.5"/><path d="M3.5 10.5h17"/><path d="M7 14.5h.01M17 14.5h.01"/><path d="M7 17.5v2M17 17.5v2"/><path d="M8.5 4.5v6M15.5 4.5v6"/>',
+  /* טופס הכנה למבחן — דף עם V */
+  'exam-prep-form': '<path d="M6 3h8l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v4h4"/><path d="m8.5 14 2 2 4-4.5"/>',
+  /* תכנון פדגוגי ושיבוץ מורים — טבלת שיבוץ */
+  'curriculum': '<rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M3.5 9h17M9 9v11M15 9v11"/><path d="M11 14h2"/>',
+  /* תכנון משרות ותקנים — עוגה */
+  'positions': '<path d="M12 3.5a8.5 8.5 0 1 0 8.5 8.5H12z"/><path d="M14 2.5a8 8 0 0 1 7.5 7.5H14z"/>',
+  /* תוכנית אסטרטגית — מטרה */
+  'strategy': '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12h.01"/><path d="m12 12 6-6"/><path d="M18 6h2.5V3.5"/>',
+  /* מרכז תכנון שנתי — לוח-שנה עם מפה */
+  'planning-hub': '<circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2 5-5 2 2-5z"/><path d="M12 12h.01"/>',
+  /* דף נחיתה לגיוס תלמידים — מסך עם חץ-כניסה */
+  'landing-recruitment': '<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 20.5h8M12 17v3.5"/><path d="M8.5 10.5h6M12 8l2.5 2.5L12 13"/>',
+  /* מחולל מודעות גיוס — מגפון קטן על דף */
+  'job-card-builder': '<rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M8 8h8M8 12h5"/><path d="M8 16.5h3l3-2v5l-3-2"/>',
+  /* מחולל תעודות — תעודה עם סרט */
+  'cert-generator': '<path d="M5 4h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M8 8h8M8 11.5h5"/><circle cx="16.5" cy="16" r="2.3"/><path d="m15 18 0 3 1.5-1 1.5 1v-3"/>',
+  /* מחולל רקעים לזום — מסך עם הרים */
+  'zoom-bg': '<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 20.5h8"/><path d="m5.5 14 3.5-4 3 3 2-2 4.5 3"/><circle cx="16" cy="8" r="1.2"/>',
+  /* מחולל גלויות ברכה — מעטפה עם לב */
+  'greeting-cards': '<rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="m3 8 9 6 9-6"/><path d="M12 12.6c-.9-.7-2-1.5-2-2.4a1.1 1.1 0 0 1 2-.6 1.1 1.1 0 0 1 2 .6c0 .9-1.1 1.7-2 2.4z"/>',
+  /* מחולל סטיקרים לוואטסאפ — סטיקר עם פינה מקופלת + חיוך */
+  'sticker-maker': '<path d="M5 3.5h14a1.5 1.5 0 0 1 1.5 1.5v9l-6 6H5A1.5 1.5 0 0 1 3.5 18.5V5A1.5 1.5 0 0 1 5 3.5z"/><path d="M14.5 20v-4.5a1 1 0 0 1 1-1H20"/><path d="M8.5 9h.01M13.5 9h.01"/><path d="M8.5 12.5c1 1.2 2.4 1.7 3.8 1.5"/>',
+  /* ערכת מחנכים — לב בתוך כרטיס */
+  'hub-teachers': '<rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M8 8h5"/><path d="M12 17.2c-1.6-1.2-3.5-2.6-3.5-4.1a1.9 1.9 0 0 1 3.5-1 1.9 1.9 0 0 1 3.5 1c0 1.5-1.9 2.9-3.5 4.1z"/>',
+  /* ערכת יועצות — אוזן קשבת/בועה + לב */
+  'hub-counselors': '<path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v7a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4A2.5 2.5 0 0 1 4 13.5z"/><path d="M12 13c-1.3-1-2.8-2.1-2.8-3.3a1.5 1.5 0 0 1 2.8-.8 1.5 1.5 0 0 1 2.8.8c0 1.2-1.5 2.3-2.8 3.3z"/>',
+  /* ערכת מנהל אדמיניסטרטיבי — ארון-תיקיות */
+  'hub-manu': '<rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M4 9.2h16M4 14.8h16"/><path d="M10.5 6.4h3M10.5 12h3M10.5 17.6h3"/>',
+  /* דשבורד אישי לבעל תפקיד — לוח עם אדם */
+  'role-dashboard': '<rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M14 9h4M14 12.5h4"/><circle cx="8.5" cy="9.5" r="2"/><path d="M5.5 16c.4-1.8 1.7-2.6 3-2.6s2.6.8 3 2.6"/>',
+  /* רישום לאסיפות הורים — לוח-שנה עם שני אנשים */
+  'parent-meetings': '<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><circle cx="9.5" cy="13.5" r="1.6"/><circle cx="14.5" cy="13.5" r="1.6"/><path d="M6.5 18.5c.4-1.4 1.6-2.2 3-2.2s2.6.8 3 2.2M12.5 18.5c.4-1.4 1.6-2.2 3-2.2s2.6.8 3 2.2"/>',
+  /* ערכת מיתוג בית-ספרית — פלטת צבעים */
+  'brand-kit': '<path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.4 0 2-.9 2-1.8 0-.9-.7-1.5-.7-2.4 0-.9.8-1.6 1.7-1.6h1.6a4 4 0 0 0 4-4C20.6 6.7 16.8 3.5 12 3.5z"/><path d="M7.5 12h.01M9.5 8h.01M14 7h.01"/>',
+  /* סקר מתחרים — זכוכית מגדלת על עמודות */
+  'competitors': '<path d="M4 20V13M8.5 20V9"/><circle cx="15" cy="10" r="4.5"/><path d="m18.2 13.2 2.8 2.8"/><path d="M13 20v-3"/>',
+  /* ניתוח SWOT — 2×2 עם צלב */
+  'swot': '<rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M12 3.5v17M3.5 12h17"/><path d="m6.5 8 1 1 1.5-2"/><path d="m15 15.5 2.5 2.5M17.5 15.5 15 18"/>',
+  /* המלצות הורים — בועה עם ציטוט */
+  'parent-testimonials': '<path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6l-4.5 4v-4H6a2 2 0 0 1-2-2z"/><path d="M8.5 11.5V9.7c0-1.1.7-1.9 1.8-2.2M13.5 11.5V9.7c0-1.1.7-1.9 1.8-2.2"/>'
+};
+
+/* צבע-התחום של מערכת (למסגרות/צללים: --c1 = גוון-התחום, --c2 = דיו) */
+function getLogo(id) {
+  var app = (typeof getApp === 'function') ? getApp(id) : null;
+  var cat = app && typeof getCategory === 'function' ? getCategory(app.cat) : null;
+  var c = (cat && cat.color) || '#12C7C7';
+  return { c1: c, c2: '#061E4F', tint: _hexMix(c, '#FFFFFF', 0.90), wash: _hexMix(c, '#FFFFFF', 0.62) };
+}
 
 /**
- * מחזיר SVG מלא של אריח-לוגו: גרדיאנט ייחודי, ברק עדין, וסמל.
+ * מחזיר SVG של הסימן: אריח-נייר בגוון-התחום, פס-סימון אלכסוני, גליף-דיו.
  * size — גודל בפיקסלים (ברירת מחדל 84).
  */
 function logoSVG(app, size) {
-  var L = getLogo(app.id), s = size || 84, gid = 'lg-' + app.id + '-' + s;
+  var L = getLogo(app.id), s = size || 84, ink = '#061E4F';
+  var h = _hash(app.id), variant = h % 3;
+  /* פס-סימון: מלבן מעוגל מוטה, מיקום משתנה קלות בין מערכות — כמו סימון בטוש */
+  var marks = [
+    '<rect x="14" y="30" width="36" height="13" rx="6.5" fill="' + L.c1 + '" opacity=".28" transform="rotate(-6 32 36)"/>',
+    '<rect x="16" y="26" width="34" height="13" rx="6.5" fill="' + L.c1 + '" opacity=".28" transform="rotate(5 32 32)"/>',
+    '<circle cx="' + (26 + (h % 5)) + '" cy="' + (36 - (h % 4)) + '" r="14" fill="' + L.c1 + '" opacity=".26"/>'
+  ];
   return '<svg class="app-logo" width="' + s + '" height="' + s + '" viewBox="0 0 64 64" role="img" aria-label="' + app.name + '">'
-    + '<defs>'
-    +   '<linearGradient id="' + gid + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + L.c1 + '"/><stop offset="1" stop-color="' + L.c2 + '"/></linearGradient>'
-    +   '<linearGradient id="' + gid + '-sh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></linearGradient>'
-    + '</defs>'
-    + '<rect width="64" height="64" rx="18" fill="url(#' + gid + ')"/>'
-    + '<rect width="64" height="64" rx="18" fill="url(#' + gid + '-sh)"/>'
-    + L.svg.split('url(#G)').join('url(#' + gid + ')')
+    + '<rect x=".5" y=".5" width="63" height="63" rx="17.5" fill="' + L.tint + '" stroke="' + ink + '" stroke-opacity=".10"/>'
+    + marks[variant]
+    + '<g transform="translate(13 13) scale(1.583)" fill="none" stroke="' + ink + '" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + (GLYPHS[app.id] || app.icon) + '</g>'
     + '</svg>';
 }
