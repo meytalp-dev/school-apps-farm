@@ -8,7 +8,7 @@
 var FEATURED = ['student-file', 'attendance', 'pulse', 'parent-meetings', 'broadcast', 'investment-bank'];
 
 /* ── דמואים חיים (demo/<id>.html) ── */
-var DEMOS = ['pulse', 'positions', 'gantt', 'my-conversations', 'resources', 'job-card-builder', 'brand-kit'];
+var DEMOS = ['pulse', 'positions', 'gantt', 'teacher-feedback', 'resources', 'job-card-builder', 'brand-kit'];
 function hasDemo(id) { return DEMOS.indexOf(id) !== -1; }
 function demoHref(id) { return 'demo/' + id + '.html'; }
 

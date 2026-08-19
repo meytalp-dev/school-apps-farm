@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דמו · שיחות משוב לצוות — חוות האפליקציות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+  .view { display: none; } .view.on { display: block; }
+  .tabs { margin-bottom: 20px; }
+  .tab svg { width: 14px; height: 14px; margin-inline-end: 6px; vertical-align: -2px; }
+  .lock { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--gray); font-weight: 600; }
+  .lock svg { width: 13px; height: 13px; }
+
+  /* ─── דשבורד ─── */
+  .fbar { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; padding: 12px 16px; background: #fff; border: 1px solid var(--line); border-radius: 18px; margin-bottom: 20px; }
+  .fgroup { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .fgroup > span { font-size: 13px; font-weight: 800; color: var(--navy); margin-inline-end: 4px; }
+  .fbtn { border: 1px solid rgba(6,30,79,.14); background: #fff; color: var(--navy); font-family: inherit; font-size: 12.5px; font-weight: 700; padding: 5px 12px; border-radius: 999px; cursor: pointer; transition: all var(--motion-fast) var(--motion-ease); }
+  .fbtn:hover { border-color: var(--navy); }
+  .fbtn.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .grp-title { display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 900; letter-spacing: -.3px; margin: 22px 0 12px; }
+  .grp-title svg { width: 18px; height: 18px; color: var(--teal); }
+  .grp-title small { font-size: 12.5px; color: var(--gray); font-weight: 600; }
+  .staff-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 1100px) { .staff-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 760px) { .staff-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 460px) { .staff-grid { grid-template-columns: 1fr; } }
+  .scard { --c: var(--teal); position: relative; background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 18px 18px 16px; cursor: pointer; overflow: hidden; transition: transform var(--motion-fast) var(--motion-ease), box-shadow 320ms var(--motion-ease), border-color 320ms; }
+  .scard::before { content: ''; position: absolute; top: 0; right: 0; left: 0; height: 4px; background: var(--c); }
+  .scard:hover { transform: translateY(-3px); box-shadow: 0 18px 40px rgba(6,30,79,.10); border-color: rgba(6,30,79,.18); }
+  .avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--c); color: #fff; display: grid; place-items: center; font-weight: 900; font-size: 15px; letter-spacing: -.5px; margin-bottom: 10px; }
+  .scard b { display: block; font-size: 16px; font-weight: 900; letter-spacing: -.2px; }
+  .scard .role { font-size: 13px; color: var(--gray); margin-top: 2px; }
+  .scard .sup { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--gray); margin-top: 8px; }
+  .scard .sup svg { width: 12px; height: 12px; }
+  .scard .foot { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+  .scard .when { font-size: 12px; color: var(--gray); font-weight: 600; }
+
+  /* ─── טפסים ─── */
+  .sel-row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 16px; }
+  .sel-row select.in { min-width: 240px; }
+  .q { margin-bottom: 14px; }
+  .q label { display: block; font-size: 13.5px; font-weight: 800; margin-bottom: 6px; }
+  .q textarea.in { width: 100%; min-height: 72px; }
+  .ans { background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; }
+  .ans small { display: block; font-size: 12px; font-weight: 800; color: var(--teal); margin-bottom: 3px; }
+  .ans p { font-size: 14px; line-height: 1.6; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  @media (max-width: 900px) { .split { grid-template-columns: 1fr; } }
+  .sliders { display: grid; gap: 10px; }
+  .sl { display: grid; grid-template-columns: 1fr 150px 30px; gap: 10px; align-items: center; font-size: 13.5px; font-weight: 700; }
+  .sl input[type=range] { width: 100%; accent-color: var(--c, var(--teal)); }
+  .sl b { font-variant-numeric: tabular-nums; text-align: center; color: var(--c, var(--teal)); }
+  .sl i { display: inline-block; width: 9px; height: 9px; border-radius: 3px; background: var(--c); margin-inline-end: 6px; vertical-align: 0; }
+  .radar-wrap { display: flex; justify-content: center; padding: 8px 0 2px; }
+  .radar-wrap canvas { max-width: 100%; height: auto; }
+  .leg { display: flex; gap: 14px; justify-content: center; font-size: 12px; font-weight: 700; color: var(--gray); margin-top: 4px; }
+  .leg span { display: inline-flex; align-items: center; gap: 5px; }
+  .leg i { width: 10px; height: 10px; border-radius: 3px; }
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; margin-top: 16px; }
+  .intro { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 14px 18px; border: 1.5px solid var(--teal); border-radius: 18px; background: rgba(18,199,199,.06); margin-bottom: 16px; }
+  .intro b { display: block; font-size: 15px; } .intro span { font-size: 13px; color: var(--gray); }
+  .intro .btn-sm { margin-inline-start: auto; }
+
+  /* ─── שיחה ─── */
+  .mhead { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
+  .mhead .who { display: flex; align-items: center; gap: 12px; }
+  .mhead .avatar { margin: 0; width: 52px; height: 52px; font-size: 17px; }
+  .mhead h3 { font-size: 20px; font-weight: 900; letter-spacing: -.4px; }
+  .mhead small { color: var(--gray); font-size: 13px; }
+  .gap { display: grid; grid-template-columns: 1fr auto auto auto; gap: 8px 14px; align-items: center; font-size: 13.5px; }
+  .gap .h { font-size: 11.5px; font-weight: 800; color: var(--gray); }
+  .gap .n { font-weight: 900; font-variant-numeric: tabular-nums; text-align: center; min-width: 28px; }
+  .gap .n.t { color: #0B7A7A; } .gap .n.p { color: var(--fuchsia); }
+  .gap .row-l { padding: 8px 0; border-bottom: 1px dashed rgba(6,30,79,.12); display: contents; }
+  .gap .row-l > * { padding: 7px 0; border-bottom: 1px dashed rgba(6,30,79,.1); }
+  .goal { display: grid; grid-template-columns: 2fr 1fr 1.4fr 34px; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .goal .in { padding: 8px 10px; font-size: 13px; }
+  .goal .icon-btn { width: 30px; height: 30px; }
+  .goal-h { display: grid; grid-template-columns: 2fr 1fr 1.4fr 34px; gap: 8px; font-size: 11.5px; font-weight: 800; color: var(--gray); margin-bottom: 4px; }
+  @media (max-width: 640px) { .goal, .goal-h { grid-template-columns: 1fr; } .goal-h { display: none; } }
+  .stars { display: flex; gap: 4px; }
+  .stars button { background: none; border: none; cursor: pointer; padding: 2px; color: rgba(6,30,79,.18); }
+  .stars button svg { width: 26px; height: 26px; fill: currentColor; }
+  .stars button.on { color: var(--yellow); }
+  .stars-line { display: flex; align-items: center; gap: 12px; font-size: 13.5px; font-weight: 700; margin: 6px 0 2px; }
+
+  /* ─── תוכנית עבודה (מסמך) ─── */
+  .doc { background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 36px 40px; max-width: 860px; margin: 0 auto; box-shadow: 0 18px 44px rgba(6,30,79,.07); }
+  .doc-h { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; border-bottom: 2px solid var(--navy); padding-bottom: 14px; margin-bottom: 18px; }
+  .doc-h h2 { font-size: 26px; font-weight: 900; letter-spacing: -.6px; }
+  .doc-h .meta { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--gray); margin-top: 6px; }
+  .doc-h .meta b { color: var(--navy); }
+  .doc h4 { font-size: 14px; font-weight: 900; color: var(--navy); margin: 20px 0 10px; display: flex; align-items: center; gap: 8px; }
+  .doc h4::before { content: ''; width: 10px; height: 10px; border-radius: 3px; background: var(--teal); }
+  .doc table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .doc th { text-align: right; font-size: 12px; color: var(--gray); font-weight: 800; padding: 8px 6px; border-bottom: 1px solid rgba(6,30,79,.14); }
+  .doc td { padding: 9px 6px; border-bottom: 1px dashed rgba(6,30,79,.1); vertical-align: top; }
+  .doc .commits { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .doc .commits p { font-size: 13.5px; line-height: 1.7; }
+  .doc .commits small { display: block; font-size: 12px; font-weight: 800; margin-bottom: 4px; }
+  .sigs { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 34px; }
+  .sig .line { border-bottom: 1.5px solid var(--navy); height: 34px; }
+  .sig small { display: block; font-size: 12px; color: var(--gray); margin-top: 6px; font-weight: 700; }
+  @media (max-width: 640px) { .doc { padding: 22px 18px; } .doc .commits, .sigs { grid-template-columns: 1fr; } }
+
+  /* ─── היסטוריה ─── */
+  .avg-row { display: grid; grid-template-columns: 150px 1fr 40px; gap: 12px; align-items: center; font-size: 13.5px; font-weight: 700; margin-bottom: 10px; }
+  .avg-row b { text-align: left; font-variant-numeric: tabular-nums; }
+  .big { font-size: 42px; font-weight: 900; letter-spacing: -2px; line-height: 1; color: var(--navy); }
+  .big small { display: block; font-size: 14px; font-weight: 700; color: var(--gray); letter-spacing: 0; margin-top: 6px; }
+  .tl { list-style: none; position: relative; padding-right: 18px; }
+  .tl::before { content: ''; position: absolute; right: 5px; top: 6px; bottom: 6px; width: 2px; background: rgba(6,30,79,.1); }
+  .tl li { position: relative; padding: 0 0 14px; font-size: 13.5px; }
+  .tl li::before { content: ''; position: absolute; right: -17px; top: 5px; width: 8px; height: 8px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 3px rgba(18,199,199,.2); }
+  .tl li b { display: block; } .tl li small { color: var(--gray); }
+  .trend { display: flex; align-items: flex-end; gap: 10px; height: 120px; padding-top: 10px; }
+  .trend div { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 700; color: var(--gray); }
+  .trend i { display: block; width: 100%; max-width: 46px; border-radius: 8px 8px 3px 3px; background: var(--teal); }
+  .trend b { color: var(--navy); font-size: 12.5px; }
+  .empty { text-align: center; color: var(--gray); padding: 40px 16px; font-size: 14.5px; }
+
+  @media print {
+    .demo-bar, .demo-foot, .demo-head, .tabs, .btn-row, .cart-fab, .toast { display: none !important; }
+    body, .demo-main { background: #fff !important; padding: 0 !important; }
+    .view { display: none !important; } #v-plan { display: block !important; }
+    .doc { box-shadow: none; border: none; max-width: none; padding: 0; }
+  }
+</style>
+</head>
+<body>
+
+<main class="demo-main">
+  <div class="demo-head">
+    <div>
+      <h2>שיחות משוב לצוות</h2>
+      <p>מהכנה ועד תוכנית עבודה — שיחה אחת לכל איש צוות, שמובילה לצמיחה ולא רק להערכה. המורה מתכונן/ת, המנהלת מתכוננת, נפגשים — ויוצאים עם תוכנית.</p>
+    </div>
+    <div class="demo-toolbar">
+      <span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>השיחות חסויות — נגישות למנהלת בלבד</span>
+      <button type="button" class="btn-sm ghost" onclick="resetDemo()">איפוס דמו</button>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <!-- 1 דשבורד -->
+  <section class="view on" id="v-dash">
+    <div class="kpis" id="kpis"></div>
+    <div class="fbar" id="fbar"></div>
+    <div id="groups"></div>
+  </section>
+
+  <!-- 2 הכנת המורה -->
+  <section class="view" id="v-tprep">
+    <div class="intro">
+      <div><b>הפרופיל המקצועי שלי</b><span>המורה ממלא/ת לבד, 4 דקות. התשובות מופיעות אצל המנהלת לקראת השיחה.</span></div>
+      <button type="button" class="btn-sm navy" onclick="DemoShell.toast('בדמו: הקישור למורה נשלח')">שליחת קישור למורה</button>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>טופס הכנה לשיחת משוב</h3><span class="hint">מה שהמורה כותב/ת כאן מגיע לשיחה</span></div>
+      <div class="sel-row"><label class="f">בחר/י את שמך <select class="in" id="tpSel" onchange="renderTPrep()"></select></label></div>
+      <div id="tpForm"></div>
+    </div>
+  </section>
+
+  <!-- 3 הכנת המנהלת -->
+  <section class="view" id="v-pprep">
+    <div class="card">
+      <div class="card-h"><h3>הכנת המנהלת לשיחת משוב</h3><span class="hint">תשובות המורה מול ההערכה שלי — לפני שנפגשים</span></div>
+      <div class="sel-row"><label class="f">בחר/י מורה <select class="in" id="ppSel" onchange="renderPPrep()"></select></label></div>
+    </div>
+    <div id="ppBody" style="margin-top:18px"></div>
+  </section>
+
+  <!-- 4 שיחת משוב -->
+  <section class="view" id="v-meet"><div id="meetBody"></div></section>
+
+  <!-- 5 תוכנית עבודה -->
+  <section class="view" id="v-plan"><div id="planBody"></div></section>
+
+  <!-- 6 היסטוריה -->
+  <section class="view" id="v-hist"><div id="histBody"></div></section>
+</main>
+
+<script src="../apps-data.js"></script>
+<script src="../logos.js"></script>
+<script src="../store.js"></script>
+<script src="demo-data.js"></script>
+<script src="demo-shell.js"></script>
+<script>
+  DemoShell.init('teacher-feedback');
+
+  /* ───────── הגדרות ───────── */
+  var SK = [
+    { id: 'comm', name: 'תקשורת אפקטיבית', c: '#12C7C7' },
+    { id: 'resp', name: 'אחריות ויוזמה', c: '#F00678' },
+    { id: 'crea', name: 'יצירתיות וחדשנות', c: '#F4B41B' },
+    { id: 'time', name: 'ניהול זמן', c: '#061E4F' },
+    { id: 'tikk', name: 'תיקון עולם', c: '#7BCB52' }
+  ];
+  var GRADE_C = { 'ז': '#12C7C7', 'ח': '#7BCB52', 'ט': '#F00678', 'י': '#F4B41B', 'יא': '#FF7A1A', 'יב': '#061E4F' };
+  var QS = [
+    { k: 'feeling', q: 'איך את/ה מרגיש/ה בתפקיד השנה?' },
+    { k: 'successes', q: 'מה ההצלחות המשמעותיות שלך השנה?' },
+    { k: 'challenges', q: 'מה מאתגר אותך?' },
+    { k: 'growth', q: 'באיזה תחום תרצה/י להתפתח?' },
+    { k: 'needs', q: 'מה את/ה צריך/ה ממני כמנהלת?' }
+  ];
+  var STAFF_IDS = ['t01', 't02', 't03', 't04', 't05', 't07', 't10', 't11', 't13', 't15', 't18', 't19', 't17', 't06'];
+  var SUPS = { 'ז': 'יעל סגל', 'ח': 'יעל סגל', 'ט': 'אורית חדד', 'י': 'אורית חדד', 'יא': 'יעל סגל', 'יב': 'אורית חדד' };
+  var ICONS = {
+    dash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>',
+    doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h4"/></svg>',
+    pen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 20l4-1 11-11-3-3L5 16z"/></svg>',
+    chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.4A8 8 0 1 1 21 12z"/></svg>',
+    plan: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m4 12 2 2 4-4"/><path d="M4 19h16M12 6h8M12 12h8"/></svg>',
+    hist: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.6-3.6 3.3-5.5 7-5.5s6.4 1.9 7 5.5"/></svg>',
+    users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 19c.5-3.3 3-5 6.5-5s6 1.7 6.5 5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14c2.8 0 4.8 1.4 5.5 4"/></svg>',
+    star: '<svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg>',
+    x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    print: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></svg>'
+  };
+
+  /* ───────── בנקי-טקסט (מומצאים) ───────── */
+  var TXT = {
+    feeling: ['מרגישה יציבה ומחוברת לכיתה, אבל העומס בסוף השבוע מורגש.', 'שנה טובה — הצלחתי לבנות אמון עם ההורים מהר יותר מבעבר.', 'מאתגר אבל מספק; הכיתה דורשת הרבה נוכחות.', 'מרגיש שאני במקום הנכון. רוצה יותר שיתוף עם הצוות.'],
+    successes: ['ירידה ניכרת באיחורים אחרי תוכנית הבוקר שבנינו יחד.', 'שלושה תלמידים שהיו על סף נשירה סיימו סמסטר עם ציונים מלאים.', 'פרויקט כיתתי שהוצג בערב ההורים — כולם השתתפו.', 'בניתי שגרת "שיחת עשר דקות" שבועית עם כל תלמיד.'],
+    challenges: ['זמן — הניירת לוקחת יותר מהשיחות עם התלמידים.', 'שני תלמידים עם התנהגות מאתגרת שמשפיעים על כל הכיתה.', 'קשה לי לשלב טכנולוגיה בלי שזה ייראה מאולץ.', 'תיאום עם המורים המקצועיים סביב מבחנים.'],
+    growth: ['הוראה מבוססת-פרויקטים ולמידה שיתופית.', 'ניהול שיחות קשות עם הורים.', 'שימוש בנתונים (פולס, ציונים) כדי לכוון את העבודה.', 'מנהיגות — להוביל צוות שכבה.'],
+    needs: ['שעה קבועה לישיבת צוות שכבה, לא על חשבון ההפסקה.', 'גיבוי ברור מול הורים כשיש החלטה כיתתית.', 'השתלמות קצרה ופרקטית, לא סמסטר שלם.', 'לדעת שאפשר להגיד "לא" לפרויקט נוסף.'],
+    strengths: ['קשר אישי חזק עם התלמידים; רואים אותה יורדת לפרטים.', 'יוזמה — לא מחכה שיגידו לה, מביאה רעיונות ומבצעת.', 'סדר ובהירות: ההורים יודעים תמיד מה קורה.', 'יצירתיות בשיעורים — התלמידים מדברים על זה במסדרון.'],
+    improvements: ['תיעדוף — לא הכול דחוף באותה מידה.', 'להעביר אחריות לתלמידים במקום לעשות בעצמה.', 'שיתוף היועצת מוקדם יותר במקרים רגשיים.', 'שימוש עקבי בנתוני הפולס.'],
+    keypoints: ['דיברנו על העומס ועל מה אפשר להוריד מהשולחן. הסכמנו שהדיווח השבועי יתקצר לשלוש שורות. המורה ביקשה ליווי בשיחות הורים — נקבע חונכות עם הסגנית.', 'השיחה הייתה פתוחה וכנה. הפער המרכזי בניהול זמן — המורה מודעת ומבקשת כלים. סוכם על ניסוי של חודש עם תכנון שבועי ביום חמישי.', 'המורה הביאה שלוש הצלחות מרשימות. ביקשה להוביל את צוות השכבה בשנה הבאה — נבדוק במאי.'],
+    goals: [['לבנות שגרת תכנון שבועית קבועה', 'עד סוף דצמבר', 'תוכנית שבועית נשלחת ביום חמישי — 8 מתוך 10 שבועות'], ['שיחת 1:1 עם כל תלמיד פעם בחודש', 'כל החודש', 'יומן שיחות מלא — 100% מהתלמידים'], ['שילוב נתוני פולס בשיחת הכיתה', 'אחרי כל תקופה', '3 שיחות כיתה על הפולס בשנה'], ['פרויקט כיתתי שיתופי בסמסטר ב׳', 'מרץ–מאי', 'תוצר מוצג בערב הורים'], ['להוביל ישיבת שכבה פעם בחודש', 'ינואר–יוני', '5 ישיבות בהובלת המורה'], ['השתלמות קצרה בשיחות הורים', 'עד פברואר', 'השתתפות + יישום בשתי שיחות']],
+    pc: ['חונכות של הסגנית לשיחות הורים (3 מפגשים) · הורדת הדיווח השבועי לשלוש שורות', 'שעה קבועה לצוות שכבה ביום רביעי · גיבוי בכל החלטה כיתתית', 'מימון השתלמות קצרה · פגישת מעקב אחרי חודשיים'],
+    tc: ['תכנון שבועי קבוע · שיחות 1:1 עם כל תלמיד · עדכון היועצת במקרים רגשיים', 'להביא את נתוני הפולס לשיחת הכיתה · לתעד שיחות ביומן', 'להוביל ישיבת שכבה אחת בחודש · לשתף את הצוות בהצלחות']
+  };
+
+  /* ───────── state ───────── */
+  var KEY = 'farm-demo-teacher-feedback';
+  var S = {};
+  var filters = { grade: 'all', role: 'all', status: 'all' };
+  var cur = null;   /* מורה נבחר/ת */
+
+  function tOf(id) { for (var i = 0; i < DEMO.teachers.length; i++) if (DEMO.teachers[i].id === id) return DEMO.teachers[i]; return null; }
+  function gradeOf(t) { return (t.homeroom || '').replace(/\d/g, ''); }
+  function initials(n) { var p = n.split(/[\s-]+/); return (p[0] || '').charAt(0) + (p[1] || '').charAt(0); }
+  function colorOf(t) { return GRADE_C[gradeOf(t)] || '#12C7C7'; }
+  function roleKind(t) { return /יועצ/.test(t.role) ? 'counselor' : /מחנ/.test(t.role) ? 'teacher' : 'other'; }
+  function roleLabel(t) { return roleKind(t) === 'teacher' ? 'מחנכ/ת ' + t.homeroom : t.role; }
+  function r1(v) { return Math.round(v * 10) / 10; }
+  function f1(v) { return r1(v).toFixed(1); }
+  function fd(d) { return DEMO.fmtDate(d); }
+
+  function genState() {
+    var rnd = DEMO.rng(7);
+    S = {};
+    var done = ['t01', 't03', 't05', 't10', 't15', 't18'], sched = ['t02', 't11', 't19'];
+    STAFF_IDS.forEach(function (id, i) {
+      var st = done.indexOf(id) !== -1 ? 'done' : sched.indexOf(id) !== -1 ? 'sched' : 'none';
+      var rec = { status: st, self: null, princ: null, answers: null, pp: null, meeting: null, date: null };
+      var d0 = new Date(2026, 10, 2 + Math.floor(rnd() * 40));
+      if (st !== 'none') rec.date = d0;
+      if (st !== 'none' || rnd() < 0.5) {
+        rec.answers = {}; QS.forEach(function (q, qi) { rec.answers[q.k] = DEMO.pick(TXT[q.k], i + qi); });
+        rec.self = SK.map(function () { return Math.round((2.6 + rnd() * 2.2) * 2) / 2; });
+      }
+      if (st === 'done') {
+        var gapAt = Math.floor(rnd() * 5);
+        rec.princ = rec.self.map(function (v, di) { var x = v + (rnd() - 0.45) * 1.8 + (di === gapAt ? (rnd() < 0.5 ? 1.5 : -1.5) : 0); return Math.round(Math.max(1.5, Math.min(5, x)) * 2) / 2; });
+        rec.pp = { strengths: DEMO.pick(TXT.strengths, i), improvements: DEMO.pick(TXT.improvements, i + 1), goals: 'לחזק ' + SK[(i + 2) % 5].name + ' · לשמר ' + SK[i % 5].name, notes: '' };
+        var g1 = DEMO.pick(TXT.goals, i), g2 = DEMO.pick(TXT.goals, i + 2), g3 = DEMO.pick(TXT.goals, i + 4);
+        rec.meeting = {
+          key: DEMO.pick(TXT.keypoints, i),
+          goals: [{ t: g1[0], when: g1[1], m: g1[2], st: i % 3 !== 2 ? 'הושג' : 'בתהליך', next: false }, { t: g2[0], when: g2[1], m: g2[2], st: i % 2 ? 'הושג' : 'בתהליך', next: false }, { t: g3[0], when: 'שנה הבאה', m: g3[2], st: 'מתוכנן', next: true }],
+          pc: DEMO.pick(TXT.pc, i), tc: DEMO.pick(TXT.tc, i), stars: 4 + (i % 2)
+        };
+      }
+      if (st === 'sched') rec.pp = { strengths: '', improvements: '', goals: '', notes: '' };
+      S[id] = rec;
+    });
+  }
+  function load() { try { var j = localStorage.getItem(KEY); if (j) { S = JSON.parse(j); for (var k in S) if (S[k].date) S[k].date = new Date(S[k].date); return; } } catch (e) {} genState(); }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+  function resetDemo() { try { localStorage.removeItem(KEY); } catch (e) {} genState(); cur = null; filters = { grade: 'all', role: 'all', status: 'all' }; showTab('dash'); DemoShell.toast('הדמו אופס לנתוני ההתחלה'); }
+
+  /* ───────── רדאר ───────── */
+  function radar(canvas, series, size) {
+    if (!canvas) return;
+    var dpr = window.devicePixelRatio || 1, H = size || 260, W = H + 150, R = H / 2 - 28, cx = W / 2, cy = H / 2;
+    canvas.width = W * dpr; canvas.height = H * dpr; canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    var ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr); ctx.clearRect(0, 0, W, H);
+    var n = SK.length, ang = function (i) { return -Math.PI / 2 + i * 2 * Math.PI / n; };
+    ctx.strokeStyle = 'rgba(6,30,79,.12)'; ctx.lineWidth = 1;
+    for (var lv = 1; lv <= 5; lv++) { ctx.beginPath(); for (var i = 0; i < n; i++) { var r = R * lv / 5, x = cx + Math.cos(ang(i)) * r, y = cy + Math.sin(ang(i)) * r; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.closePath(); ctx.stroke(); }
+    for (i = 0; i < n; i++) { ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(ang(i)) * R, cy + Math.sin(ang(i)) * R); ctx.stroke(); }
+    series.forEach(function (s) {
+      ctx.beginPath();
+      s.v.forEach(function (val, i) { var r = R * val / 5, x = cx + Math.cos(ang(i)) * r, y = cy + Math.sin(ang(i)) * r; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+      ctx.closePath(); ctx.fillStyle = s.c + '2E'; ctx.fill(); ctx.strokeStyle = s.c; ctx.lineWidth = 2.2; ctx.stroke();
+      s.v.forEach(function (val, i) { var r = R * val / 5; ctx.beginPath(); ctx.arc(cx + Math.cos(ang(i)) * r, cy + Math.sin(ang(i)) * r, 3.5, 0, 7); ctx.fillStyle = s.c; ctx.fill(); });
+    });
+    ctx.fillStyle = '#061E4F'; ctx.font = '700 11px Heebo, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    SK.forEach(function (d, i) { var cs = Math.cos(ang(i)), x = cx + cs * (R + 14), y = cy + Math.sin(ang(i)) * (R + 16); ctx.textAlign = cs > 0.2 ? 'left' : cs < -0.2 ? 'right' : 'center'; ctx.fillText(d.name, x, y); });
+  }
+  function slidersHTML(prefix, vals, onInput) {
+    return '<div class="sliders">' + SK.map(function (d, i) {
+      return '<div class="sl" style="--c:' + d.c + '"><span><i></i>' + d.name + '</span><input type="range" min="1" max="5" step="0.5" value="' + vals[i] + '" oninput="' + onInput + '(' + i + ', this.value)"><b id="' + prefix + '-v' + i + '">' + f1(vals[i]) + '</b></div>';
+    }).join('') + '</div>';
+  }
+
+  /* ───────── טאבים ───────── */
+  var TABS = [['dash', 'דשבורד', 'dash'], ['tprep', 'הכנת המורה', 'doc'], ['pprep', 'הכנת המנהלת', 'pen'], ['meet', 'שיחת משוב', 'chat'], ['plan', 'תוכנית עבודה', 'plan'], ['hist', 'היסטוריה', 'hist']];
+  function renderTabs(active) {
+    document.getElementById('tabs').innerHTML = TABS.map(function (t) { return '<button type="button" class="tab' + (t[0] === active ? ' active' : '') + '" onclick="showTab(\'' + t[0] + '\')">' + ICONS[t[2]] + t[1] + '</button>'; }).join('');
+  }
+  function showTab(id) {
+    renderTabs(id);
+    var vs = document.querySelectorAll('.view'); for (var i = 0; i < vs.length; i++) vs[i].classList.toggle('on', vs[i].id === 'v-' + id);
+    if (id === 'dash') renderDash(); if (id === 'tprep') { fillSel('tpSel'); renderTPrep(); } if (id === 'pprep') { fillSel('ppSel'); renderPPrep(); }
+    if (id === 'meet') renderMeet(); if (id === 'plan') renderPlan(); if (id === 'hist') renderHist();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function fillSel(id) {
+    var el = document.getElementById(id);
+    el.innerHTML = '<option value="">— בחירה —</option>' + STAFF_IDS.map(function (tid) { var t = tOf(tid); return '<option value="' + tid + '"' + (cur === tid ? ' selected' : '') + '>' + t.name + ' · ' + roleLabel(t) + '</option>'; }).join('');
+  }
+
+  /* ───────── 1 דשבורד ───────── */
+  function renderDash() {
+    var n = STAFF_IDS.length, done = 0, sched = 0, none = 0;
+    STAFF_IDS.forEach(function (id) { var s = S[id].status; if (s === 'done') done++; else if (s === 'sched') sched++; else none++; });
+    document.getElementById('kpis').innerHTML =
+      '<div class="kpi" style="--c:var(--teal)"><b>' + n + '</b><span>סה"כ צוות בתהליך</span></div>'
+      + '<div class="kpi" style="--c:var(--green)"><b>' + done + '</b><span>שיחות שהושלמו</span></div>'
+      + '<div class="kpi" style="--c:var(--yellow)"><b>' + sched + '</b><span>שיחות מתוכננות</span></div>'
+      + '<div class="kpi" style="--c:var(--fuchsia)"><b>' + none + '</b><span>טרם תואמו</span></div>';
+    var fb = function (k, v, label) { return '<button type="button" class="fbtn' + (filters[k] === v ? ' on' : '') + '" onclick="setF(\'' + k + '\',\'' + v + '\')">' + label + '</button>'; };
+    document.getElementById('fbar').innerHTML =
+      '<div class="fgroup"><span>שכבה:</span>' + fb('grade', 'all', 'הכל') + DEMO.grades.map(function (g) { return fb('grade', g, g); }).join('') + '</div>'
+      + '<div class="fgroup"><span>תפקיד:</span>' + fb('role', 'all', 'הכל') + fb('role', 'teacher', 'מחנכ/ת') + fb('role', 'counselor', 'יועצת') + fb('role', 'other', 'רכז/ת') + '</div>'
+      + '<div class="fgroup"><span>סטטוס:</span>' + fb('status', 'all', 'הכל') + fb('status', 'done', 'הושלם') + fb('status', 'sched', 'תואם') + fb('status', 'none', 'טרם תואם') + '</div>';
+    var groups = [['teacher', 'מחנכות ומחנכים', 'users'], ['counselor', 'יועצות', 'user'], ['other', 'רכזות ורכזים', 'user']], html = '';
+    groups.forEach(function (g) {
+      var ids = STAFF_IDS.filter(function (id) { var t = tOf(id); return roleKind(t) === g[0] && (filters.grade === 'all' || gradeOf(t) === filters.grade) && (filters.role === 'all' || filters.role === g[0]) && (filters.status === 'all' || S[id].status === filters.status); });
+      if (!ids.length) return;
+      html += '<div class="grp-title">' + ICONS[g[2]] + g[1] + '<small>' + ids.length + '</small></div><div class="staff-grid">' + ids.map(cardHTML).join('') + '</div>';
+    });
+    document.getElementById('groups').innerHTML = html || '<div class="empty">אין אנשי צוות שמתאימים לסינון</div>';
+  }
+  function setF(k, v) { filters[k] = v; renderDash(); }
+  function statusChip(st) { return st === 'done' ? '<span class="status ok">הושלם</span>' : st === 'sched' ? '<span class="status warn">תואם</span>' : '<span class="status muted">טרם תואם</span>'; }
+  function cardHTML(id) {
+    var t = tOf(id), r = S[id], sup = roleKind(t) === 'teacher' ? SUPS[gradeOf(t)] : 'מנהלת';
+    return '<div class="scard" style="--c:' + colorOf(t) + '" onclick="openTeacher(\'' + id + '\')">'
+      + '<div class="avatar">' + initials(t.name) + '</div><b>' + t.name + '</b><div class="role">' + roleLabel(t) + (t.subjects.length ? ' · ' + t.subjects[0] : '') + '</div>'
+      + '<div class="sup">' + ICONS.user + 'ליווי: ' + sup + '</div>'
+      + '<div class="foot">' + statusChip(r.status) + '<span class="when">' + (r.date ? fd(r.date) : (r.answers ? 'מילא/ה הכנה' : '')) + '</span></div></div>';
+  }
+  function openTeacher(id) { cur = id; var st = S[id].status; showTab(st === 'done' ? 'meet' : 'pprep'); }
+
+  /* ───────── 2 הכנת המורה ───────── */
+  function renderTPrep() {
+    var sel = document.getElementById('tpSel'); if (sel.value) cur = sel.value;
+    var box = document.getElementById('tpForm');
+    if (!cur) { box.innerHTML = '<div class="empty">בחר/י שם כדי למלא את טופס ההכנה</div>'; return; }
+    var r = S[cur]; if (!r.answers) { r.answers = {}; QS.forEach(function (q) { r.answers[q.k] = ''; }); } if (!r.self) r.self = [3, 3, 3, 3, 3];
+    box.innerHTML = QS.map(function (q) { return '<div class="q"><label>' + q.q + '</label><textarea class="in" oninput="S[cur].answers[\'' + q.k + '\']=this.value">' + DemoShell.esc(r.answers[q.k]) + '</textarea></div>'; }).join('')
+      + '<div class="card" style="margin-top:18px"><div class="card-h"><h3>דירוג עצמי — 5 מיומנויות</h3><span class="hint">1 = עוד לא שם · 5 = חזק אצלי</span></div><div class="split"><div>' + slidersHTML('tp', r.self, 'tpSlide') + '</div><div class="radar-wrap"><canvas id="tpRadar"></canvas></div></div></div>'
+      + '<div class="btn-row"><button type="button" class="btn-sm primary" onclick="save();DemoShell.toast(\'טופס ההכנה נשמר בדמו\')">שמירת טופס</button></div>';
+    radar(document.getElementById('tpRadar'), [{ v: r.self, c: '#12C7C7' }], 260);
+  }
+  function tpSlide(i, v) { S[cur].self[i] = +v; document.getElementById('tp-v' + i).textContent = f1(v); radar(document.getElementById('tpRadar'), [{ v: S[cur].self, c: '#12C7C7' }], 260); }
+
+  /* ───────── 3 הכנת המנהלת ───────── */
+  function answersHTML(r) {
+    if (!r.answers) return '<div class="empty" style="padding:26px">המורה טרם מילא/ה את טופס ההכנה</div>';
+    return QS.map(function (q) { return '<div class="ans"><small>' + q.q + '</small><p>' + (DemoShell.esc(r.answers[q.k]) || '<span style="color:var(--gray)">—</span>') + '</p></div>'; }).join('')
+      + (r.self ? '<div class="radar-wrap" style="margin-top:6px"><canvas id="ppRadarT"></canvas></div><div class="leg"><span><i style="background:#12C7C7"></i>דירוג עצמי של המורה</span></div>' : '');
+  }
+  function renderPPrep() {
+    var sel = document.getElementById('ppSel'); if (sel.value) cur = sel.value;
+    var box = document.getElementById('ppBody');
+    if (!cur) { box.innerHTML = '<div class="empty">בחר/י מורה כדי להתכונן לשיחה</div>'; return; }
+    var t = tOf(cur), r = S[cur];
+    if (!r.pp) r.pp = { strengths: '', improvements: '', goals: '', notes: '' }; if (!r.princ) r.princ = [3, 3, 3, 3, 3];
+    box.innerHTML = '<div class="split"><div class="card"><div class="card-h"><h3>תשובות המורה — ' + t.name + '</h3>' + statusChip(r.status) + '</div>' + answersHTML(r) + '</div>'
+      + '<div><div class="card"><div class="card-h"><h3>הערכת המנהלת — 5 מיומנויות</h3></div>' + slidersHTML('pp', r.princ, 'ppSlide') + '<div class="radar-wrap"><canvas id="ppRadar"></canvas></div><div class="leg"><span><i style="background:#F00678"></i>הערכת המנהלת</span></div></div>'
+      + '<div class="card" style="margin-top:18px">'
+      + '<div class="q"><label>נקודות חוזק</label><textarea class="in" oninput="S[cur].pp.strengths=this.value">' + DemoShell.esc(r.pp.strengths) + '</textarea></div>'
+      + '<div class="q"><label>נקודות לשיפור</label><textarea class="in" oninput="S[cur].pp.improvements=this.value">' + DemoShell.esc(r.pp.improvements) + '</textarea></div>'
+      + '<div class="q"><label>יעדים שארצה להציב</label><textarea class="in" oninput="S[cur].pp.goals=this.value">' + DemoShell.esc(r.pp.goals) + '</textarea></div>'
+      + '<div class="q"><label>הערות נוספות</label><textarea class="in" oninput="S[cur].pp.notes=this.value">' + DemoShell.esc(r.pp.notes) + '</textarea></div>'
+      + '<div class="btn-row"><button type="button" class="btn-sm" onclick="save();DemoShell.toast(\'ההכנה נשמרה בדמו\')">שמירה</button><button type="button" class="btn-sm primary" onclick="startMeeting()">התחלת שיחת משוב</button></div>'
+      + '</div></div></div>';
+    radar(document.getElementById('ppRadar'), [{ v: r.princ, c: '#F00678' }], 240);
+    if (r.self) radar(document.getElementById('ppRadarT'), [{ v: r.self, c: '#12C7C7' }], 220);
+  }
+  function ppSlide(i, v) { S[cur].princ[i] = +v; document.getElementById('pp-v' + i).textContent = f1(v); radar(document.getElementById('ppRadar'), [{ v: S[cur].princ, c: '#F00678' }], 240); }
+  function startMeeting() { var r = S[cur]; if (!r.meeting) r.meeting = { key: '', goals: [{ t: '', when: '', m: '', st: 'מתוכנן', next: false }], pc: '', tc: '', stars: 0 }; if (r.status === 'none') { r.status = 'sched'; r.date = new Date(2026, 10, 10); } save(); showTab('meet'); }
+
+  /* ───────── 4 שיחת משוב ───────── */
+  function gapChip(g) { var a = Math.abs(g); return a <= 0.5 ? '<span class="chip-sm teal">תואם</span>' : a <= 1 ? '<span class="chip-sm gold">פער קל</span>' : '<span class="chip-sm fuchsia">פער משמעותי</span>'; }
+  function renderMeet() {
+    var box = document.getElementById('meetBody');
+    if (!cur || !S[cur].meeting) { box.innerHTML = '<div class="card"><div class="empty">יש לבחור מורה דרך הדשבורד או דרך מסך הכנת המנהלת, וללחוץ "התחלת שיחת משוב"</div></div>'; return; }
+    var t = tOf(cur), r = S[cur], m = r.meeting, self = r.self || [3, 3, 3, 3, 3], pr = r.princ || [3, 3, 3, 3, 3];
+    var gaps = SK.map(function (d, i) { return '<div class="row-l"><span><i style="display:inline-block;width:9px;height:9px;border-radius:3px;background:' + d.c + ';margin-inline-end:6px"></i>' + d.name + '</span><span class="n t">' + f1(self[i]) + '</span><span class="n p">' + f1(pr[i]) + '</span>' + gapChip(pr[i] - self[i]) + '</div>'; }).join('');
+    box.innerHTML = '<div class="mhead"><div class="who"><div class="avatar" style="--c:' + colorOf(t) + '">' + initials(t.name) + '</div><div><h3>שיחת משוב — ' + t.name + '</h3><small>' + roleLabel(t) + ' · ' + (r.date ? fd(r.date) : 'היום') + ' · ' + statusChip(r.status) + '</small></div></div>'
+      + '<div class="demo-toolbar"><button type="button" class="btn-sm ghost" onclick="showTab(\'pprep\')">חזרה להכנה</button></div></div>'
+      + '<div class="split" style="margin-bottom:18px"><div class="card"><div class="card-h"><h3>השוואת הערכות — 5 מיומנויות</h3></div><div class="radar-wrap"><canvas id="mRadar"></canvas></div><div class="leg"><span><i style="background:#12C7C7"></i>דירוג עצמי של המורה</span><span><i style="background:#F00678"></i>הערכת המנהלת</span></div></div>'
+      + '<div class="card"><div class="card-h"><h3>ניתוח פערים</h3><span class="hint">איפה מסכימים ואיפה כדאי לדבר</span></div><div class="gap"><span class="h">מיומנות</span><span class="h">מורה</span><span class="h">מנהלת</span><span class="h">פער</span>' + gaps + '</div></div></div>'
+      + '<div class="card"><div class="card-h"><h3>סיכום השיחה</h3></div>'
+      + '<div class="q"><label>נקודות עיקריות מהשיחה</label><textarea class="in" style="min-height:96px" oninput="S[cur].meeting.key=this.value">' + DemoShell.esc(m.key) + '</textarea></div>'
+      + '<div class="q"><label>יעדים שסוכמו</label><div class="goal-h"><span>היעד</span><span>לוח זמנים</span><span>מדד הצלחה</span><span></span></div><div id="goals">' + m.goals.map(goalRow).join('') + '</div><button type="button" class="btn-sm" onclick="addGoal()">+ הוספת יעד</button></div>'
+      + '<div class="split"><div class="q"><label>התחייבויות המנהלת</label><textarea class="in" oninput="S[cur].meeting.pc=this.value">' + DemoShell.esc(m.pc) + '</textarea></div><div class="q"><label>התחייבויות המורה</label><textarea class="in" oninput="S[cur].meeting.tc=this.value">' + DemoShell.esc(m.tc) + '</textarea></div></div>'
+      + '<div class="stars-line">תחושה כללית מהשיחה <div class="stars" id="stars">' + starsHTML(m.stars) + '</div></div>'
+      + '<div class="btn-row"><button type="button" class="btn-sm" onclick="saveMeeting(false)">שמירת סיכום</button><button type="button" class="btn-sm primary" onclick="saveMeeting(true)">יצירת תוכנית עבודה</button></div></div>';
+    radar(document.getElementById('mRadar'), [{ v: self, c: '#12C7C7' }, { v: pr, c: '#F00678' }], 280);
+  }
+  function goalRow(g, i) {
+    return '<div class="goal"><input class="in" value="' + DemoShell.esc(g.t) + '" placeholder="מה היעד?" oninput="S[cur].meeting.goals[' + i + '].t=this.value"><input class="in" value="' + DemoShell.esc(g.when) + '" placeholder="עד מתי" oninput="S[cur].meeting.goals[' + i + '].when=this.value"><input class="in" value="' + DemoShell.esc(g.m) + '" placeholder="איך נדע שהצלחנו" oninput="S[cur].meeting.goals[' + i + '].m=this.value"><button type="button" class="icon-btn" title="הסרה" onclick="rmGoal(' + i + ')">' + ICONS.x + '</button></div>';
+  }
+  function addGoal() { S[cur].meeting.goals.push({ t: '', when: '', m: '', st: 'מתוכנן', next: false }); document.getElementById('goals').innerHTML = S[cur].meeting.goals.map(goalRow).join(''); }
+  function rmGoal(i) { S[cur].meeting.goals.splice(i, 1); document.getElementById('goals').innerHTML = S[cur].meeting.goals.map(goalRow).join(''); }
+  function starsHTML(n) { var h = ''; for (var i = 1; i <= 5; i++) h += '<button type="button" class="' + (i <= n ? 'on' : '') + '" onclick="setStars(' + i + ')" aria-label="' + i + '">' + ICONS.star + '</button>'; return h; }
+  function setStars(n) { S[cur].meeting.stars = n; document.getElementById('stars').innerHTML = starsHTML(n); }
+  function saveMeeting(goPlan) { var r = S[cur]; r.status = 'done'; if (!r.date) r.date = new Date(2026, 10, 10); save(); DemoShell.toast('סיכום השיחה נשמר בדמו'); if (goPlan) showTab('plan'); }
+
+  /* ───────── 5 תוכנית עבודה ───────── */
+  function renderPlan() {
+    var box = document.getElementById('planBody');
+    if (!cur || !S[cur].meeting) { box.innerHTML = '<div class="card"><div class="empty">תוכנית עבודה נוצרת בסיום שיחת המשוב</div></div>'; return; }
+    var t = tOf(cur), r = S[cur], m = r.meeting, self = r.self || [3, 3, 3, 3, 3], pr = r.princ || self;
+    var curG = m.goals.filter(function (g) { return !g.next && g.t; }), nextG = m.goals.filter(function (g) { return g.next && g.t; });
+    var gRows = function (arr) { return arr.length ? arr.map(function (g) { return '<tr><td><b>' + DemoShell.esc(g.t) + '</b></td><td>' + DemoShell.esc(g.when) + '</td><td>' + DemoShell.esc(g.m) + '</td><td><span class="chip-sm ' + (g.st === 'הושג' ? 'green' : g.st === 'בתהליך' ? 'teal' : 'gray') + '">' + g.st + '</span></td></tr>'; }).join('') : '<tr><td colspan="4" style="color:var(--gray)">—</td></tr>'; };
+    box.innerHTML = '<div class="doc"><div class="doc-h"><div><h2>תוכנית עבודה אישית</h2><div class="meta"><span><b>' + t.name + '</b></span><span>' + roleLabel(t) + '</span><span>' + (r.date ? fd(r.date) : '') + '</span><span>סמסטר א׳ · ' + DEMO.school.year + '</span><span>' + DEMO.school.name + '</span></div></div>' + logoSVG(getApp('teacher-feedback'), 44) + '</div>'
+      + '<h4>פרופיל מיומנויות</h4><div class="split" style="align-items:center"><div class="radar-wrap"><canvas id="wpRadar"></canvas></div><div>' + SK.map(function (d, i) { return '<div class="avg-row" style="grid-template-columns:140px 1fr 70px"><span>' + d.name + '</span><div class="bar" style="--c:' + d.c + '"><i style="width:' + (pr[i] / 5 * 100) + '%"></i></div><b>' + f1(self[i]) + ' / ' + f1(pr[i]) + '</b></div>'; }).join('') + '<div class="leg" style="justify-content:flex-start"><span>מורה / מנהלת</span></div></div></div>'
+      + '<h4>יעדים לסמסטר הנוכחי</h4><table><thead><tr><th>יעד</th><th>לוח זמנים</th><th>מדד הצלחה</th><th>סטטוס</th></tr></thead><tbody>' + gRows(curG) + '</tbody></table>'
+      + '<h4>יעדים לשנה הבאה</h4><table><thead><tr><th>יעד</th><th>לוח זמנים</th><th>מדד הצלחה</th><th>סטטוס</th></tr></thead><tbody>' + gRows(nextG) + '</tbody></table>'
+      + '<h4>התחייבויות</h4><div class="commits"><div><small style="color:#0B7A7A">התחייבויות המנהלת</small><p>' + (DemoShell.esc(m.pc) || '—') + '</p></div><div><small style="color:var(--fuchsia)">התחייבויות המורה</small><p>' + (DemoShell.esc(m.tc) || '—') + '</p></div></div>'
+      + '<div class="sigs"><div class="sig"><div class="line"></div><small>חתימת המנהלת — ' + DEMO.school.principal + '</small></div><div class="sig"><div class="line"></div><small>חתימת המורה — ' + t.name + '</small></div></div></div>'
+      + '<div class="btn-row" style="justify-content:center"><button type="button" class="btn-sm primary" onclick="window.print()">' + ICONS.print + 'הדפסה</button><button type="button" class="btn-sm" onclick="showTab(\'meet\')">חזרה לשיחה</button></div>';
+    radar(document.getElementById('wpRadar'), [{ v: self, c: '#12C7C7' }, { v: pr, c: '#F00678' }], 240);
+  }
+
+  /* ───────── 6 היסטוריה ───────── */
+  function renderHist() {
+    var done = STAFF_IDS.filter(function (id) { return S[id].status === 'done' && S[id].princ; });
+    var box = document.getElementById('histBody');
+    if (!done.length) { box.innerHTML = '<div class="card"><div class="empty">עדיין אין שיחות שהושלמו</div></div>'; return; }
+    var avg = SK.map(function (_, i) { var s = 0; done.forEach(function (id) { s += S[id].princ[i]; }); return s / done.length; });
+    var goals = 0, achieved = 0; done.forEach(function (id) { (S[id].meeting.goals || []).forEach(function (g) { if (g.t && !g.next) { goals++; if (g.st === 'הושג') achieved++; } }); });
+    var pct = goals ? Math.round(achieved / goals * 100) : 0;
+    var sorted = done.slice().sort(function (a, b) { return S[b].date - S[a].date; });
+    var trend = [['תשפ"ה', 3.4], ['תשפ"ו', 3.7], ['תשפ"ז', r1(avg.reduce(function (x, y) { return x + y; }, 0) / 5)]];
+    box.innerHTML = '<div class="row cols-3" style="margin-bottom:18px">'
+      + '<div class="card"><div class="card-h"><h3>ממוצע צוותי — 5 מיומנויות</h3><span class="hint">הערכת המנהלת · ' + done.length + ' שיחות</span></div>' + SK.map(function (d, i) { return '<div class="avg-row"><span>' + d.name + '</span><div class="bar" style="--c:' + d.c + '"><i style="width:' + (avg[i] / 5 * 100) + '%"></i></div><b>' + f1(avg[i]) + '</b></div>'; }).join('') + '</div>'
+      + '<div class="card"><div class="card-h"><h3>השלמת יעדים</h3><span class="hint">יעדי הסמסטר</span></div><div class="big">' + pct + '%<small>' + achieved + ' מתוך ' + goals + '</small></div><div class="bar" style="--c:var(--green);margin-top:14px;height:10px"><i style="width:' + pct + '%"></i></div><p style="font-size:13px;color:var(--gray);margin-top:12px;line-height:1.6">יעדים שסוכמו בשיחות וסומנו "הושג". מתעדכן כשמעדכנים סטטוס בתוכנית העבודה.</p></div>'
+      + '<div class="card"><div class="card-h"><h3>מגמה לאורך זמן</h3><span class="hint">ממוצע כללי</span></div><div class="trend">' + trend.map(function (t, i) { return '<div><b>' + f1(t[1]) + '</b><i style="height:' + Math.round(t[1] / 5 * 90) + 'px;opacity:' + (i === 2 ? 1 : .45) + '"></i>' + t[0] + '</div>'; }).join('') + '</div></div>'
+      + '</div><div class="card"><div class="card-h"><h3>ציר זמן — שיחות אחרונות</h3><span class="hint">לחיצה פותחת את השיחה</span></div><ol class="tl">' + sorted.map(function (id) { var t = tOf(id), m = S[id].meeting; return '<li style="cursor:pointer" onclick="cur=\'' + id + '\';showTab(\'meet\')"><b>' + t.name + ' · ' + roleLabel(t) + '</b><small>' + fd(S[id].date) + ' · ' + (m.goals.filter(function (g) { return g.t; }).length) + ' יעדים · תחושה ' + m.stars + '/5</small></li>'; }).join('') + '</ol></div>';
+  }
+
+  /* ───────── הפעלה ───────── */
+  load();
+  showTab('dash');
+</script>
+</body>
+</html>

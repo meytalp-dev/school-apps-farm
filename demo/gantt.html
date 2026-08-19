@@ -10,116 +10,75 @@
 <link rel="stylesheet" href="../style.css">
 <link rel="stylesheet" href="demo.css">
 <style>
-  /* ─── סרגל סינון ─── */
-  .filters { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
-  .filters .in { padding: 8px 12px; font-size: 13.5px; }
+  /* ─── סרגל ─── */
+  .demo-toolbar .in { padding: 8px 12px; font-weight: 700; font-size: 13px; }
   .qbox { position: relative; }
-  .qbox svg { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--gray); pointer-events: none; }
-  .qbox .in { padding-right: 32px; width: 190px; }
-  .legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--gray); font-weight: 700; margin-top: 14px; }
-  .legend span { display: inline-flex; align-items: center; gap: 5px; }
-  .legend i { width: 10px; height: 10px; border-radius: 3px; background: var(--c); }
-  .legend i.hol { background: repeating-linear-gradient(135deg, rgba(240,6,120,.35) 0 2px, transparent 2px 5px); }
-  .legend i.ring { background: #fff; box-shadow: inset 0 0 0 2px var(--navy); border-radius: 50%; }
+  .qbox svg { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--gray); pointer-events: none; }
+  .qbox .in { padding-right: 30px; width: 160px; }
+  .btn-sm svg { flex: 0 0 auto; }
 
-  /* ─── גאנט שנתי ─── */
-  .gantt { position: relative; --lw: 160px; font-size: 12px; user-select: none; }
-  .g-head { display: flex; border-bottom: 1px solid var(--line); background: #fff; }
-  .g-label { flex: 0 0 var(--lw); padding: 8px 6px 8px 8px; border-left: 1px solid var(--line); min-width: 0; }
-  .g-track { flex: 1; position: relative; min-width: 0; overflow: hidden; }
-  .g-months { display: flex; height: 34px; }
-  .g-months div { display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--navy); border-left: 1px dashed rgba(6,30,79,.12); font-size: 12.5px; }
-  .g-months div.cur { color: var(--fuchsia); }
-  .g-hols { position: relative; height: 18px; }
-  .g-hols span, .g-hol { position: absolute; top: 0; bottom: 0; }
-  .g-hols span { font-size: 9px; font-weight: 800; color: var(--fuchsia); display: flex; align-items: center; justify-content: center; overflow: hidden; white-space: nowrap; background: rgba(240,6,120,.07); }
-  .g-hol { background: repeating-linear-gradient(135deg, rgba(240,6,120,.07) 0 4px, transparent 4px 9px); pointer-events: none; }
-  .g-body { position: relative; }
-  .g-row { display: flex; border-bottom: 1px solid var(--line); position: relative; }
-  .g-row:last-child { border-bottom: none; }
-  .g-row:hover { background: rgba(18,199,199,.035); }
-  .g-row .g-label { display: flex; flex-direction: column; justify-content: center; gap: 2px; }
-  .g-label b { font-size: 13px; font-weight: 800; color: var(--navy); }
-  .g-label small { color: var(--gray); font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .g-label em { font-style: normal; font-size: 11px; color: var(--gray); }
-  .g-today { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--fuchsia); z-index: 2; pointer-events: none; }
-  .g-today-tag { position: absolute; top: 33px; transform: translateX(50%); background: var(--fuchsia); color: #fff; font-size: 9.5px; font-weight: 800; padding: 2px 8px; border-radius: 999px; white-space: nowrap; z-index: 3; }
-  .g-empty { padding: 26px; text-align: center; color: var(--gray); font-size: 13px; }
+  /* ─── חודשים + מקרא ─── */
+  .board { display: flex; align-items: center; justify-content: space-between; gap: 10px 18px; flex-wrap: wrap; margin-bottom: 12px; }
+  .months { display: flex; gap: 5px; flex-wrap: wrap; }
+  .mchip { border: 1.5px solid rgba(6,30,79,.12); background: #fff; color: var(--navy); border-radius: 999px; padding: 5px 12px; font: inherit; font-size: 12.5px; font-weight: 800; cursor: pointer; transition: all var(--motion-fast) var(--motion-ease); }
+  .mchip:hover { border-color: var(--navy); transform: translateY(-1px); }
+  .mchip.on { background: var(--navy); border-color: var(--navy); color: #fff; box-shadow: 0 6px 14px rgba(6,30,79,.18); }
+  .lg { display: flex; gap: 6px 14px; flex-wrap: wrap; font-size: 12px; font-weight: 700; color: var(--gray); }
+  .lg span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+  .lg i { width: 12px; height: 12px; border-radius: 3px; background: var(--bg2, var(--bg)); border-inline-start: 3px solid var(--c, transparent); box-sizing: border-box; }
+  .lg i.flat { border: 0; }
 
-  .ev { position: absolute; height: 22px; display: flex; align-items: center; gap: 5px; cursor: pointer; white-space: nowrap; transition: transform var(--motion-fast) var(--motion-ease), opacity var(--motion-fast); }
-  .ev:hover { transform: translateY(-1px); z-index: 4; }
-  .ev i { display: block; height: 14px; border-radius: 999px; background: var(--c); flex: 0 0 auto; box-shadow: 0 2px 6px rgba(6,30,79,.14); }
-  .ev span { font-size: 11.5px; font-weight: 700; color: var(--navy); overflow: hidden; text-overflow: ellipsis; }
-  .ev.inside i { display: flex; align-items: center; height: 18px; padding: 0 8px; }
-  .ev.inside i span { color: #fff; }
-  .ev.inside.light i span { color: var(--navy); }
-  .ev.st-done i { opacity: .5; }
-  .ev.st-done span { color: var(--gray); }
-  .ev.st-prep i { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--c); }
-  .ev.dim { opacity: .16; pointer-events: none; }
-
-  /* ─── תצוגת חודש ─── */
-  .mv-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
-  .mv-head h4 { font-size: 18px; font-weight: 900; letter-spacing: -.4px; }
-  .mv-nav { display: flex; align-items: center; gap: 6px; }
-  .mv-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-  .mv-dow { font-size: 11px; font-weight: 800; color: var(--gray); text-align: center; padding: 4px 0; }
-  .mv-day { min-height: 88px; border: 1px solid var(--line); border-radius: 12px; padding: 6px; background: #fff; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-  .mv-day.off { background: rgba(6,30,79,.03); }
-  .mv-day.hol { background: rgba(240,6,120,.05); border-color: rgba(240,6,120,.16); }
-  .mv-day.today { border-color: var(--fuchsia); box-shadow: 0 0 0 2px rgba(240,6,120,.16); }
-  .mv-day.empty { border: none; background: transparent; }
-  .mv-day b { font-size: 12px; font-weight: 800; color: var(--navy); display: flex; justify-content: space-between; align-items: baseline; }
-  .mv-day b em { font-style: normal; color: var(--fuchsia); font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .mv-pill { font-size: 11px; font-weight: 700; color: #fff; background: var(--c); border-radius: 6px; padding: 2px 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; transition: transform var(--motion-fast) var(--motion-ease); }
-  .mv-pill:hover { transform: translateY(-1px); }
-  .mv-pill.light { color: var(--navy); }
-  .mv-pill.st-done { opacity: .5; }
-  .mv-pill.dim { opacity: .16; pointer-events: none; }
-
-  /* ─── צד: הקרובים + עומס ─── */
-  .up { display: flex; flex-direction: column; gap: 8px; }
-  .up a { display: flex; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 14px; border: 1px solid var(--line); cursor: pointer; transition: transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast); text-decoration: none; color: inherit; }
-  .up a:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(6,30,79,.08); }
-  .dbox { flex: 0 0 44px; text-align: center; border-radius: 10px; background: rgba(6,30,79,.05); padding: 4px 0; }
-  .dbox b { display: block; font-size: 16px; font-weight: 900; line-height: 1.1; }
-  .dbox small { font-size: 10px; color: var(--gray); font-weight: 700; }
-  .up .t { flex: 1; min-width: 0; }
-  .up .t b { display: block; font-size: 13px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .up .t small { font-size: 11.5px; color: var(--gray); }
-  .load { display: flex; flex-direction: column; gap: 8px; }
-  .load div { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700; }
-  .load div span:first-child { flex: 0 0 96px; }
-  .load .bar { flex: 1; }
-  .load .n { flex: 0 0 22px; text-align: left; color: var(--gray); font-variant-numeric: tabular-nums; }
-
-  /* ─── פירוט אירוע ─── */
-  .meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }
-  .meta div { background: var(--bg); border-radius: 12px; padding: 8px 10px; }
-  .meta small { display: block; font-size: 11px; color: var(--gray); font-weight: 700; }
-  .meta b { font-size: 13.5px; font-weight: 800; }
-  .ck { list-style: none; display: flex; flex-direction: column; gap: 6px; margin: 8px 0 12px; }
-  .ck label { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 12px; font-size: 14px; cursor: pointer; }
-  .ck input { width: 17px; height: 17px; accent-color: var(--fuchsia); }
-  .ck label.on { color: var(--gray); text-decoration: line-through; background: rgba(123,203,82,.08); }
-  .gchk { display: flex; gap: 6px; flex-wrap: wrap; }
-  .gchk label { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 999px; border: 1.5px solid rgba(6,30,79,.14); font-size: 12.5px; font-weight: 700; cursor: pointer; }
-  .gchk input { accent-color: var(--fuchsia); }
-  .sec-t { font-size: 12px; font-weight: 800; color: var(--gray); margin-top: 10px; }
-
+  /* ─── הלוח ─── */
+  .gwrap { max-height: calc(100vh - 150px); min-height: 420px; overflow: auto; position: relative; }
+  table.gt { width: 100%; min-width: 1150px; font-size: 12.5px; }
+  .gt th { position: sticky; top: 0; z-index: 5; background: #F1F4F9; text-align: center; padding: 10px 6px; font-size: 11.5px; color: var(--navy); box-shadow: 0 1px 0 var(--line); }
+  .gt th.act, .gt th.mt { text-align: right; padding-right: 10px; }
+  .gt th.bh { font-size: 10.5px; padding: 10px 2px; background: linear-gradient(rgba(var(--c), .22), rgba(var(--c), .22)), #F1F4F9; }
+  .gt th.cc { min-width: 44px; font-size: 12px; }
+  .gt td { padding: 4px 8px; border-bottom: 1px solid var(--line); border-inline-start: 1px solid rgba(6,30,79,.05); vertical-align: middle; height: 34px; box-sizing: border-box; }
+  .gt td.n { color: var(--gray); font-size: 10.5px; text-align: center; width: 34px; font-variant-numeric: tabular-nums; }
+  .gt td.dt { font-weight: 700; white-space: nowrap; width: 82px; font-variant-numeric: tabular-nums; }
+  .gt td.dt small { display: block; font-size: 10px; font-weight: 800; color: var(--gray); line-height: 1.1; }
+  .gt td.dy { color: var(--gray); font-size: 12px; white-space: nowrap; width: 54px; }
+  .gt td.act { min-width: 230px; }
+  .gt td.mt { min-width: 130px; }
+  .gt td.cc { text-align: center; padding: 4px 2px; }
+  .b0 { --c: 18,199,199; } .b1 { --c: 244,180,27; } .b2 { --c: 240,6,120; } .b3 { --c: 123,203,82; }
+  .gt td.band { padding: 0; text-align: center; vertical-align: top; width: 38px; min-width: 38px; background: rgba(var(--c), .10); border-top: 1.5px solid rgba(var(--c), .5); }
+  .gt td.band.alt { background: rgba(var(--c), .2); }
+  .gt td.band.nb { background: transparent; border-top: 0; }
+  .vt { display: inline-block; writing-mode: vertical-rl; transform: rotate(180deg); font-size: 11px; font-weight: 800; color: var(--navy); letter-spacing: .3px; white-space: nowrap; padding: 10px 0; position: sticky; top: 44px; }
+  .gt tbody tr:nth-child(even) td:not(.band) { background: rgba(6,30,79,.02); }
+  .gt tbody tr.we td:not(.band) { background: rgba(123,203,82,.1); }
+  .gt tbody tr.ho td:not(.band) { background: rgba(240,6,120,.07); }
+  .gt tbody tr.hs td:not(.band) { background: rgba(201,134,0,.07); }
+  .gt tbody tr.td td:not(.band) { background: rgba(18,199,199,.14); border-top: 1.5px solid var(--teal); border-bottom: 1.5px solid var(--teal); }
+  .gt tbody tr.ms td:not(.band) { border-top: 2px solid rgba(6,30,79,.18); }
+  .tbl.gt tbody tr:hover { background: transparent; }
+  .gt tbody tr:hover td:not(.band) { box-shadow: inset 0 0 0 99px rgba(6,30,79,.03); }
+  .hn { font-size: 12px; font-weight: 800; color: var(--fuchsia); opacity: .75; margin-inline-end: 6px; }
+  tr.hs .hn { color: var(--gold); }
+  .tdy { display: inline-block; margin-inline-start: 6px; padding: 1px 7px; border-radius: 999px; background: var(--teal); color: #fff; font-size: 10.5px; font-weight: 900; vertical-align: 1px; }
+  .ev { display: inline-flex; align-items: center; border: 0; font: inherit; font-size: 12px; font-weight: 700; color: var(--navy); background: var(--bg2); border-inline-start: 3px solid var(--c); border-radius: 7px; padding: 3px 8px; margin: 2px 0 2px 4px; cursor: pointer; line-height: 1.3; text-align: right; transition: all var(--motion-fast) var(--motion-ease); }
+  .ev:hover { transform: translateY(-1px); box-shadow: 0 5px 12px rgba(6,30,79,.14); }
+  .ev.off { opacity: .35; }
+  .dm { display: inline-block; width: 8px; height: 8px; transform: rotate(45deg); background: var(--c); border-radius: 2px; margin: 0 3px; }
+  .emp { padding: 22px; text-align: center; color: var(--gray); font-weight: 700; }
+  /* מודאל פירוט */
+  .dl { display: grid; grid-template-columns: 110px 1fr; gap: 8px 14px; font-size: 14px; line-height: 1.55; }
+  .dl dt { color: var(--gray); font-weight: 700; font-size: 12.5px; }
+  .dl dd { margin: 0; font-weight: 600; }
   @media (max-width: 720px) {
-    .gantt { --lw: 92px; }
-    .g-label small, .g-label em { display: none; }
-    .qbox .in { width: 100%; }
-    .qbox { flex: 1 1 100%; }
-    .mv-day { min-height: 66px; padding: 3px; border-radius: 8px; }
-    .mv-pill { font-size: 9.5px; padding: 1px 4px; }
-    .meta { grid-template-columns: 1fr 1fr; }
+    .qbox .in { width: 130px; }
+    .gwrap { max-height: 70vh; }
+    .dl { grid-template-columns: 1fr; gap: 2px 0; } .dl dd { margin-bottom: 8px; }
   }
   @media print {
-    .filters, .demo-toolbar, aside, .legend { display: none !important; }
-    .row.side { grid-template-columns: 1fr; }
-    .ev, .mv-pill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    @page { size: landscape; margin: 8mm; }
+    .demo-toolbar, .months, .kpis { display: none !important; }
+    .gwrap { max-height: none; overflow: visible; } .table-wrap { border: 0; }
+    table.gt { min-width: 0; font-size: 9px; } .gt td { height: auto; padding: 2px 4px; } .ev { font-size: 9px; padding: 1px 5px; }
+    .gt th { position: static; }
   }
 </style>
 </head>
@@ -127,48 +86,32 @@
 
 <main class="demo-main">
   <div class="demo-head">
-    <div><h2>לוח גאנט — תשפ"ז</h2><p>כל אירועי השנה במבט אחד: מי אחראי, מתי, ומה נשאר להכין. לוחצים על אירוע לפירוט וצ'קליסט.</p></div>
+    <div><h2>לוח גאנט — תשפ"ז</h2><p>כל יום של השנה בשורה אחת: מה קורה, למי, ומי אחראי.</p></div>
     <div class="demo-toolbar">
-      <button type="button" class="btn-sm primary" onclick="openAdd()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> הוסף אירוע</button>
-      <button type="button" class="btn-sm" onclick="window.print()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></svg> הדפסה</button>
+      <select class="in" id="selM" onchange="setMonth(this.value)"><option value="all">כל השנה</option></select>
+      <select class="in" id="selC" onchange="setClass(this.value)"><option value="all">כל הכיתות</option></select>
+      <span class="qbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input class="in" id="q" placeholder="חיפוש פעילות…" oninput="setQ(this.value)"></span>
+      <button type="button" class="btn-sm primary" onclick="openAdd()">+ הוסף אירוע</button>
+      <button type="button" class="btn-sm ghost" onclick="DemoShell.toast('לוח צוות — מסך נפרד במערכת האמיתית')">לוח צוות</button>
+      <button type="button" class="btn-sm" onclick="DemoShell.toast('ייצוא ל-Sheets — במערכת האמיתית נפתח גיליון עם כל האירועים')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>ייצוא ל-Sheets</button>
+      <button type="button" class="btn-sm" onclick="window.print()">הדפסה</button>
       <button type="button" class="btn-sm ghost" onclick="resetDemo()">איפוס דמו</button>
     </div>
   </div>
 
   <div class="kpis" id="kpis"></div>
 
-  <div class="row side">
-    <section class="card">
-      <div class="filters">
-        <div class="tabs" id="viewTabs">
-          <button type="button" class="tab active" data-v="year" onclick="setView('year')">שנה</button>
-          <button type="button" class="tab" data-v="month" onclick="setView('month')">חודש</button>
-        </div>
-        <select class="in" id="gradeSel" onchange="F.grade=this.value;renderAll()">
-          <option value="all">כל השכבות</option>
-        </select>
-        <div class="qbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input class="in" id="q" placeholder="חיפוש אירוע…" oninput="F.q=this.value.trim();renderAll()"></div>
-      </div>
-      <div class="tabs" id="roleTabs" style="margin-bottom:16px"></div>
-      <div id="main"></div>
-      <div class="legend" id="legend"></div>
-    </section>
+  <div class="board">
+    <div class="months" id="months"></div>
+    <div class="lg" id="lg"></div>
+  </div>
 
-    <aside>
-      <section class="card" style="margin-bottom:18px">
-        <div class="card-h"><h3>הקרובים בתור</h3><span class="hint" id="upHint"></span></div>
-        <div class="up" id="upList"></div>
-      </section>
-      <section class="card">
-        <div class="card-h"><h3>עומס לפי תפקיד</h3><span class="hint">אירועים בשנה</span></div>
-        <div class="load" id="loadList"></div>
-      </section>
-    </aside>
+  <div class="table-wrap gwrap" id="wrap">
+    <table class="tbl gt" id="gt"><thead id="gh"></thead><tbody id="gb"></tbody></table>
   </div>
 </main>
-
-<div id="detailHost"></div>
-<div id="addHost"></div>
+<div id="mHost"></div>
+<div id="aHost"></div>
 
 <script src="../apps-data.js"></script>
 <script src="../logos.js"></script>
@@ -177,317 +120,309 @@
 <script src="demo-shell.js"></script>
 <script>
 DemoShell.init('gantt');
-
-/* ─── קבועים ─── */
-var TODAY = new Date(2026, 10, 10);            /* "היום" קבוע לדמו: 10.11.2026 */
-var Y0 = new Date(2026, 8, 1), Y1 = new Date(2027, 5, 30);
-var TOTAL = days(Y0, Y1) + 1;
-var MONTHS = [[2026,9,'ספט׳','ספטמבר','ס'],[2026,10,'אוק׳','אוקטובר','א'],[2026,11,'נוב׳','נובמבר','נ'],[2026,12,'דצמ׳','דצמבר','ד'],[2027,1,'ינו׳','ינואר','י'],[2027,2,'פבר׳','פברואר','פ'],[2027,3,'מרץ','מרץ','מ'],[2027,4,'אפר׳','אפריל','א'],[2027,5,'מאי','מאי','מ'],[2027,6,'יוני','יוני','י']];
-var HOL = [['2026-09-12','2026-09-13','ראש השנה'],['2026-09-20','2026-09-21','יום כיפור'],['2026-09-25','2026-10-03','סוכות'],['2026-12-06','2026-12-12','חנוכה'],['2027-03-23','2027-03-24','פורים'],['2027-04-15','2027-04-29','פסח'],['2027-05-11','2027-05-12','יום הזיכרון והעצמאות'],['2027-05-25','2027-05-25','ל״ג בעומר'],['2027-06-10','2027-06-11','שבועות']];
-var ROLES = [
-  { id: 'mgmt',     name: 'הנהלה',          who: 'רונית לוי · אורית חדד' },
-  { id: 'ped',      name: 'רכזת פדגוגית',   who: 'מיכל אדרי' },
-  { id: 'homeroom', name: 'מחנכות',         who: '10 מחנכות כיתה' },
-  { id: 'counsel',  name: 'יועצת חינוכית',  who: 'יעל סגל' },
-  { id: 'social',   name: 'רכז חברתי',      who: 'ניר אביטל' },
-  { id: 'tech',     name: 'רכז תקשוב',      who: 'רועי אשכנזי' }
-];
+var esc = DemoShell.esc, CL = DEMO.classes, TCH = DEMO.teachers;
+var START = new Date(2026, 8, 1), END = new Date(2027, 5, 20), TODAY = new Date(2026, 10, 10);
+var DAYS = ["יום א'", "יום ב'", "יום ג'", "יום ד'", "יום ה'", "יום ו'", "שבת"];
+var MON = ['ינו', 'פבר', 'מרץ', 'אפר', 'מאי', 'יוני', '', '', 'ספט', 'אוק', 'נוב', 'דצמ'];
+var MONF = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', '', '', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'];
+var YEAR_MONTHS = [8, 9, 10, 11, 0, 1, 2, 3, 4, 5];
 var TYPES = {
-  ceremony: { n: 'טקסים ומועדים',   c: 'var(--navy)' },
-  parents:  { n: 'הורים',            c: 'var(--teal)',   light: 1 },
-  exam:     { n: 'מבחנים והערכה',   c: 'var(--yellow)', light: 1 },
-  trip:     { n: 'פעילויות וטיולים', c: 'var(--green)',  light: 1 },
-  meeting:  { n: 'ישיבות',           c: 'var(--gray)' },
-  peak:     { n: 'ימי שיא',          c: 'var(--fuchsia)' },
-  training: { n: 'השתלמויות',        c: 'var(--orange)' }
+  parents: { n: 'אסיפות הורים', c: 'var(--teal)', bg: 'rgba(18,199,199,.16)' },
+  exam:    { n: 'מבחנים', c: 'var(--yellow)', bg: 'rgba(244,180,27,.2)' },
+  pulse:   { n: 'ממד / פולס', c: 'var(--navy)', bg: 'rgba(18,199,199,.34)' },
+  peak:    { n: 'ימי שיא', c: 'var(--fuchsia)', bg: 'rgba(240,6,120,.1)' },
+  heb:     { n: 'לוח עברי / שורשים', c: 'var(--gold)', bg: 'rgba(201,134,0,.15)' },
+  bagrut:  { n: 'בגרות', c: 'var(--navy)', bg: 'rgba(6,30,79,.1)' },
+  cert:    { n: 'תעודות', c: 'var(--green)', bg: 'rgba(123,203,82,.24)' },
+  meet:    { n: 'ישיבות צוות', c: 'var(--gray)', bg: 'rgba(100,116,139,.13)' },
+  trip:    { n: 'טיולים', c: 'var(--orange)', bg: 'rgba(255,122,26,.16)' }
 };
-var STAT = { plan: ['מתוכנן', 'muted'], prep: ['בהכנה', 'warn'], done: ['בוצע', 'ok'] };
+(function () { var css = '', k; for (k in TYPES) css += '.k-' + k + '{--c:' + TYPES[k].c + ';--bg2:' + TYPES[k].bg + '}'; var s = document.createElement('style'); s.textContent = css; document.head.appendChild(s); })();
 
-/* ─── אירועים (מומצאים) — [id, כותרת, התחלה, סיום, סוג, תפקיד, שכבות, סטטוס, צ'קליסט (* = בוצע), הערה] ─── */
-var RAW = [
-  ['e01','טקס פתיחת שנה','2026-09-01','','ceremony','mgmt','','done',['*סידור אולם וכיסאות','*נאום פתיחה','*מערכת שעות מודפסת','*צילום'],'10:00, אולם הספורט'],
-  ['e02','ישיבת מליאה — פתיחת שנה','2026-09-02','','meeting','mgmt','','done',['*סדר יום','*מצגת יעדי שנה','*כיבוד'],''],
-  ['e03','ימי גיבוש שכבת ז׳','2026-09-02','2026-09-03','trip','social','ז','done',['*הסעות','*מדריכים חיצוניים','*אישורי הורים'],''],
-  ['e04','ערב הורים — פתיחת שנה ז׳','2026-09-08','','parents','homeroom','ז','done',['*הזמנה להורים','*מצגת מחנכת','*מפת חדרים'],''],
-  ['e05','פולס פתיחה — שייכות','2026-09-08','2026-09-10','exam','counsel','','done',['*שאלון בטפסים','*תדרוך מחנכות','*סיכום לפי כיתה'],''],
-  ['e06','טקס ערב ראש השנה','2026-09-10','','ceremony','social','','done',['*הכנת במה','*תפוח בדבש לכל כיתה','*ליווי מוזיקלי'],''],
-  ['e07','חזרה מהחגים — מעגלי שיתוף','2026-10-04','','trip','homeroom','','done',['*מערך מעגל','*כרטיסיות שיח'],''],
-  ['e08','ישיבה פדגוגית — מיפוי פתיחת שנה','2026-10-12','','meeting','ped','','done',['*ריכוז נתוני מיפוי','*טבלת תלמידים לחיזוק','*סיכום החלטות'],''],
-  ['e09','יום שיא שייכות','2026-10-15','','peak','social','ז,ח','done',['*תחנות פעילות','*הסעות','*צוות מלווה','*ציוד ומים'],'10:00–13:30'],
-  ['e10','הדרכת צוות — ספרים דיגיטליים','2026-10-19','','training','tech','','done',['*רישיונות','*מדריך קצר למורים'],''],
-  ['e11','השתלמות — למידה מבוססת פרויקטים','2026-10-21','','training','ped','','done',['*מנחה חיצונית','*חדר והקרנה','*טופס משוב'],''],
-  ['e12','טקס יום הזיכרון ליצחק רבין','2026-10-25','','ceremony','social','','done',['*טקס שכבתי','*שיעור חינוך','*הגברה'],''],
-  ['e13','יום הורים אישי — סבב א׳','2026-10-27','2026-10-29','parents','homeroom','','done',['*פתיחת זימונים','*תיאום חדרים','*דף סיכום שיחה'],''],
-  ['e14','מבדק פנימי במתמטיקה','2026-11-03','','exam','ped','ח','done',['*הדפסת מבדקים','*מחוון','*הזנת ציונים'],''],
-  ['e15','ישיבת מחנכות — מעקב תלמידים','2026-11-09','','meeting','counsel','','done',['*רשימת תלמידים במעקב','*סיכום פרטני'],''],
-  ['e16','שבוע גלישה בטוחה','2026-11-08','2026-11-12','trip','tech','','prep',['*הרצאת אורח לשכבה ז׳','*סדנאות בכיתות','דף מידע להורים','סיכום ותמונות'],'הרצאה ביום ג׳ 10:15'],
-  ['e17','ביקור המפקחת','2026-11-16','','meeting','mgmt','','prep',['*תיאום שעה','מצגת נתונים','סיור בכיתות'],''],
-  ['e18','טיול שנתי ז׳–ח׳','2026-11-17','2026-11-18','trip','social','ז,ח','prep',['*אישור ביטחוני','*הזמנת אוטובוסים','אישורי הורים חתומים','חובש ומאבטח'],'גליל תחתון — לינה בחאן'],
-  ['e19','סדנת הורים — גיל ההתבגרות','2026-11-23','','parents','counsel','ז,ח','prep',['*מנחה חיצונית','הזמנה להורים','חדר ומקרן'],''],
-  ['e20','טיול שנתי ט׳–י׳','2026-11-24','2026-11-25','trip','social','ט,י','prep',['*אישור ביטחוני','הזמנת אוטובוסים','אישורי הורים','תדרוך מלווים'],'מדבר יהודה'],
-  ['e21','ישיבות ציונים — סוף שליש א׳','2026-12-01','2026-12-03','meeting','ped','','plan',['ריכוז ציונים במערכת','לו״ז ישיבות לפי שכבה','הערות מילוליות'],''],
-  ['e22','מסיבת חנוכה והדלקת נרות','2026-12-03','','peak','social','','plan',['חנוכייה גדולה','סופגניות','מופע כיתתי','הגברה'],''],
-  ['e23','סיור מגמות לשכבת ט׳','2026-12-21','2026-12-22','trip','counsel','ט','plan',['מצגת מגמות','סבב תחנות עם רכזי מגמות','שאלון העדפות'],''],
-  ['e24','השתלמות — בינה מלאכותית בהוראה','2026-12-28','','training','tech','','plan',['מנחה','חדר מחשבים','דוגמאות מהשיעורים'],''],
-  ['e25','יום שיא כבוד','2027-01-12','','peak','social','','plan',['סדנאות תיאטרון','אמנת כבוד כיתתית','תערוכת תוצרים'],''],
-  ['e26','חלוקת תעודות מחצית א׳','2027-01-17','','exam','homeroom','','plan',['הדפסת תעודות','בדיקת הערות','שיחות אישיות'],''],
-  ['e27','יום הורים — מחצית א׳','2027-01-19','2027-01-20','parents','homeroom','','plan',['פתיחת זימונים','תיאום חדרים','דף סיכום'],''],
-  ['e28','שבוע מדעים','2027-01-24','2027-01-28','trip','ped','ז,ח,ט','plan',['ניסויים בתחנות','אורח ממכון מחקר','תערוכת פרויקטים'],''],
-  ['e29','ישיבת הנהלה — תקציב תשפ״ח','2027-01-26','','meeting','mgmt','','plan',['טיוטת תקציב','בקשות רכזים','סיכום עדיפויות'],''],
-  ['e30','ועדת היגוי — הורים והנהלה','2027-02-02','','parents','mgmt','','plan',['סדר יום','נציגות הורים','סיכום'],''],
-  ['e31','יום המשפחה','2027-02-07','','parents','homeroom','ז,ח','plan',['הזמנת הורים','פעילות משותפת','כיבוד'],''],
-  ['e32','מתכונת בגרות — מתמטיקה','2027-02-08','','exam','ped','יא,יב','plan',['הדפסה','השגחה','מחוון'],''],
-  ['e33','מתכונת בגרות — אנגלית','2027-02-15','','exam','ped','יא,יב','plan',['הדפסה','השגחה','מחוון'],''],
-  ['e34','שבוע בטיחות בדרכים','2027-02-21','2027-02-25','trip','social','','plan',['הרצאת משטרה','סימולטור','פוסטרים'],''],
-  ['e35','פולס אמצע שנה','2027-02-22','2027-02-24','exam','counsel','','plan',['שאלון','תדרוך מחנכות','השוואה לפולס פתיחה'],''],
-  ['e36','טיול שנתי יא׳–יב׳','2027-03-02','2027-03-04','trip','social','יא,יב','plan',['אישור ביטחוני','הזמנת אוטובוסים','אישורי הורים','לינה'],''],
-  ['e37','תחרות סייבר בית-ספרית','2027-03-08','2027-03-09','trip','tech','ט,י','plan',['פלטפורמה','צוותים','פרסים'],''],
-  ['e38','סדנת הורים יב׳ — לקראת בגרויות','2027-03-09','','parents','counsel','יב','plan',['הזמנה','מצגת','מענה לשאלות'],''],
-  ['e39','ישיבה פדגוגית — סוף שליש ב׳','2027-03-15','','meeting','ped','','plan',['ריכוז ציונים','תלמידים בסיכון','החלטות'],''],
-  ['e40','עדלאידע פורים','2027-03-21','2027-03-22','peak','social','','plan',['תחרות תחפושות','הגברה ומוזיקה','צוות שיפוט'],''],
-  ['e41','השתלמות — הערכה מעצבת','2027-03-30','','training','ped','','plan',['מנחה','חומרים','משוב'],''],
-  ['e42','יום פתוח לכיתה ז׳ תשפ״ח','2027-04-12','','parents','mgmt','','plan',['הזמנה ליסודיים','סיור','מצגת'],''],
-  ['e43','טקס יום השואה','2027-05-04','','ceremony','social','','plan',['נציגי תלמידים','עדות מוקלטת','הגברה'],''],
-  ['e44','טקס יום הזיכרון','2027-05-10','','ceremony','social','','plan',['מקהלה','נרות ודגלים','הגברה'],''],
-  ['e45','ישיבת הנהלה — שיבוץ תשפ״ח','2027-05-17','','meeting','mgmt','','plan',['רשימת מורים','צרכי שעות','טיוטת שיבוץ'],''],
-  ['e46','מבחני בגרות — מועד קיץ','2027-05-19','2027-06-30','exam','ped','יא,יב','plan',['לוח בחינות','משגיחים','התאמות'],''],
-  ['e47','הפנינג ל״ג בעומר — יום שיא אוטונומיה','2027-05-24','','peak','social','ז,ח,ט','plan',['תחנות שמנהלים תלמידים','ציוד','מים ושמשיות'],''],
-  ['e48','בניית מערכת שעות תשפ״ח','2027-05-24','2027-06-18','meeting','mgmt','','plan',['איסוף אילוצים','טיוטה ראשונה','אישור מורים'],''],
-  ['e49','מיפוי ציוד ומחשבים לקיץ','2027-06-01','2027-06-14','meeting','tech','','plan',['ספירת מלאי','תקלות לתיקון','הזמנות'],''],
-  ['e50','סקר סיום שנה — צוות והורים','2027-06-06','2027-06-10','exam','counsel','','plan',['שאלון','שליחה','ניתוח'],''],
-  ['e51','ערב מסיימים יב׳','2027-06-15','','ceremony','mgmt','יב','plan',['סרטון','הזמנות','אולם','כיבוד'],''],
-  ['e52','ישיבות סיכום שנה','2027-06-16','2027-06-17','meeting','ped','','plan',['סיכומי שכבות','המלצות לתשפ״ח'],''],
-  ['e53','מסיבת סיום שנה + תעודות','2027-06-20','','ceremony','homeroom','','plan',['הדפסת תעודות','מופע כיתתי','צילום שכבתי'],'']
+function p2(n) { return (n < 10 ? '0' : '') + n; }
+function key(d) { return d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()); }
+function D(s) { var a = s.split('-'); return new Date(+a[0], +a[1] - 1, +a[2]); }
+function fmt(d) { return d.getDate() + '/' + (d.getMonth() + 1) + '/' + String(d.getFullYear()).slice(2); }
+function fmtFull(d) { return d.getDate() + ' ב' + MONF[d.getMonth()] + ' ' + d.getFullYear() + ' · ' + DAYS[d.getDay()]; }
+
+/* חגים — תאריכים מקורבים לדמו. soft = בית הספר פתוח */
+var HOL = {};
+function hol(a, b, n, soft) { for (var d = D(a), e = D(b); d <= e; d = DEMO.addDays(d, 1)) HOL[key(d)] = { n: n, s: !!soft }; }
+hol('2026-09-12', '2026-09-14', 'ראש השנה'); hol('2026-09-21', '2026-09-22', 'יום כיפור'); hol('2026-09-26', '2026-10-04', 'סוכות');
+hol('2026-12-05', '2026-12-12', 'חנוכה', true); hol('2027-03-23', '2027-03-23', 'פורים'); hol('2027-04-21', '2027-04-29', 'פסח');
+hol('2027-05-11', '2027-05-11', 'יום הזיכרון', true); hol('2027-05-12', '2027-05-12', 'יום העצמאות'); hol('2027-05-25', '2027-05-25', 'ל"ג בעומר', true);
+hol('2027-06-11', '2027-06-12', 'שבועות');
+
+/* ארבע רצועות — טווחי תאריכים */
+var dm = DEMO.dims;
+var BANDS = [
+  { n: 'ממד', segs: [['2026-09-01', '2026-10-31', dm[0].short], ['2026-11-01', '2026-12-31', dm[1].short], ['2027-01-01', '2027-02-28', dm[2].short], ['2027-03-01', '2027-04-30', dm[3].short], ['2027-05-01', '2027-06-20', dm[4].short]] },
+  { n: 'חברתית', segs: [['2026-09-01', '2026-10-15', 'קליטה והיכרות'], ['2026-10-16', '2026-11-30', 'גיבוש'], ['2026-12-01', '2027-01-31', 'מעורבות'], ['2027-02-01', '2027-03-31', 'מנהיגות'], ['2027-04-01', '2027-05-15', 'תרומה לקהילה'], ['2027-05-16', '2027-06-20', 'סיכום ופרידה']] },
+  { n: 'ייעוץ', segs: [['2026-09-01', '2026-10-31', 'מעברים'], ['2026-11-01', '2026-12-31', 'חוסן ורגש'], ['2027-01-01', '2027-02-28', 'מיניות בריאה'], ['2027-03-01', '2027-04-15', 'בטיחות ברשת'], ['2027-04-16', '2027-06-20', 'לקראת בגרות']] },
+  { n: 'חינוך', segs: [['2026-09-01', '2026-10-15', 'שגרות'], ['2026-10-16', '2026-12-15', 'למידה עצמאית'], ['2026-12-16', '2027-01-31', 'עבודה בצוות'], ['2027-02-01', '2027-03-31', 'הצבת יעדים'], ['2027-04-01', '2027-05-15', 'חשיבה ביקורתית'], ['2027-05-16', '2027-06-20', 'סיכום']] }
 ];
+function segOf(b, d) { var k = key(d); for (var i = 0; i < b.segs.length; i++) if (k >= b.segs[i][0] && k <= b.segs[i][1]) return b.segs[i][2]; return ''; }
 
-/* ─── עזרים ─── */
-function pd(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
-function dk(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
-function days(a, b) { return Math.round((b - a) / 864e5); }
-function fmt(d) { return d.getDate() + '.' + (d.getMonth() + 1); }
-function fmtRange(ev) { var s = pd(ev.start), e = pd(ev.end); return s.getTime() === e.getTime() ? fmt(s) + '.' + s.getFullYear() : fmt(s) + ' – ' + fmt(e) + '.' + e.getFullYear(); }
-function role(id) { for (var i = 0; i < ROLES.length; i++) if (ROLES[i].id === id) return ROLES[i]; return ROLES[0]; }
-function byId(id) { for (var i = 0; i < EVENTS.length; i++) if (EVENTS[i].id === id) return EVENTS[i]; return null; }
-function esc(s) { return DemoShell.esc(s); }
-function holName(key) { for (var i = 0; i < HOL.length; i++) if (key >= HOL[i][0] && key <= HOL[i][1]) return HOL[i][2]; return ''; }
-function mk(a) { return { id: a[0], title: a[1], start: a[2], end: a[3] || a[2], type: a[4], role: a[5], grades: a[6] ? a[6].split(',') : [], status: a[7], check: a[8].map(function (s) { return { t: s.replace(/^\*/, ''), done: s.charAt(0) === '*' }; }), notes: a[9] || '' }; }
-
-/* ─── מצב + זיכרון מקומי ─── */
-var KEY = 'farm-demo-gantt';
-var saved = {}; try { saved = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { saved = {}; }
-var OV = saved.ov || {}, CUSTOM = saved.custom || [];
-var EVENTS = RAW.map(mk).concat(CUSTOM);
-EVENTS.forEach(function (ev) { var o = OV[ev.id]; if (!o) return; if (o.status) ev.status = o.status; if (o.done) ev.check.forEach(function (c, i) { c.done = !!o.done[i]; }); });
-function persist() { try { localStorage.setItem(KEY, JSON.stringify({ ov: OV, custom: CUSTOM })); } catch (e) {} }
-function markOV(ev) { OV[ev.id] = { status: ev.status, done: ev.check.map(function (c) { return c.done; }) }; persist(); }
-function resetDemo() { localStorage.removeItem(KEY); location.reload(); }
-
-var F = { view: 'year', role: 'all', grade: 'all', q: '', month: 2 };
-function roleOK(ev) { return F.role === 'all' || ev.role === F.role; }
-function matches(ev) {
-  var g = F.grade === 'all' || ev.grades.length === 0 || ev.grades.indexOf(F.grade) >= 0;
-  var q = !F.q || ev.title.indexOf(F.q) >= 0;
-  return g && q;
-}
-function visible() { return EVENTS.filter(function (ev) { return roleOK(ev) && matches(ev); }); }
-
-/* ─── KPI ─── */
-function renderKPIs() {
-  var m0 = new Date(TODAY.getFullYear(), TODAY.getMonth(), 1), m1 = new Date(TODAY.getFullYear(), TODAY.getMonth() + 1, 0);
-  var inMonth = EVENTS.filter(function (ev) { return pd(ev.start) <= m1 && pd(ev.end) >= m0; }).length;
-  var prep = EVENTS.filter(function (ev) { return ev.status === 'prep'; }).length;
-  var mine = EVENTS.filter(function (ev) { return ev.role === 'mgmt'; }).length;
-  var open = 0; EVENTS.forEach(function (ev) { if (ev.status !== 'done') ev.check.forEach(function (c) { if (!c.done) open++; }); });
-  document.getElementById('kpis').innerHTML =
-    '<div class="kpi" style="--c:var(--navy)"><b>' + EVENTS.length + '</b><span>אירועים בתשפ"ז</span></div>' +
-    '<div class="kpi" style="--c:var(--teal)"><b>' + inMonth + '</b><span>החודש (נובמבר)</span></div>' +
-    '<div class="kpi" style="--c:var(--yellow)"><b>' + prep + '</b><span>בהכנה עכשיו</span></div>' +
-    '<div class="kpi" style="--c:var(--fuchsia)"><b>' + mine + '</b><span>באחריות ההנהלה</span></div>' +
-    '<div class="kpi" style="--c:var(--green)"><b>' + open + '</b><span>משימות הכנה פתוחות</span></div>';
-}
-
-/* ─── סינון: טאבים + שכבות + מקרא ─── */
-function renderTabs() {
-  var h = '<button type="button" class="tab' + (F.role === 'all' ? ' active' : '') + '" onclick="F.role=\'all\';renderAll()">כל התפקידים</button>';
-  ROLES.forEach(function (r) { h += '<button type="button" class="tab' + (F.role === r.id ? ' active' : '') + '" onclick="F.role=\'' + r.id + '\';renderAll()">' + r.name + '</button>'; });
-  document.getElementById('roleTabs').innerHTML = h;
-  var tabs = document.querySelectorAll('#viewTabs .tab'); for (var i = 0; i < tabs.length; i++) tabs[i].classList.toggle('active', tabs[i].getAttribute('data-v') === F.view);
-}
-(function () {
-  var s = document.getElementById('gradeSel');
-  DEMO.grades.forEach(function (g) { var o = document.createElement('option'); o.value = g; o.textContent = 'שכבת ' + g + '׳'; s.appendChild(o); });
-  var l = '';
-  for (var k in TYPES) l += '<span><i style="--c:' + TYPES[k].c + '"></i>' + TYPES[k].n + '</span>';
-  l += '<span><i class="hol"></i>חופשה</span><span><i class="ring"></i>טבעת = בהכנה</span>';
-  document.getElementById('legend').innerHTML = l;
-})();
-function setView(v) { F.view = v; renderAll(); }
-
-/* ─── גאנט שנתי ─── */
-function renderYear() {
-  var host = document.getElementById('main');
-  host.innerHTML = '<div class="gantt" id="gantt"></div>';
-  var g = document.getElementById('gantt');
-  var LW = window.innerWidth <= 720 ? 92 : 160;
-  var Wt = Math.max(200, g.clientWidth - LW);
-  function x(d) { return days(Y0, d) / TOTAL * Wt; }
-
-  /* כותרת: חודשים + רצועת חופשות + "היום" */
-  var h = '<div class="g-head"><div class="g-label"><em>תפקיד</em></div><div class="g-track"><div class="g-months">';
-  MONTHS.forEach(function (m) {
-    var dim = new Date(m[0], m[1], 0).getDate();
-    var cur = (m[0] === TODAY.getFullYear() && m[1] === TODAY.getMonth() + 1) ? ' class="cur"' : '';
-    h += '<div' + cur + ' style="flex:' + dim + ' 0 0">' + (Wt / 10 < 40 ? m[4] : m[2]) + '</div>';
-  });
-  h += '</div><div class="g-hols">';
-  var stripes = '';
-  HOL.forEach(function (hl) {
-    var r = x(pd(hl[0])), w = x(pd(hl[1])) - r + Wt / TOTAL;
-    h += '<span style="right:' + r + 'px;width:' + w + 'px" title="' + hl[2] + '">' + (w >= 22 ? hl[2] : '') + '</span>';
-    stripes += '<div class="g-hol" style="right:' + (r + LW) + 'px;width:' + w + 'px"></div>';
-  });
-  var tx = x(TODAY) + Wt / TOTAL / 2;
-  h += '</div><div class="g-today-tag" style="right:' + tx + 'px">היום · ' + fmt(TODAY) + '</div></div></div>';
-
-  /* שורות לפי תפקיד */
-  h += '<div class="g-body">' + stripes;
-  var rows = ROLES.filter(function (r) { return F.role === 'all' || r.id === F.role; });
-  rows.forEach(function (r) {
-    var evs = EVENTS.filter(function (ev) { return ev.role === r.id; }).sort(function (a, b) { return a.start < b.start ? -1 : a.start > b.start ? 1 : 0; });
-    var ends = [], items = '';
-    evs.forEach(function (ev) {
-      var s = pd(ev.start), e = pd(ev.end);
-      var right = x(s), w = Math.max(12, x(e) - x(s) + Wt / TOTAL);
-      var lw = ev.title.length * 6.6 + 8;
-      var inside = w >= lw + 18;
-      /* אין מקום לתווית משמאל לפס? הופכים — התווית מימין לפס */
-      var flip = !inside && right + w + 6 + lw > Wt && right - lw - 6 >= 0;
-      var from = flip ? right - lw - 6 : right;
-      var span = inside ? w : (flip ? lw + 6 + w : w + 6 + Math.min(lw, Math.max(0, Wt - right - w - 6)));
-      var lane = 0; while (lane < ends.length && ends[lane] > from - 10) lane++;
-      ends[lane] = from + span;
-      var t = TYPES[ev.type];
-      var cls = 'ev st-' + ev.status + (inside ? ' inside' : '') + (t.light ? ' light' : '') + (matches(ev) ? '' : ' dim');
-      var label = esc(ev.title);
-      var pill = '<i style="width:' + w + 'px">' + (inside ? '<span>' + label + '</span>' : '') + '</i>';
-      items += '<div class="' + cls + '" style="--c:' + t.c + ';right:' + from + 'px;top:' + (6 + lane * 26) + 'px;max-width:' + (Wt - from) + 'px" title="' + label + ' · ' + fmtRange(ev) + '" onclick="openDetail(\'' + ev.id + '\')">'
-        + (inside ? pill : (flip ? '<span>' + label + '</span>' + pill : pill + '<span>' + label + '</span>')) + '</div>';
-    });
-    var H = Math.max(1, ends.length) * 26 + 10;
-    h += '<div class="g-row" style="height:' + H + 'px"><div class="g-label"><b>' + r.name + '</b><small>' + r.who + '</small><em>' + evs.length + ' אירועים</em></div><div class="g-track">' + items + '</div></div>';
-  });
-  h += '<div class="g-today" style="right:' + (tx + LW) + 'px"></div></div>';
-  g.innerHTML = h;
-}
-
-/* ─── תצוגת חודש ─── */
-function shiftMonth(d) { F.month = Math.min(MONTHS.length - 1, Math.max(0, F.month + d)); renderAll(); }
-function renderMonth() {
-  var m = MONTHS[F.month], y = m[0], mo = m[1] - 1;
-  var first = new Date(y, mo, 1), dim = new Date(y, mo + 1, 0).getDate();
-  var h = '<div class="mv-head"><h4>' + m[3] + ' ' + y + '</h4><div class="mv-nav">'
-    + '<button type="button" class="btn-sm ghost" onclick="shiftMonth(-1)"' + (F.month === 0 ? ' disabled' : '') + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg> הקודם</button>'
-    + '<button type="button" class="btn-sm" onclick="F.month=2;renderAll()">היום</button>'
-    + '<button type="button" class="btn-sm ghost" onclick="shiftMonth(1)"' + (F.month === MONTHS.length - 1 ? ' disabled' : '') + '>הבא <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button></div></div>';
-  h += '<div class="mv-grid">';
-  ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ש׳'].forEach(function (d) { h += '<div class="mv-dow">' + d + '</div>'; });
-  for (var i = 0; i < first.getDay(); i++) h += '<div class="mv-day empty"></div>';
-  var pool = EVENTS.filter(roleOK);
-  for (var d = 1; d <= dim; d++) {
-    var dt = new Date(y, mo, d), key = dk(dt), hol = holName(key), dow = dt.getDay();
-    var cls = 'mv-day' + (dow >= 5 ? ' off' : '') + (hol ? ' hol' : '') + (dt.getTime() === TODAY.getTime() ? ' today' : '');
-    h += '<div class="' + cls + '"><b>' + d + (hol ? '<em>' + hol + '</em>' : (dt.getTime() === TODAY.getTime() ? '<em>היום</em>' : '')) + '</b>';
-    pool.forEach(function (ev) {
-      if (key < ev.start || key > ev.end) return;
-      var t = TYPES[ev.type];
-      h += '<div class="mv-pill st-' + ev.status + (t.light ? ' light' : '') + (matches(ev) ? '' : ' dim') + '" style="--c:' + t.c + '" title="' + esc(ev.title) + '" onclick="openDetail(\'' + ev.id + '\')">' + esc(ev.title) + '</div>';
-    });
-    h += '</div>';
+/* אירועים — [תאריך, כותרת, סוג, כיתות, אחראי(אינדקס מורה), הכנה, הערות] */
+var EVENTS, eid;
+function ev(d, t, k, tg, o, p, n) { EVENTS.push({ id: ++eid, d: d, t: t, k: k, tg: tg || '', o: o, p: p || '', n: n || '' }); }
+function seed() {
+  EVENTS = []; eid = 0;
+  var L = [
+    ['2026-09-01', 'פתיחת שנה', 'peak', 'all', 19, 'מערך יום פתיחה, חלוקת מערכות, היכרות', 'טקס בחצר 8:30'],
+    ['2026-09-06', 'פתיחה לנושא "שייכות"', 'pulse', 'all', 18, 'מערך שיעור פתיחה, כרטיסי היכרות, חוזה כיתה'],
+    ['2026-09-08', 'פולס פתיחה — שייכות', 'pulse', 'all', 17, 'שאלון פולס בכל כיתה', 'המחנכות רואות תוצאות באותו יום'],
+    ['2026-09-10', 'הכנת לימוד — ראש השנה', 'heb', 'all', 10, 'דפי לימוד, דבש ותפוח לכיתות'],
+    ['2026-09-15', "אסיפת הורים ז'–ח'", 'parents', 'ז,ח', 1, 'מצגת פתיחה, טפסי קשר', '19:30 באולם'],
+    ['2026-09-16', "אסיפת הורים ט'–יב'", 'parents', 'ט,י,יא,יב', 2, 'מצגת מסלולי בגרות', '19:30'],
+    ['2026-09-23', "מבחן מיפוי מתמטיקה ז'", 'exam', 'ז', 0, 'הדפסת מבחנים, חלוקה לקבוצות'],
+    ['2026-09-24', "מבחן מיפוי אנגלית ז'", 'exam', 'ז', 16],
+    ['2026-10-06', 'חזרה מסוכות — מעגלי שיתוף', 'pulse', 'all', 18, 'מעגל: מה עשינו בחופש?'],
+    ['2026-10-08', 'הכנת לימוד — ר"ח חשוון', 'heb', 'all', 10],
+    ['2026-10-13', 'יום שיא שייכות', 'peak', 'all', 18, 'תחנות פעילות, הסעות, כיבוד', '10:00–13:30 · תקציב הסעות'],
+    ['2026-10-14', "טיול פתיחת שנה ז'", 'trip', 'ז', 1, 'אישורי הורים, מלווים, אוטובוסים'],
+    ['2026-10-15', "טיול פתיחת שנה ח'", 'trip', 'ח', 4, 'אישורי הורים, מלווים'],
+    ['2026-10-20', 'ר"ח חשוון — הפסקה פעילה', 'heb', 'all', 10],
+    ['2026-10-21', "מבחן מתמטיקה ט'", 'exam', 'ט', 0],
+    ['2026-10-26', 'פולס סגירה — שייכות', 'pulse', 'all', 17, 'שאלון סגירה — השוואה לפתיחה'],
+    ['2026-10-28', "מבחן היסטוריה יא'", 'exam', 'יא', 3],
+    ['2026-10-29', 'סיום הרשמה לבגרויות חורף', 'bagrut', 'יא,יב', 19, 'ריכוז טפסים ושליחה'],
+    ['2026-11-01', 'פתיחה לנושא "כבוד"', 'pulse', 'all', 18, 'מערכי שיעור כבוד, תקשורת אפקטיבית'],
+    ['2026-11-03', "סיור לימודי י'", 'trip', 'י', 11, 'אישורי הורים, הסעה'],
+    ['2026-11-04', 'פולס פתיחה — כבוד', 'pulse', 'all', 17],
+    ['2026-11-09', "מבחן אנגלית ח'", 'exam', 'ח', 6],
+    ['2026-11-10', 'סדנת תקשורת מכבדת', 'pulse', 'all', 17, 'סדנה בכל כיתה — שעתיים'],
+    ['2026-11-10', 'הכנת לימוד — כסלו', 'heb', 'all', 10],
+    ['2026-11-11', 'ר"ח כסלו', 'heb', 'all', 10],
+    ['2026-11-15', "מבחן מדעים ז'", 'exam', 'ז', 4],
+    ['2026-11-17', 'יום שיא בית ספרי — כבוד', 'peak', 'all', 18, 'אירוע מרכזי בחצר, הגברה', 'תקציב אירוע'],
+    ['2026-11-18', "מבחן מתמטיקה י'", 'exam', 'י', 12],
+    ['2026-11-24', 'סדנת הורים — גבולות ומסכים', 'parents', 'all', 17, 'הרצאה + שיח', '20:00'],
+    ['2026-11-26', "מבחן ספרות יב'", 'exam', 'יב', 14],
+    ['2026-12-01', "ערב הורים — שליש א'", 'parents', 'all', 19, 'זימונים, חדרים', '17:00–20:00'],
+    ['2026-12-02', "סגירת ציונים — שליש א'", 'cert', 'all', 19, 'הזנת ציונים והערות עד 14:00'],
+    ['2026-12-06', 'הדלקת נרות בית ספרית', 'heb', 'all', 10, 'חנוכייה, סופגניות'],
+    ['2026-12-08', 'יום שיא כיתתי — כבוד', 'peak', 'all', 18, 'פעילויות תקשורת, יצירה, דיון'],
+    ['2026-12-09', "חלוקת תעודות שליש א'", 'cert', 'all', 19],
+    ['2026-12-14', "מבחן פיזיקה יא'", 'exam', 'יא', 5],
+    ['2026-12-20', 'ר"ח טבת', 'heb', 'all', 10],
+    ['2026-12-22', 'פולס סגירה — כבוד', 'pulse', 'all', 17],
+    ['2026-12-23', "טיול שנתי י'", 'trip', 'י', 2, 'אישורים, מלווים, חובש'],
+    ['2026-12-24', "טיול שנתי יא'", 'trip', 'יא', 3, 'אישורים, מלווים, חובש'],
+    ['2026-12-28', "מבחן אזרחות י'", 'exam', 'י', 11],
+    ['2027-01-03', 'פתיחה לנושא "מוטיבציה"', 'pulse', 'all', 18],
+    ['2027-01-05', 'פולס פתיחה — מוטיבציה', 'pulse', 'all', 17],
+    ['2027-01-06', 'בגרות חורף — אנגלית', 'bagrut', 'יא,יב', 16, 'חדרים, משגיחים, התאמות'],
+    ['2027-01-11', "מבחן תנ\"ך ח'", 'exam', 'ח', 10],
+    ['2027-01-13', 'בגרות חורף — מתמטיקה', 'bagrut', 'יא,יב', 0, 'חדרים, משגיחים, התאמות'],
+    ['2027-01-19', 'ר"ח שבט', 'heb', 'all', 10],
+    ['2027-01-21', "אסיפת הורים יב' — לקראת בגרויות", 'parents', 'יב', 14, 'לו"ז בגרויות, התאמות'],
+    ['2027-01-24', 'ט"ו בשבט — נטיעות', 'heb', 'all', 10, 'שתילים, כלים'],
+    ['2027-01-25', "מבחן מתמטיקה ז'", 'exam', 'ז', 0],
+    ['2027-02-02', 'מבחן מחצית — מתמטיקה', 'exam', 'all', 0, 'חלוקת חדרים, השגחה'],
+    ['2027-02-04', 'מבחן מחצית — אנגלית', 'exam', 'all', 16],
+    ['2027-02-08', 'מבחן מחצית — עברית', 'exam', 'all', 2],
+    ['2027-02-10', "סיור מדעי ח'", 'trip', 'ח', 15, 'אישורים, הסעה'],
+    ['2027-02-16', 'יום שיא מוטיבציה — יריד יוזמות', 'peak', 'all', 18, 'דוכנים, שופטים, פרסים'],
+    ['2027-02-17', 'ר"ח אדר', 'heb', 'all', 10],
+    ['2027-02-22', 'פולס סגירה — מוטיבציה', 'pulse', 'all', 17],
+    ['2027-02-24', 'ערב הורים — מחצית', 'parents', 'all', 19, 'זימונים, חדרים', '17:00–20:00'],
+    ['2027-03-01', 'פתיחה לנושא "מסוגלות"', 'pulse', 'all', 18],
+    ['2027-03-03', 'פולס פתיחה — מסוגלות', 'pulse', 'all', 17],
+    ['2027-03-09', "מבחן ביולוגיה י'", 'exam', 'י', 15],
+    ['2027-03-10', "חלוקת תעודות שליש ב'", 'cert', 'all', 19],
+    ['2027-03-15', "טיול שנתי ז'–ח'", 'trip', 'ז,ח', 18, 'אישורים, מלווים, חובש'],
+    ['2027-03-16', "טיול שנתי ט'", 'trip', 'ט', 12, 'אישורים, מלווים, חובש'],
+    ['2027-03-18', 'הכנת לימוד — פורים', 'heb', 'all', 10],
+    ['2027-03-22', 'מסיבת פורים בית ספרית', 'peak', 'all', 18, 'תחפושות, הגברה, תחרות'],
+    ['2027-03-29', "הגשת עבודות גמר יב'", 'bagrut', 'יב', 3],
+    ['2027-04-06', "מבחן מתמטיקה ח'", 'exam', 'ח', 12],
+    ['2027-04-07', "אסיפת הורים ט' — בחירת מגמות", 'parents', 'ט', 2, 'מצגת מגמות, טפסי בחירה'],
+    ['2027-04-12', 'יום שיא מסוגלות — תערוכת כוחות', 'peak', 'all', 18, 'תצוגה באולם, הזמנת הורים'],
+    ['2027-04-14', 'הכנת לימוד — פסח', 'heb', 'all', 10],
+    ['2027-04-19', 'פולס סגירה — מסוגלות', 'pulse', 'all', 17],
+    ['2027-05-03', 'פתיחה לנושא "אוטונומיה"', 'pulse', 'all', 18],
+    ['2027-05-04', 'טקס יום השואה', 'heb', 'all', 3, 'טקס, עדות, נרות'],
+    ['2027-05-05', 'פולס פתיחה — אוטונומיה', 'pulse', 'all', 17],
+    ['2027-05-10', 'טקס יום הזיכרון — חזרה', 'heb', 'all', 3],
+    ['2027-05-11', 'טקס יום הזיכרון', 'heb', 'all', 3, 'הגברה, דגלים, כיבוד לאחר'],
+    ['2027-05-13', 'בגרות — עברית', 'bagrut', 'יא,יב', 2, 'חדרים, משגיחים, התאמות'],
+    ['2027-05-17', 'בגרות — אנגלית', 'bagrut', 'יא,יב', 16, 'חדרים, משגיחים, התאמות'],
+    ['2027-05-18', "מבחן אנגלית ז'", 'exam', 'ז', 6],
+    ['2027-05-20', 'בגרות — מתמטיקה', 'bagrut', 'יב', 0, 'חדרים, משגיחים, התאמות'],
+    ['2027-05-24', 'בגרות — היסטוריה', 'bagrut', 'יא', 3],
+    ['2027-05-26', "אסיפת הורים ז' — סיכום שנה", 'parents', 'ז', 1],
+    ['2027-05-27', 'יום ספורט בית ספרי', 'peak', 'all', 7, 'מגרשים, שופטים, מים'],
+    ['2027-05-31', 'בגרות — אזרחות', 'bagrut', 'יא', 11],
+    ['2027-06-01', 'פולס סגירה — אוטונומיה', 'pulse', 'all', 17, 'שאלון סגירה שנתי'],
+    ['2027-06-02', "מסיבת סיום יב'", 'peak', 'יב', 14, 'אולם, הגברה, הזמנות'],
+    ['2027-06-03', 'הכנת לימוד — שבועות', 'heb', 'all', 10],
+    ['2027-06-07', 'בגרות — ביולוגיה / פיזיקה', 'bagrut', 'יב', 5],
+    ['2027-06-09', 'טקס סיום שנה', 'peak', 'all', 19, 'תעודות הצטיינות, הופעות'],
+    ['2027-06-14', 'סגירת ציונים שנתית', 'cert', 'all', 19, 'הזנת ציונים והערות'],
+    ['2027-06-15', "מבחן מסכם מתמטיקה ט'", 'exam', 'ט', 12],
+    ['2027-06-17', 'חלוקת תעודות סוף שנה', 'cert', 'all', 19],
+    ['2027-06-20', 'סיום שנת הלימודים', 'peak', 'all', 19, 'יום אחרון — פעילות כיתתית']
+  ];
+  for (var i = 0; i < L.length; i++) ev.apply(null, L[i]);
+  /* ישיבות צוות — כל יום שלישי */
+  var r = DEMO.rng(7), MT = ['ישיבת צוות', 'ישיבת מחנכים', 'ישיבת הנהלה', 'ישיבת שכבה', 'ישיבה פדגוגית'];
+  var TP = ['מעקב תלמידים', 'הכנת יום שיא', 'סיכום פולס', 'תכנון שליש', 'היערכות למבחנים', 'נוהלי משמעת', 'ערב הורים — חלוקת תפקידים'];
+  for (var d = new Date(START); d <= END; d = DEMO.addDays(d, 1)) {
+    var h = HOL[key(d)];
+    if (d.getDay() === 2 && !(h && !h.s)) { var m = Math.floor(r() * MT.length); ev(key(d), MT[m], 'meet', '', m === 2 ? 19 : 2, '', 'נושא מרכזי: ' + TP[Math.floor(r() * TP.length)] + ' · 14:15 בחדר מורים'); }
   }
-  document.getElementById('main').innerHTML = h + '</div>';
 }
 
-/* ─── צד: הקרובים + עומס ─── */
-function renderAside() {
-  var tk = dk(TODAY);
-  var up = visible().filter(function (ev) { return ev.end >= tk; }).sort(function (a, b) { return a.start < b.start ? -1 : 1; }).slice(0, 8);
-  var h = '';
-  up.forEach(function (ev) {
-    var s = pd(ev.start), st = STAT[ev.status], dd = days(TODAY, s);
-    var when = dd < 0 ? 'מתקיים עכשיו' : dd === 0 ? 'היום' : 'בעוד ' + dd + ' ימים';
-    h += '<a onclick="openDetail(\'' + ev.id + '\')"><div class="dbox"><b>' + s.getDate() + '</b><small>' + MONTHS[monthIdx(s)][2] + '</small></div><div class="t"><b>' + esc(ev.title) + '</b><small>' + role(ev.role).name + ' · ' + when + '</small></div><span class="status ' + st[1] + '">' + st[0] + '</span></a>';
+function tgClasses(tg) { if (!tg) return []; if (tg === 'all') return CL.slice(); var o = []; tg.split(',').forEach(function (t) { CL.forEach(function (c) { if (c === t || c.replace(/\d+$/, '') === t) o.push(c); }); }); return o; }
+function tgLabel(tg) { if (!tg) return 'צוות בלבד'; if (tg === 'all') return 'כל בית הספר'; return tg.split(',').map(function (t) { return /\d/.test(t) ? 'כיתה ' + t : "שכבה " + t + "'"; }).join(', '); }
+function owner(o) { return typeof o === 'number' ? TCH[o].name + ' · ' + TCH[o].role : o; }
+
+/* מצב */
+var state = { m: 'all', c: 'all', q: '' }, idx = {};
+function buildIdx() { idx = {}; EVENTS.forEach(function (e) { (idx[e.d] = idx[e.d] || []).push(e); }); }
+function setMonth(v) { state.m = v; render(); document.getElementById('wrap').scrollTop = 0; }
+function setClass(v) { state.c = v; render(); }
+function setQ(v) { state.q = v.trim().toLowerCase(); render(); }
+
+function visibleDays() {
+  var out = [], q = state.q;
+  for (var d = new Date(START); d <= END; d = DEMO.addDays(d, 1)) {
+    if (state.m !== 'all' && d.getMonth() !== +state.m) continue;
+    if (q) { var k = key(d), evs = idx[k] || [], hit = HOL[k] && HOL[k].n.indexOf(q) >= 0; for (var i = 0; i < evs.length && !hit; i++) if (evs[i].t.toLowerCase().indexOf(q) >= 0) hit = true; if (!hit) continue; }
+    out.push(d);
+  }
+  return out;
+}
+
+function chip(e) { var off = state.c !== 'all' && e.tg && tgClasses(e.tg).indexOf(state.c) < 0; return '<button type="button" class="ev k-' + e.k + (off ? ' off' : '') + '" onclick="showEv(' + e.id + ')" title="' + esc(TYPES[e.k].n) + '">' + esc(e.t) + '</button>'; }
+
+function render() {
+  buildIdx();
+  var cols = state.c === 'all' ? CL : [state.c];
+  var h = '<tr>';
+  BANDS.forEach(function (b, i) { h += '<th class="bh b' + i + '">' + b.n + '</th>'; });
+  h += '<th class="n">#</th><th>תאריך</th><th>יום</th><th class="act">פעילויות</th><th class="mt">ישיבות צוות</th>';
+  cols.forEach(function (c) { h += '<th class="cc">' + c + '</th>'; });
+  document.getElementById('gh').innerHTML = h + '</tr>';
+
+  var days = visibleDays(), per = [], i, j;
+  for (i = 0; i < days.length; i++) per.push('');
+  BANDS.forEach(function (b, bi) {
+    var g = 0; i = 0;
+    while (i < days.length) { var l = segOf(b, days[i]); j = i + 1; while (j < days.length && segOf(b, days[j]) === l) j++; per[i] += '<td class="band b' + bi + (l ? (g++ % 2 ? ' alt' : '') : ' nb') + '" rowspan="' + (j - i) + '">' + (l ? '<span class="vt">' + l + '</span>' : '') + '</td>'; i = j; }
   });
-  document.getElementById('upList').innerHTML = h || '<div class="g-empty">אין אירועים קרובים בסינון הזה</div>';
-  document.getElementById('upHint').textContent = 'מ-' + fmt(TODAY) + ' והלאה';
-  var mx = 1, l = '';
-  ROLES.forEach(function (r) { r._n = EVENTS.filter(function (ev) { return ev.role === r.id; }).length; if (r._n > mx) mx = r._n; });
-  ROLES.forEach(function (r, i) {
-    var cols = ['var(--navy)', 'var(--teal)', 'var(--fuchsia)', 'var(--green)', 'var(--yellow)', 'var(--orange)'];
-    l += '<div><span>' + r.name + '</span><div class="bar" style="--c:' + cols[i] + '"><i style="width:' + Math.round(r._n / mx * 100) + '%"></i></div><span class="n">' + r._n + '</span></div>';
-  });
-  document.getElementById('loadList').innerHTML = l;
+  var rows = [], lastM = -1, tk = key(TODAY);
+  for (i = 0; i < days.length; i++) {
+    var d = days[i], k = key(d), dow = d.getDay(), ho = HOL[k], evs = idx[k] || [], cls = [], acts = '', meets = '', cc = '';
+    var n = Math.round((d - START) / 864e5) + 1, ms = d.getMonth() !== lastM; lastM = d.getMonth();
+    if (dow > 4) cls.push('we'); if (ho) cls.push(ho.s ? 'hs' : 'ho'); if (k === tk) cls.push('td'); if (ms) cls.push('ms');
+    if (ho) acts += '<span class="hn">' + ho.n + '</span>';
+    for (j = 0; j < evs.length; j++) { if (evs[j].k === 'meet') meets += chip(evs[j]); else acts += chip(evs[j]); }
+    cols.forEach(function (c) {
+      var s = '';
+      evs.forEach(function (e) { if (e.k !== 'meet' && tgClasses(e.tg).indexOf(c) >= 0) s += '<i class="dm k-' + e.k + '" title="' + esc(e.t) + '"></i>'; });
+      cc += '<td class="cc">' + s + '</td>';
+    });
+    rows.push('<tr class="' + cls.join(' ') + '"' + (ms ? ' id="m' + (d.getMonth() + 1) + '"' : '') + ' data-k="' + k + '">' + per[i]
+      + '<td class="n">' + n + '</td><td class="dt">' + fmt(d) + (k === tk ? '<span class="tdy">היום</span>' : '') + (ms ? '<small>' + MONF[d.getMonth()] + '</small>' : '') + '</td><td class="dy">' + DAYS[dow] + '</td>'
+      + '<td class="act">' + acts + '</td><td class="mt">' + meets + '</td>' + cc + '</tr>');
+  }
+  document.getElementById('gb').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="' + (9 + cols.length) + '" class="emp">לא נמצאו פעילויות מתאימות</td></tr>';
+  renderKpis(); markMonths();
 }
-function monthIdx(d) { for (var i = 0; i < MONTHS.length; i++) if (MONTHS[i][0] === d.getFullYear() && MONTHS[i][1] === d.getMonth() + 1) return i; return 0; }
 
-function renderAll() { renderKPIs(); renderTabs(); if (F.view === 'year') renderYear(); else renderMonth(); renderAside(); }
-
-/* ─── פירוט אירוע ─── */
-var CUR = null;
-function openDetail(id) {
-  var ev = byId(id); if (!ev) return; CUR = ev;
-  var t = TYPES[ev.type], r = role(ev.role);
-  var body = '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="chip-sm" style="background:' + t.c + ';color:' + (t.light ? 'var(--navy)' : '#fff') + '">' + t.n + '</span><span class="status ' + STAT[ev.status][1] + '" id="dStat">' + STAT[ev.status][0] + '</span></div>'
-    + '<div class="meta"><div><small>מתי</small><b>' + fmtRange(ev) + '</b></div><div><small>אחראי/ת</small><b>' + r.name + '</b><small>' + r.who + '</small></div><div><small>למי</small><b>' + (ev.grades.length ? 'שכבות ' + ev.grades.join('׳, ') + '׳' : 'כל בית הספר') + '</b></div></div>'
-    + (ev.notes ? '<p style="font-size:13.5px;color:var(--gray);margin-bottom:6px">' + esc(ev.notes) + '</p>' : '')
-    + '<label class="f" style="max-width:220px">סטטוס<select class="in" onchange="setStatus(this.value)">' + Object.keys(STAT).map(function (k) { return '<option value="' + k + '"' + (ev.status === k ? ' selected' : '') + '>' + STAT[k][0] + '</option>'; }).join('') + '</select></label>'
-    + '<div class="sec-t">צ\'קליסט הכנה · <span id="ckProg"></span></div><div class="bar" style="--c:var(--green);margin:6px 0 4px"><i id="ckBar" style="width:0"></i></div><ul class="ck" id="ckList"></ul>';
-  document.getElementById('detailHost').innerHTML = DemoShell.modalHTML('mDetail', esc(ev.title), body, '<button type="button" class="btn-sm" onclick="DemoShell.closeModal(\'mDetail\')">סגירה</button>');
-  drawChecks(); DemoShell.openModal('mDetail');
+function renderKpis() {
+  var all = 0, mo = 0, peak = 0, par = 0;
+  EVENTS.forEach(function (e) { if (e.k === 'meet') return; all++; if (e.d.slice(0, 7) === '2026-11') mo++; if (e.k === 'peak') peak++; if (e.k === 'parents') par++; });
+  document.getElementById('kpis').innerHTML =
+    '<div class="kpi" style="--c:var(--navy)"><b>' + all + '</b><span>אירועים בשנה (בלי ישיבות)</span></div>'
+    + '<div class="kpi" style="--c:var(--teal)"><b>' + mo + '</b><span>החודש — נובמבר</span></div>'
+    + '<div class="kpi" style="--c:var(--fuchsia)"><b>' + peak + '</b><span>ימי שיא</span></div>'
+    + '<div class="kpi" style="--c:var(--gold)"><b>' + par + '</b><span>אסיפות וערבי הורים</span></div>';
 }
-function drawChecks() {
-  var ev = CUR, done = 0;
-  document.getElementById('ckList').innerHTML = ev.check.map(function (c, i) { if (c.done) done++; return '<li><label class="' + (c.done ? 'on' : '') + '"><input type="checkbox"' + (c.done ? ' checked' : '') + ' onchange="toggleCheck(' + i + ',this.checked)">' + esc(c.t) + '</label></li>'; }).join('');
-  document.getElementById('ckProg').textContent = done + '/' + ev.check.length + ' בוצעו';
-  document.getElementById('ckBar').style.width = (ev.check.length ? Math.round(done / ev.check.length * 100) : 0) + '%';
-}
-function toggleCheck(i, on) { CUR.check[i].done = on; markOV(CUR); drawChecks(); renderKPIs(); DemoShell.toast('נשמר בדמו'); }
-function setStatus(v) { CUR.status = v; markOV(CUR); var s = document.getElementById('dStat'); s.className = 'status ' + STAT[v][1]; s.textContent = STAT[v][0]; renderAll(); DemoShell.toast('הסטטוס עודכן: ' + STAT[v][0]); }
 
-/* ─── הוספת אירוע ─── */
-(function () {
-  var body = '<div class="form-grid">'
-    + '<label class="f span2">כותרת<input class="in" id="aTitle" placeholder="למשל: ערב הורים שכבת ח׳"></label>'
-    + '<label class="f">תאריך התחלה<input class="in" type="date" id="aStart" min="2026-09-01" max="2027-06-30" value="' + dk(TODAY) + '"></label>'
-    + '<label class="f">תאריך סיום (לא חובה)<input class="in" type="date" id="aEnd" min="2026-09-01" max="2027-06-30"></label>'
-    + '<label class="f">סוג<select class="in" id="aType">' + Object.keys(TYPES).map(function (k) { return '<option value="' + k + '">' + TYPES[k].n + '</option>'; }).join('') + '</select></label>'
-    + '<label class="f">אחראי/ת<select class="in" id="aRole">' + ROLES.map(function (r) { return '<option value="' + r.id + '">' + r.name + '</option>'; }).join('') + '</select></label>'
-    + '<div class="span2"><div class="sec-t" style="margin:0 0 6px">שכבות (ריק = כל בית הספר)</div><div class="gchk">' + DEMO.grades.map(function (g) { return '<label><input type="checkbox" name="aGrade" value="' + g + '"> ' + g + '׳</label>'; }).join('') + '</div></div>'
-    + '<label class="f">סטטוס<select class="in" id="aStat"><option value="plan">מתוכנן</option><option value="prep">בהכנה</option></select></label>'
-    + '<label class="f">הערה<input class="in" id="aNotes" placeholder="מיקום, שעה…"></label>'
-    + '<label class="f span2">צ\'קליסט הכנה (שורה לכל משימה)<textarea class="in" id="aCheck" placeholder="הזמנה להורים&#10;חדר ומקרן&#10;כיבוד"></textarea></label>'
-    + '</div>';
-  document.getElementById('addHost').innerHTML = DemoShell.modalHTML('mAdd', 'הוספת אירוע ללוח', body,
-    '<button type="button" class="btn-sm" onclick="DemoShell.closeModal(\'mAdd\')">ביטול</button><button type="button" class="btn-sm primary" onclick="saveAdd()">הוספה ללוח</button>');
-})();
-function openAdd() { DemoShell.openModal('mAdd'); setTimeout(function () { document.getElementById('aTitle').focus(); }, 250); }
+/* חודשים + מקרא */
+function buildTop() {
+  var sm = document.getElementById('selM'), mh = '', y = 2026;
+  YEAR_MONTHS.forEach(function (m) { if (m === 0) y = 2027; sm.insertAdjacentHTML('beforeend', '<option value="' + m + '">' + MONF[m] + ' ' + y + '</option>'); mh += '<button type="button" class="mchip" data-m="' + m + '" onclick="goMonth(' + m + ')">' + MON[m] + '</button>'; });
+  document.getElementById('months').innerHTML = mh;
+  var sc = document.getElementById('selC'); CL.forEach(function (c) { sc.insertAdjacentHTML('beforeend', '<option value="' + c + '">כיתה ' + c + '</option>'); });
+  var lg = '<span><i class="flat" style="background:rgba(123,203,82,.35)"></i>שישי / שבת</span><span><i class="flat" style="background:rgba(240,6,120,.2)"></i>חופשה</span>', k;
+  for (k in TYPES) lg += '<span><i class="k-' + k + '"></i>' + TYPES[k].n + '</span>';
+  document.getElementById('lg').innerHTML = lg;
+}
+function goMonth(m) {
+  if (state.m !== 'all') { state.m = String(m); document.getElementById('selM').value = String(m); render(); return; }
+  var wrap = document.getElementById('wrap'), row = document.getElementById('m' + (m + 1)); if (!row) return;
+  var top = row.getBoundingClientRect().top - wrap.getBoundingClientRect().top + wrap.scrollTop - 40;
+  if (wrap.scrollTo) wrap.scrollTo({ top: top, behavior: 'smooth' }); else wrap.scrollTop = top;
+  setChip(m);
+}
+function setChip(m) { var cs = document.querySelectorAll('.mchip'); for (var i = 0; i < cs.length; i++) cs[i].classList.toggle('on', +cs[i].getAttribute('data-m') === m); }
+function markMonths() {
+  if (state.m !== 'all') { setChip(+state.m); return; }
+  var wrap = document.getElementById('wrap'), wt = wrap.getBoundingClientRect().top + 44, cur = -1;
+  YEAR_MONTHS.forEach(function (m) { var r = document.getElementById('m' + (m + 1)); if (r && r.getBoundingClientRect().top <= wt + 2) cur = m; });
+  if (cur < 0) cur = YEAR_MONTHS[0]; setChip(cur);
+}
+(function () { var t = false; document.getElementById('wrap').addEventListener('scroll', function () { if (t) return; t = true; requestAnimationFrame(function () { t = false; markMonths(); }); }); })();
+
+/* פירוט אירוע */
+function showEv(id) {
+  var e = null; for (var i = 0; i < EVENTS.length; i++) if (EVENTS[i].id === id) e = EVENTS[i]; if (!e) return;
+  var body = '<p style="margin-bottom:14px"><span class="ev k-' + e.k + '" style="cursor:default">' + TYPES[e.k].n + '</span></p><dl class="dl">'
+    + '<dt>תאריך</dt><dd>' + fmtFull(D(e.d)) + '</dd>'
+    + '<dt>אחראי/ת</dt><dd>' + esc(owner(e.o)) + '</dd>'
+    + '<dt>כיתות / קהל</dt><dd>' + esc(tgLabel(e.tg)) + '</dd>'
+    + '<dt>מה להכין</dt><dd>' + (e.p ? esc(e.p) : '<span style="color:var(--gray)">—</span>') + '</dd>'
+    + '<dt>הערות</dt><dd>' + (e.n ? esc(e.n) : '<span style="color:var(--gray)">—</span>') + '</dd></dl>';
+  document.getElementById('mHost').innerHTML = DemoShell.modalHTML('mEv', esc(e.t), body,
+    '<button type="button" class="btn-sm ghost" onclick="delEv(' + e.id + ')">מחק</button><button type="button" class="btn-sm" onclick="DemoShell.toast(\'עריכה מלאה — במערכת האמיתית\')">ערוך</button><button type="button" class="btn-sm navy" onclick="DemoShell.closeModal(\'mEv\')">סגירה</button>');
+  DemoShell.openModal('mEv');
+}
+function delEv(id) { EVENTS = EVENTS.filter(function (e) { return e.id !== id; }); DemoShell.closeModal('mEv'); render(); DemoShell.toast('האירוע הוסר מהלוח (בדמו)'); }
+
+/* הוספת אירוע */
+function openAdd() {
+  if (!document.getElementById('mAdd')) {
+    var k, ty = '', ow = '', tg = '<option value="all">כל בית הספר</option><option value="">צוות בלבד</option>';
+    for (k in TYPES) ty += '<option value="' + k + '">' + TYPES[k].n + '</option>';
+    TCH.forEach(function (t, i) { ow += '<option value="' + i + '">' + t.name + ' · ' + t.role + '</option>'; });
+    DEMO.grades.forEach(function (g) { tg += '<option value="' + g + '">שכבה ' + g + "'</option>"; });
+    CL.forEach(function (c) { tg += '<option value="' + c + '">כיתה ' + c + '</option>'; });
+    var body = '<div class="form-grid">'
+      + '<label class="f span2">כותרת<input class="in" id="aT" placeholder="לדוגמה: אסיפת הורים ח\'"></label>'
+      + '<label class="f">סוג<select class="in" id="aK">' + ty + '</select></label>'
+      + '<label class="f">תאריך<input class="in" id="aD" type="date" value="' + key(TODAY) + '" min="2026-09-01" max="2027-06-20"></label>'
+      + '<label class="f">אחראי/ת<select class="in" id="aO">' + ow + '</select></label>'
+      + '<label class="f">כיתות / קהל<select class="in" id="aG">' + tg + '</select></label>'
+      + '<label class="f span2">מה להכין<textarea class="in" id="aP" style="min-height:70px"></textarea></label></div>';
+    document.getElementById('aHost').innerHTML = DemoShell.modalHTML('mAdd', 'הוספת אירוע ללוח', body,
+      '<button type="button" class="btn-sm ghost" onclick="DemoShell.closeModal(\'mAdd\')">ביטול</button><button type="button" class="btn-sm primary" onclick="saveAdd()">הוספה ללוח</button>');
+  }
+  document.getElementById('aT').value = ''; DemoShell.openModal('mAdd');
+}
 function saveAdd() {
-  var title = document.getElementById('aTitle').value.trim(), start = document.getElementById('aStart').value, end = document.getElementById('aEnd').value;
-  if (!title || !start) { DemoShell.toast('צריך כותרת ותאריך התחלה'); return; }
-  if (!end || end < start) end = start;
-  var grades = []; var cbs = document.querySelectorAll('input[name=aGrade]:checked'); for (var i = 0; i < cbs.length; i++) grades.push(cbs[i].value);
-  var check = document.getElementById('aCheck').value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean).map(function (s) { return { t: s, done: false }; });
-  var ev = { id: 'c' + Date.now(), title: title, start: start, end: end, type: document.getElementById('aType').value, role: document.getElementById('aRole').value, grades: grades, status: document.getElementById('aStat').value, check: check, notes: document.getElementById('aNotes').value.trim() };
-  CUSTOM.push(ev); EVENTS.push(ev); persist();
+  var t = document.getElementById('aT').value.trim(), d = document.getElementById('aD').value;
+  if (!t) { DemoShell.toast('צריך כותרת לאירוע'); return; }
+  if (!d || d < '2026-09-01' || d > '2027-06-20') { DemoShell.toast('התאריך צריך להיות בתוך שנת הלימודים'); return; }
+  ev(d, t, document.getElementById('aK').value, document.getElementById('aG').value, +document.getElementById('aO').value, document.getElementById('aP').value.trim());
   DemoShell.closeModal('mAdd');
-  document.getElementById('aTitle').value = ''; document.getElementById('aCheck').value = ''; document.getElementById('aNotes').value = '';
-  F.month = monthIdx(pd(start)); renderAll();
-  DemoShell.toast('האירוע נוסף ללוח (נשמר בדמו)');
+  var dd = D(d); if (state.m !== 'all' && +state.m !== dd.getMonth()) { state.m = 'all'; document.getElementById('selM').value = 'all'; }
+  state.q = ''; document.getElementById('q').value = ''; render();
+  var wrap = document.getElementById('wrap'), row = document.querySelector('tr[data-k="' + d + '"]');
+  if (row) wrap.scrollTop = row.getBoundingClientRect().top - wrap.getBoundingClientRect().top + wrap.scrollTop - 120;
+  DemoShell.toast('האירוע נוסף ללוח (בדמו)');
+}
+function resetDemo() {
+  seed(); state = { m: 'all', c: 'all', q: '' };
+  document.getElementById('selM').value = 'all'; document.getElementById('selC').value = 'all'; document.getElementById('q').value = '';
+  render(); goMonth(10); DemoShell.toast('הדמו אופס לנתוני ההתחלה');
 }
 
-/* ─── הפעלה ─── */
-/* פרמטרים לקישור ישיר/צילום: ?view=month&open=e16 */
-(function () { var q = location.search; if (/view=month/.test(q)) F.view = 'month'; var m = q.match(/open=(\w+)/); renderAll(); if (m) openDetail(m[1]); })();
-var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { if (F.view === 'year') renderYear(); }, 150); });
+buildTop(); seed(); render();
+setTimeout(function () { goMonth(10); }, 350);
 </script>
 </body>
 </html>
