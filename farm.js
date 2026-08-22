@@ -1,6 +1,6 @@
 /**
  * חוות האפליקציות — לוגיקה משותפת לדף-הבית (index.html) ולקטלוג (catalog.html)
- * דף-הבית: hero-stats · "יום בחיי מנהלת" · הכוכבים · דמואים · אריחי-קטגוריות
+ * דף-הבית: "יום בחיי מנהלת" · הכוכבים · דמואים · אריחי-קטגוריות
  * קטלוג:  חיפוש+סינון (?cat= / ?q=) · כרטיסי flip · שאלון "בנו את הסל" · מצב-מצגת
  * כל render* בודק שהאלמנט קיים — כך אותו קובץ משרת את שני הדפים.
  */
@@ -54,27 +54,6 @@ function miniLogos(ids, size) {
 }
 function detailHref(app) { return 'app.html?id=' + app.id; }
 function vtName(id) { return 'logo-' + id; }
-
-/* ── hero stats ── */
-function renderStats() {
-  var el = document.getElementById('heroStats'); if (!el) return;
-  var ai = APPS.filter(function (a) { return appTags(a.id).indexOf('ai') !== -1; }).length;
-  var items = [
-    { n: APPS.length, l: 'מערכות' },
-    { n: CATEGORIES.length, l: 'תחומים' },
-    { n: ai, l: 'עם סוכן AI' },
-    { n: 1, l: 'בית ספר חי שמריץ הכול' }
-  ];
-  el.innerHTML = items.map(function (it) { return '<div class="stat"><b data-count="' + it.n + '">0</b><span>' + it.l + '</span></div>'; }).join('');
-  /* ספירה עולה */
-  var nums = el.querySelectorAll('[data-count]');
-  for (var i = 0; i < nums.length; i++) (function (node) {
-    var target = +node.getAttribute('data-count'), t0 = null;
-    function step(ts) { if (!t0) t0 = ts; var p = Math.min(1, (ts - t0) / 1100); node.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); }
-    setTimeout(function () { requestAnimationFrame(step); }, 600);
-    setTimeout(function () { node.textContent = target; }, 2200);
-  })(nums[i]);
-}
 
 /* ── יום בחיי מנהלת ── */
 function renderDay() {
@@ -202,7 +181,7 @@ function renderCatalog() {
       + '</div>'
       + '<div class="grid">' + cards + '</div></section>';
   }
-  if (!total) html = '<div class="empty-state">לא מצאנו מערכת שמתאימה ל"' + query + '". נסו מילה אחרת — או <a href="#" onclick="openQuiz();return false;">ענו על 3 שאלות</a> ונמליץ.</div>';
+  if (!total) html = '<div class="empty-state">לא מצאנו מערכת שמתאימה ל"' + query + '". נסו מילה אחרת — או <a href="#" onclick="openQuiz();return false;">ענו על 5 שאלות</a> ונמליץ.</div>';
   var body = document.getElementById('catalog-body');
   body.innerHTML = html;
   if (window.observeReveal) observeReveal(body);
@@ -218,27 +197,26 @@ function renderCatCount() {
   el.textContent = APPS.length + ' מערכות ב-' + CATEGORIES.length + ' תחומים. חפשו לפי צורך, סננו לפי תחום — והוסיפו לסל רק מה שמדבר אליכם.';
 }
 
-/* ── שאלון "בנו את הסל" ── */
-var quizState = { pains: [], size: 'mid', counselor: 'yes' };
+/* ── שאלון "בנו את הסל" — שאלה 1: כאבים · שאלות 2–5 מ-QUIZ.questions · שלב אחרון: הסל ── */
+var quizState = { pains: [], answers: { size: 'mid', stage: 'elementary', today: 'excel', users: 'staff' } };
 function openQuiz() { document.getElementById('quiz').classList.add('open'); document.body.classList.add('no-scroll'); renderQuiz(1); }
 function closeQuiz() { document.getElementById('quiz').classList.remove('open'); document.body.classList.remove('no-scroll'); }
 function renderQuiz(step) {
   var box = document.getElementById('quizBody'), h = '';
-  var dots = '<div class="quiz-steps">' + [1, 2, 3, 4].map(function (n) { return '<span class="' + (n === step ? 'on' : n < step ? 'done' : '') + '"></span>'; }).join('') + '</div>';
+  var total = QUIZ.questions.length + 2; /* כאבים + 4 שאלות + תוצאה */
+  var steps = []; for (var d = 1; d <= total; d++) steps.push(d);
+  var dots = '<div class="quiz-steps">' + steps.map(function (n) { return '<span class="' + (n === step ? 'on' : n < step ? 'done' : '') + '"></span>'; }).join('') + '</div>';
   if (step === 1) {
     h = dots + '<h3>מה מכביד עליכם הכי הרבה היום?</h3><p>אפשר לבחור עד שלושה.</p><div class="quiz-opts">'
       + QUIZ.pains.map(function (p) { return '<button type="button" class="qopt' + (quizState.pains.indexOf(p.id) !== -1 ? ' on' : '') + '" onclick="togglePain(\'' + p.id + '\')">' + p.label + '</button>'; }).join('')
       + '</div><div class="quiz-nav"><span></span><button type="button" class="btn-primary" onclick="renderQuiz(2)"' + (quizState.pains.length ? '' : ' disabled') + '>הבא</button></div>';
-  } else if (step === 2) {
-    h = dots + '<h3>כמה תלמידים בבית הספר?</h3><div class="quiz-opts">'
-      + QUIZ.sizes.map(function (s) { return '<button type="button" class="qopt' + (quizState.size === s.id ? ' on' : '') + '" onclick="quizState.size=\'' + s.id + '\';renderQuiz(2)">' + s.label + '</button>'; }).join('')
-      + '</div><div class="quiz-nav"><button type="button" class="btn-outline" onclick="renderQuiz(1)">חזרה</button><button type="button" class="btn-primary" onclick="renderQuiz(3)">הבא</button></div>';
-  } else if (step === 3) {
-    h = dots + '<h3>יש יועצת חינוכית בצוות?</h3><div class="quiz-opts">'
-      + QUIZ.counselor.map(function (s) { return '<button type="button" class="qopt' + (quizState.counselor === s.id ? ' on' : '') + '" onclick="quizState.counselor=\'' + s.id + '\';renderQuiz(3)">' + s.label + '</button>'; }).join('')
-      + '</div><div class="quiz-nav"><button type="button" class="btn-outline" onclick="renderQuiz(2)">חזרה</button><button type="button" class="btn-primary" onclick="renderQuiz(4)">הראו לי את הסל</button></div>';
+  } else if (step <= QUIZ.questions.length + 1) {
+    var q = QUIZ.questions[step - 2], last = step === QUIZ.questions.length + 1;
+    h = dots + '<h3>' + q.title + '</h3>' + (q.hint ? '<p>' + q.hint + '</p>' : '') + '<div class="quiz-opts">'
+      + q.options.map(function (o) { return '<button type="button" class="qopt' + (quizState.answers[q.id] === o.id ? ' on' : '') + '" onclick="quizState.answers[\'' + q.id + '\']=\'' + o.id + '\';renderQuiz(' + step + ')">' + o.label + '</button>'; }).join('')
+      + '</div><div class="quiz-nav"><button type="button" class="btn-outline" onclick="renderQuiz(' + (step - 1) + ')">חזרה</button><button type="button" class="btn-primary" onclick="renderQuiz(' + (step + 1) + ')">' + (last ? 'הראו לי את הסל' : 'הבא') + '</button></div>';
   } else {
-    var ids = recommend(quizState.pains, quizState.size, quizState.counselor);
+    var ids = recommend(quizState.pains, quizState.answers);
     h = dots + '<h3>הסל שהיינו מתחילים ממנו</h3><p>חמש מערכות שיעשו את ההבדל הכי גדול קודם — אפשר להוסיף או להוריד.</p><div class="quiz-result">'
       + ids.map(function (id) { var a = getApp(id); return '<div class="qres" style="--c1:' + getLogo(id).c1 + '">' + logoSVG(a, 44) + '<div><b>' + a.name + '</b><span>' + a.tagline.split('.')[0] + '.</span></div>' + addBtnHTML(id) + '</div>'; }).join('')
       + '</div><div class="quiz-nav"><button type="button" class="btn-outline" onclick="renderQuiz(1)">מהתחלה</button><button type="button" class="btn-primary" onclick="addAll(' + JSON.stringify(ids).replace(/"/g, '&quot;') + ')">הוסיפו הכול לסל</button></div>';
@@ -263,10 +241,9 @@ function addAll(ids) {
 })();
 
 /* ── הרצה ── */
-renderStats(); renderDay(); renderFeatured(); renderDemos(); renderStageMarks(); renderCatTiles(); renderCatCount();
+renderDay(); renderFeatured(); renderDemos(); renderStageMarks(); renderCatTiles(); renderCatCount();
 if (document.getElementById('chips')) {
   renderChips(); renderCatalog();
   var qEl = document.getElementById('q'); if (qEl && query) qEl.value = query;
 }
 if (window.observeReveal) observeReveal();
-var badge = document.getElementById('navBadge'); if (badge && document.getElementById('catTiles')) badge.textContent = APPS.length + ' מערכות · בוחרים רק מה שצריך';

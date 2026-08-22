@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דמו · פוסטים מתוזמנים לרשתות — חוות האפליקציות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+  .view { display: none; } .view.on { display: block; }
+  .tabs { margin-bottom: 20px; }
+  .tab svg { width: 14px; height: 14px; margin-inline-end: 6px; vertical-align: -2px; }
+
+  /* ─── לוח חודשי ─── */
+  .cal-wrap { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 14px; overflow-x: auto; }
+  .cal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 2px 6px 12px; }
+  .cal-head h3 { font-size: 18px; font-weight: 900; letter-spacing: -.4px; }
+  .cal-head small { color: var(--gray); font-size: 12.5px; font-weight: 600; }
+  table.cal { width: 100%; border-collapse: separate; border-spacing: 5px; min-width: 820px; table-layout: fixed; }
+  .cal th { font-size: 11.5px; font-weight: 800; color: var(--gray); padding-bottom: 4px; }
+  .cal td { vertical-align: top; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 6px; height: 84px; }
+  .cal td.blank { background: transparent; border: none; }
+  .cal td.today { background: #fff; border: 1.5px solid var(--teal); }
+  .cal .dnum { font-size: 11.5px; font-weight: 800; color: var(--gray); margin-bottom: 4px; }
+  .cal td.today .dnum { color: var(--teal); }
+  .pchip { display: flex; align-items: center; gap: 5px; width: 100%; border: none; background: #fff; border-radius: 8px; padding: 4px 6px; margin-bottom: 4px; font-family: inherit; font-size: 11px; font-weight: 700; color: var(--navy); cursor: pointer; text-align: right; box-shadow: 0 1px 4px rgba(6,30,79,.07); transition: transform var(--motion-fast) var(--motion-ease), box-shadow 250ms; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .pchip:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(6,30,79,.12); }
+  .pchip.draft { opacity: .55; border: 1px dashed rgba(6,30,79,.25); box-shadow: none; }
+  .pchip .chs { display: inline-flex; gap: 2px; flex: none; }
+  .chdot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .pchip span.txt { overflow: hidden; text-overflow: ellipsis; }
+
+  /* ─── תור הפרסום ─── */
+  .chan-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 800; padding: 3px 9px; border-radius: 999px; margin-inline-end: 4px; color: #fff; }
+  .chan-tag svg { width: 11px; height: 11px; }
+  .qtxt { max-width: 420px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+  @media (max-width: 700px) { .qtxt { max-width: 180px; } }
+
+  /* ─── בנק רעיונות ─── */
+  .ideas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 980px) { .ideas { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 620px) { .ideas { grid-template-columns: 1fr; } }
+  .idea { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 8px; transition: transform var(--motion-fast) var(--motion-ease), box-shadow 300ms; }
+  .idea:hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(6,30,79,.09); }
+  .idea b { font-size: 15px; font-weight: 900; letter-spacing: -.2px; }
+  .idea small { font-size: 12px; color: var(--gray); font-weight: 700; }
+  .idea p { font-size: 13px; line-height: 1.6; color: var(--gray); flex: 1; }
+  .idea .btn-sm { align-self: flex-start; }
+
+  /* ─── מודאל עריכה ─── */
+  .chan-pick { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chan-opt { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 6px 13px; font-family: inherit; font-size: 12.5px; font-weight: 800; color: var(--navy); cursor: pointer; transition: all 200ms; }
+  .chan-opt.on { color: #fff; border-color: transparent; }
+  .chan-opt svg { width: 12px; height: 12px; }
+  .st-pick { display: flex; gap: 8px; flex-wrap: wrap; }
+  .modal-card { max-width: 560px; }
+  .ai-draft { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-top: 8px; font-size: 13px; line-height: 1.7; white-space: pre-line; }
+</style>
+</head>
+<body>
+
+<main class="demo-main">
+  <div class="demo-head">
+    <div>
+      <h2>פוסטים מתוזמנים לרשתות</h2>
+      <p>לוח תוכן חודשי אחד — פייסבוק, אינסטגרם וקהילת הוואטסאפ. כותבים מראש, קובעים מתי, והפוסטים יוצאים לבד. בית הספר נוכח ברשתות בלי לרדוף אחרי זה כל ערב.</p>
+    </div>
+    <div class="demo-toolbar">
+      <button type="button" class="btn-sm primary" onclick="openEdit(null)">פוסט חדש</button>
+      <button type="button" class="btn-sm ghost" onclick="resetDemo()">איפוס דמו</button>
+    </div>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+  <div class="tabs" id="tabs"></div>
+
+  <section class="view on" id="v-cal">
+    <div class="cal-wrap">
+      <div class="cal-head">
+        <h3>נובמבר 2026 <small>· חשוון–כסלו תשפ"ז</small></h3>
+        <small>לחיצה על פוסט פותחת עריכה · פוסט מקווקו = טיוטה</small>
+      </div>
+      <table class="cal" id="cal"></table>
+    </div>
+  </section>
+
+  <section class="view" id="v-queue">
+    <div class="card">
+      <div class="card-h"><h3>תור הפרסום</h3><span class="hint">מה יצא, מה בדרך, מה עוד בטיוטה</span></div>
+      <div class="table-wrap"><table class="tbl" id="queueTbl"></table></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-ideas">
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-h"><h3>בנק רעיונות — מה מתקרב בלוח השנה</h3><span class="hint">לחיצה יוצרת טיוטה מוכנה לעריכה</span></div>
+      <div class="ideas" id="ideasGrid"></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-ai"><div id="aiHost"></div></section>
+</main>
+
+<script src="../apps-data.js"></script>
+<script src="../logos.js"></script>
+<script src="../store.js"></script>
+<script src="demo-data.js"></script>
+<script src="demo-shell.js"></script>
+<script>
+  DemoShell.init('social-posts');
+
+  /* ───────── הגדרות ───────── */
+  var TODAY = 17; /* 17.11 — קבוע בדמו */
+  var CH = {
+    fb: { name: 'פייסבוק',        c: '#0B7DB5', svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 8h3V4.5h-3c-2.5 0-4 1.7-4 4.2V11H7v3.5h3V20h3.5v-5.5h3l.5-3.5h-3.5V9c0-.6.4-1 1-1z"/></svg>' },
+    ig: { name: 'אינסטגרם',       c: '#F00678', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.6"/><path d="M16.8 7.2h.01"/></svg>' },
+    wa: { name: 'קהילת וואטסאפ',  c: '#25D366', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.8L3.5 20.5l4.3-1.1A8.5 8.5 0 1 0 12 3.5z"/></svg>' }
+  };
+  var ICONS = {
+    cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg>',
+    queue: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>',
+    bulb: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.7 1 1.5 1 2.5h6c0-1 .2-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg>',
+    spark: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8z"/><path d="M19 14l.9 2.6L22.5 17.5l-2.6.9L19 21l-.9-2.6-2.6-.9 2.6-.9z" opacity=".7"/></svg>'
+  };
+
+  /* ───────── state ───────── */
+  var KEY = 'farm-demo-social-posts';
+  var S = {};
+  function genState() {
+    S = { posts: [
+      { id: 1,  day: 1,  time: '17:30', ch: ['fb', 'ig'],       st: 'pub',   text: 'פותחים את חשוון: תלמידי כיתות ז יצאו הבוקר למבצע "בוקר טוב שכונה" — חילקו קפה ועוגיות לשכנים וסיפרו על בית הספר. גאים בכם!' },
+      { id: 2,  day: 3,  time: '19:00', ch: ['ig'],             st: 'pub',   text: 'כשמעבדת המדעים עוברת לחצר: שיעור על מעגלים חשמליים בשמש של נובמבר. יש תמונות שמדברות בעד עצמן.' },
+      { id: 3,  day: 5,  time: '18:00', ch: ['fb', 'wa'],       st: 'pub',   text: 'הורי שכבת ז — ערב ההורים יתקיים ביום שלישי הבא. הרישום לשעות פתוח בקישור שבתגובה הראשונה. מחכים לראותכם!' },
+      { id: 4,  day: 8,  time: '17:00', ch: ['fb'],             st: 'pub',   text: 'סיפור של בוגרת: נ׳, מחזור תשפ"ב, התקבלה השבוע ללימודי הנדסה. "המורים כאן האמינו בי לפני שאני האמנתי בעצמי." בהצלחה!' },
+      { id: 5,  day: 10, time: '16:30', ch: ['fb', 'ig'],       st: 'pub',   text: 'נבחרת הרובוטיקה שלנו עלתה לגמר האזורי! שלושה חודשים של הישארות אחרי השעות — והרובוט עובר את המסלול בשמונה שניות.' },
+      { id: 6,  day: 12, time: '20:00', ch: ['wa'],             st: 'pub',   text: 'טיפ להורים לסוף השבוע: חמש דקות של קריאה משותפת בערב שוות יותר משעה של שיעורי בית בלחץ. שבת שלום מכל הצוות.' },
+      { id: 7,  day: 15, time: '17:30', ch: ['fb', 'ig'],       st: 'pub',   text: 'לרגל יום הסובלנות הבינלאומי: שיעורי החינוך השבוע עסקו בשאלה אחת — איך נשמעת מחלוקת מכבדת? התשובות של התלמידים ריגשו אותנו.' },
+      { id: 8,  day: 16, time: '18:30', ch: ['ig'],             st: 'pub',   text: 'ציור הקיר החדש במסדרון קומה ב מוכן — עיצבו: מועצת התלמידים. בואו לראות מקרוב בערב ההורים.' },
+      { id: 9,  day: 17, time: '17:00', ch: ['fb', 'wa'],       st: 'pub',   text: 'הבוקר ציינו את יום המעשים הטובים הבית-ספרי: 14 כיתות, 14 פרויקטים קטנים בקהילה. תודה לכל מי שפתח לנו את הדלת.' },
+      { id: 10, day: 19, time: '18:00', ch: ['fb', 'wa'],       st: 'sched', text: 'מחפשים בית ספר לילד/ה שלכם? נפתחה ההרשמה לסיורי היכרות של חודש דצמבר. מספר המקומות מוגבל — הקישור בפרופיל.' },
+      { id: 11, day: 22, time: '17:30', ch: ['ig'],             st: 'sched', text: 'מאחורי הקלעים: ההכנות לשבוע החנוכה בעיצומן. נותנים הצצה קטנה — את השאר תראו בשבוע הבא.' },
+      { id: 12, day: 24, time: '19:00', ch: ['fb'],             st: 'sched', text: 'פינת הספרייה החדשה נפתחה — כורסאות, תאורה נעימה ומדף ספרים שהתלמידים בחרו בעצמם. מקום שרוצים להישאר בו גם בהפסקה.' },
+      { id: 13, day: 26, time: '17:00', ch: ['fb', 'ig'],       st: 'sched', text: 'שיא קריאה בית-ספרי: 1,200 ספרים מתחילת השנה. הכיתה המובילה זוכה לבוקר קריאה בפיג׳מות — כן, גם המחנכת.' },
+      { id: 14, day: 29, time: '18:00', ch: ['fb', 'ig', 'wa'], st: 'sched', text: 'עוד שבוע מדליקים נר ראשון. שבוע החנוכה שלנו: יריד יזמות צעירה, הדלקה משותפת עם ההורים וערב סופגניות של מועצת התלמידים. התוכנייה המלאה — בקרוב.' },
+      { id: 15, day: 30, time: '17:30', ch: ['fb'],             st: 'draft', text: 'סיכום נובמבר במספרים ובתמונות: מה עשינו החודש ומה מחכה לנו בדצמבר.' },
+      { id: 16, day: 25, time: '16:00', ch: ['ig'],             st: 'draft', text: 'הכירו את הצוות: חמש שאלות קצרות למורה חדש/ה — פורמט חדש שנתחיל החודש.' },
+      { id: 17, day: 27, time: '18:00', ch: ['fb', 'wa'],       st: 'draft', text: 'דרושה מורה למתמטיקה לשכבות ט–י החל מסמסטר ב. מכירים מישהי מצוינת? תייגו אותה.' }
+    ], nextId: 18 };
+  }
+  function load() { try { var j = localStorage.getItem(KEY); if (j) { S = JSON.parse(j); return; } } catch (e) {} genState(); }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+  function resetDemo() { try { localStorage.removeItem(KEY); } catch (e) {} genState(); renderAll(); DemoShell.toast('הדמו אופס לנתוני ההתחלה'); }
+
+  /* ───────── עזרים ───────── */
+  function stChip(st) { return st === 'pub' ? '<span class="status ok">פורסם</span>' : st === 'sched' ? '<span class="status info">מתוזמן</span>' : '<span class="status muted">טיוטה</span>'; }
+  function chanTags(ch) { return ch.map(function (c) { return '<span class="chan-tag" style="background:' + CH[c].c + '">' + CH[c].svg + CH[c].name + '</span>'; }).join(''); }
+  function chanDots(ch) { return '<span class="chs">' + ch.map(function (c) { return '<i class="chdot" style="background:' + CH[c].c + '"></i>'; }).join('') + '</span>'; }
+  function byId(id) { for (var i = 0; i < S.posts.length; i++) if (S.posts[i].id === id) return S.posts[i]; return null; }
+
+  /* ───────── KPI ───────── */
+  function renderKpis() {
+    var pub = 0, sch = 0, dr = 0;
+    S.posts.forEach(function (p) { if (p.st === 'pub') pub++; else if (p.st === 'sched') sch++; else dr++; });
+    document.getElementById('kpis').innerHTML =
+      '<div class="kpi" style="--c:var(--teal)"><b>' + S.posts.length + '</b><span>פוסטים בלוח החודש</span></div>'
+      + '<div class="kpi" style="--c:var(--green)"><b>' + pub + '</b><span>כבר פורסמו</span></div>'
+      + '<div class="kpi" style="--c:var(--navy)"><b>' + sch + '</b><span>מתוזמנים קדימה</span></div>'
+      + '<div class="kpi" style="--c:var(--gold)"><b>' + dr + '</b><span>טיוטות בעבודה</span></div>';
+  }
+
+  /* ───────── טאבים ───────── */
+  var TABS = [['cal', 'לוח חודשי', 'cal'], ['queue', 'תור הפרסום', 'queue'], ['ideas', 'בנק רעיונות', 'bulb'], ['ai', 'עוזר הניסוח', 'spark']];
+  var curTab = 'cal';
+  function showTab(id) {
+    curTab = id;
+    document.getElementById('tabs').innerHTML = TABS.map(function (t) { return '<button type="button" class="tab' + (t[0] === id ? ' active' : '') + '" onclick="showTab(\'' + t[0] + '\')">' + ICONS[t[2]] + t[1] + '</button>'; }).join('');
+    var vs = document.querySelectorAll('.view'); for (var i = 0; i < vs.length; i++) vs[i].classList.toggle('on', vs[i].id === 'v-' + id);
+    if (id === 'cal') renderCal(); if (id === 'queue') renderQueue(); if (id === 'ideas') renderIdeas();
+  }
+
+  /* ───────── לוח חודשי — נובמבר 2026 מתחיל ביום ראשון ───────── */
+  function renderCal() {
+    var names = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+    var h = '<thead><tr>' + names.map(function (n) { return '<th>' + n + '</th>'; }).join('') + '</tr></thead><tbody>';
+    var day = 1;
+    for (var w = 0; w < 5; w++) {
+      h += '<tr>';
+      for (var c = 0; c < 7; c++) {
+        if (day > 30) { h += '<td class="blank"></td>'; continue; }
+        var chips = S.posts.filter(function (p) { return p.day === day; }).map(function (p) {
+          return '<button type="button" class="pchip' + (p.st === 'draft' ? ' draft' : '') + '" onclick="openEdit(' + p.id + ')">' + chanDots(p.ch) + '<span class="txt">' + p.time + ' · ' + DemoShell.esc(p.text) + '</span></button>';
+        }).join('');
+        h += '<td class="' + (day === TODAY ? 'today' : '') + '"><div class="dnum">' + day + (day === TODAY ? ' · היום' : '') + '</div>' + chips + '</td>';
+        day++;
+      }
+      h += '</tr>';
+      if (day > 30) break;
+    }
+    document.getElementById('cal').innerHTML = h + '</tbody>';
+  }
+
+  /* ───────── תור הפרסום ───────── */
+  function renderQueue() {
+    var sorted = S.posts.slice().sort(function (a, b) { return a.day - b.day || (a.time < b.time ? -1 : 1); });
+    var rows = sorted.map(function (p) {
+      return '<tr><td style="white-space:nowrap"><b>' + p.day + '.11</b> · ' + p.time + '</td>'
+        + '<td><span class="qtxt">' + DemoShell.esc(p.text) + '</span></td>'
+        + '<td style="white-space:nowrap">' + chanTags(p.ch) + '</td>'
+        + '<td>' + stChip(p.st) + '</td>'
+        + '<td style="white-space:nowrap"><button type="button" class="btn-sm" onclick="openEdit(' + p.id + ')">עריכה</button> <button type="button" class="btn-sm ghost" onclick="dupPost(' + p.id + ')">שכפול</button></td></tr>';
+    }).join('');
+    document.getElementById('queueTbl').innerHTML = '<thead><tr><th>מתי</th><th>הפוסט</th><th>ערוצים</th><th>סטטוס</th><th></th></tr></thead><tbody>' + rows + '</tbody>';
+  }
+  function dupPost(id) {
+    var p = byId(id); if (!p) return;
+    S.posts.push({ id: S.nextId++, day: Math.min(30, p.day + 7), time: p.time, ch: p.ch.slice(), st: 'draft', text: p.text });
+    save(); renderAll(); showTab('queue'); DemoShell.toast('הפוסט שוכפל כטיוטה לשבוע הבא');
+  }
+
+  /* ───────── בנק רעיונות ───────── */
+  var IDEAS = [
+    { t: 'שבוע החנוכה',        when: 'דצמבר · עוד שלושה שבועות', p: 'הדלקת נרות משותפת, יריד יזמות, ברכת המנהלת — סדרת פוסטים מוכנה לשבוע שלם.', text: 'נר ראשון הערב! מדליקים יחד בשער בית הספר בשעה 17:30 — כולם מוזמנים.' },
+    { t: 'סיורי היכרות ורישום', when: 'דצמבר–ינואר',              p: 'עונת הרישום מתקרבת — פוסט הזמנה, פוסט המלצת הורים, ופוסט "יום בחיי תלמיד".', text: 'איך נראה בוקר אחד אצלנו? בואו לסיור היכרות ותראו בעצמכם. ההרשמה בקישור.' },
+    { t: 'יום המשפחה',          when: 'פברואר',                    p: 'תוצרים מהכיתות, ברכה חמה, והזמנה לפעילות משותפת עם ההורים.', text: 'ליום המשפחה: התלמידים הכינו השבוע מכתבי תודה למי שמלווה אותם בבית. מרגש לקרוא.' },
+    { t: 'ט"ו בשבט',            when: 'פברואר',                    p: 'נטיעות בחצר, פרויקט הגינה הלימודית, ופוסט תודה למתנדבים.', text: 'לכבוד ט"ו בשבט נטענו הבוקר שבעה עצי פרי בחצר — עץ לכל שכבה. עוד עשר שנים ניפגש כאן לקטיף.' },
+    { t: 'גאוות בוגרים',        when: 'כל חודש',                   p: 'סיפור בוגר/ת פעם בחודש — הפורמט שמביא הכי הרבה תגובות ושיתופים.', text: 'סיפור של בוגר: מה עושה היום מי שסיים אצלנו לפני חמש שנים? ראיון קצר בתגובות.' },
+    { t: 'מאחורי הקלעים בצוות', when: 'כל שבועיים',                p: 'חמש שאלות למורה, הצצה לחדר מורים, "המקצוע שלי בשלוש מילים".', text: 'הכירו את הצוות: חמש שאלות קצרות למורה שהצטרפה אלינו השנה. שאלה אחרונה — הכי מפתיעה.' }
+  ];
+  function renderIdeas() {
+    document.getElementById('ideasGrid').innerHTML = IDEAS.map(function (idea, i) {
+      return '<div class="idea"><b>' + idea.t + '</b><small>' + idea.when + '</small><p>' + idea.p + '</p><button type="button" class="btn-sm primary" onclick="adoptIdea(' + i + ')">צרו טיוטה</button></div>';
+    }).join('');
+  }
+  function adoptIdea(i) {
+    S.posts.push({ id: S.nextId++, day: Math.min(30, TODAY + 5 + i), time: '17:30', ch: ['fb', 'ig'], st: 'draft', text: IDEAS[i].text });
+    save(); renderKpis(); showTab('queue');
+    DemoShell.toast('נוצרה טיוטה — ערכו אותה ותזמנו');
+  }
+
+  /* ───────── עריכה / פוסט חדש ───────── */
+  var edit = null;
+  function openEdit(id) {
+    var p = id ? byId(id) : null;
+    edit = p ? { id: p.id, day: p.day, time: p.time, ch: p.ch.slice(), st: p.st, text: p.text }
+             : { id: 0, day: Math.min(30, TODAY + 3), time: '17:30', ch: ['fb'], st: 'draft', text: '' };
+    var chBtns = Object.keys(CH).map(function (c) {
+      return '<button type="button" class="chan-opt' + (edit.ch.indexOf(c) !== -1 ? ' on' : '') + '" style="' + (edit.ch.indexOf(c) !== -1 ? 'background:' + CH[c].c : '') + '" onclick="toggleCh(this,\'' + c + '\')">' + CH[c].svg + CH[c].name + '</button>';
+    }).join('');
+    var sts = [['pub', 'פורסם'], ['sched', 'מתוזמן'], ['draft', 'טיוטה']].map(function (s) {
+      return '<button type="button" class="chan-opt' + (edit.st === s[0] ? ' on' : '') + '" style="' + (edit.st === s[0] ? 'background:var(--navy)' : '') + '" onclick="setSt(this,\'' + s[0] + '\')">' + s[1] + '</button>';
+    }).join('');
+    var body = '<div class="q" style="margin-bottom:12px"><label class="f">מה מפרסמים?</label><textarea class="in" id="pTxt" style="width:100%;min-height:96px">' + DemoShell.esc(edit.text) + '</textarea></div>'
+      + '<div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">'
+      + '<label class="f">יום בחודש (נובמבר)<input class="in" id="pDay" type="number" min="1" max="30" value="' + edit.day + '"></label>'
+      + '<label class="f">שעת פרסום<input class="in" id="pTime" value="' + edit.time + '"></label></div>'
+      + '<label class="f" style="margin-bottom:6px;display:block">ערוצים</label><div class="chan-pick" style="margin-bottom:12px">' + chBtns + '</div>'
+      + '<label class="f" style="margin-bottom:6px;display:block">סטטוס</label><div class="st-pick">' + sts + '</div>';
+    var actions = (edit.id ? '<button type="button" class="btn-sm ghost" onclick="delPost()">מחיקה</button>' : '')
+      + '<button type="button" class="btn-sm primary" onclick="savePost()">' + (edit.id ? 'שמירה' : 'הוספה ללוח') + '</button>';
+    var old = document.getElementById('editModal'); if (old) old.parentNode.removeChild(old);
+    document.body.insertAdjacentHTML('beforeend', DemoShell.modalHTML('editModal', edit.id ? 'עריכת פוסט' : 'פוסט חדש', body, actions));
+    DemoShell.openModal('editModal');
+  }
+  function toggleCh(btn, c) {
+    var i = edit.ch.indexOf(c);
+    if (i !== -1) { if (edit.ch.length > 1) edit.ch.splice(i, 1); } else edit.ch.push(c);
+    btn.classList.toggle('on', edit.ch.indexOf(c) !== -1);
+    btn.style.background = edit.ch.indexOf(c) !== -1 ? CH[c].c : '';
+  }
+  function setSt(btn, st) {
+    edit.st = st;
+    var sib = btn.parentNode.children;
+    for (var i = 0; i < sib.length; i++) { sib[i].classList.remove('on'); sib[i].style.background = ''; }
+    btn.classList.add('on'); btn.style.background = 'var(--navy)';
+  }
+  function savePost() {
+    edit.text = document.getElementById('pTxt').value;
+    edit.day = Math.max(1, Math.min(30, +document.getElementById('pDay').value || TODAY));
+    edit.time = document.getElementById('pTime').value || '17:30';
+    if (!edit.text.trim()) { DemoShell.toast('כתבו משהו קודם — אפילו שורה אחת'); return; }
+    if (edit.id) { var p = byId(edit.id); p.text = edit.text; p.day = edit.day; p.time = edit.time; p.ch = edit.ch; p.st = edit.st; }
+    else S.posts.push({ id: S.nextId++, day: edit.day, time: edit.time, ch: edit.ch, st: edit.st, text: edit.text });
+    save(); DemoShell.closeModal('editModal'); renderAll();
+    DemoShell.toast(edit.st === 'sched' ? 'הפוסט תוזמן — יתפרסם לבד ב-' + edit.day + '.11 בשעה ' + edit.time : 'נשמר בדמו');
+  }
+  function delPost() {
+    S.posts = S.posts.filter(function (p) { return p.id !== edit.id; });
+    save(); DemoShell.closeModal('editModal'); renderAll(); DemoShell.toast('הפוסט נמחק');
+  }
+
+  /* ───────── עוזר הניסוח (AI מדומה) ───────── */
+  document.getElementById('aiHost').innerHTML = DemoShell.aiPanel('spAi', 'עוזר הניסוח', 'כותב בקול של בית הספר — בדמו התשובות מוכנות מראש',
+    ['פוסט לחנוכה', 'פוסט שמזמין הורים לסיור היכרות', 'פוסט על הישג של תלמידים', 'איך מודים למורים ברשת?']);
+  var AI_DRAFTS = {
+    chanuka: 'אור קטן, גאווה גדולה: השבוע נדליק יחד נר ראשון בשער בית הספר. יריד היזמות של מועצת התלמידים, סופגניות של שכבת ח — וכל המשפחות מוזמנות. חג אורים שמח!',
+    tour:    'איך באמת נראה בוקר אצלנו? במקום שנספר — בואו תראו. סיורי היכרות להורים ייפתחו בחודש הקרוב, בקבוצות קטנות, עם הצצה אמיתית לשיעורים. הקישור להרשמה בתגובה הראשונה.',
+    win:     'שלושה חודשים של הישארות אחרי השעות, עשרות ניסויים שנכשלו — ואתמול זה קרה: הנבחרת שלנו עלתה לגמר. לא המדליה היא הסיפור, אלא הדרך. גאים בכם!',
+    thanks:  'יש אנשים שבזכותם ילד קם בבוקר ורוצה לבוא לבית הספר. ליום המורה — תודה לצוות שלנו, שרואה כל ילד וילדה. הורים, ספרו לנו בתגובות על רגע אחד שמורה עשה עבורכם הבדל.'
+  };
+  DemoShell.aiRegister('spAi', function (q) {
+    var d = /חנוכה|נר|חג/.test(q) ? 'chanuka' : /סיור|רישום|היכרות|הורים חדשים|גיוס תלמיד/.test(q) ? 'tour' : /הישג|נבחרת|תחרות|זכי|רובוטיקה|גמר/.test(q) ? 'win' : /תודה|מורים|יום המורה|צוות/.test(q) ? 'thanks' : null;
+    if (!d) return 'נסו לבקש: פוסט לחג, פוסט הזמנה להורים, פוסט על הישג — או כתבו נושא משלכם. במערכת האמיתית אני לומד את הקול של בית הספר מהפוסטים הקודמים.';
+    return 'הנה טיוטה בקול של ' + DEMO.school.name + ':<div class="ai-draft">' + AI_DRAFTS[d] + '</div><button type="button" class="btn-sm primary" style="margin-top:8px" onclick="adoptAi(\'' + d + '\')">שמירה כטיוטה בלוח</button>';
+  });
+  function adoptAi(d) {
+    S.posts.push({ id: S.nextId++, day: Math.min(30, TODAY + 4), time: '17:30', ch: ['fb', 'ig'], st: 'draft', text: AI_DRAFTS[d] });
+    save(); renderKpis(); DemoShell.toast('הטיוטה נשמרה — תמצאו אותה בלוח ובתור הפרסום');
+  }
+
+  /* ───────── הפעלה ───────── */
+  function renderAll() { renderKpis(); showTab(curTab); }
+  load();
+  renderKpis();
+  showTab('cal');
+</script>
+</body>
+</html>

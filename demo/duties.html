@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דמו · תורנויות — חוות האפליקציות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+  .view { display: none; } .view.on { display: block; }
+  .tabs { margin-bottom: 20px; }
+  .tab svg { width: 14px; height: 14px; margin-inline-end: 6px; vertical-align: -2px; }
+
+  /* ─── לוח שבועי ─── */
+  .board-wrap { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 6px; overflow-x: auto; }
+  table.board { width: 100%; border-collapse: separate; border-spacing: 6px; min-width: 860px; }
+  .board th { font-size: 12.5px; font-weight: 800; color: var(--gray); padding: 10px 6px 6px; text-align: center; }
+  .board th.today { color: var(--fuchsia); }
+  .board th.today small { display: block; font-size: 10.5px; font-weight: 800; }
+  .board td.post { font-size: 13px; font-weight: 800; color: var(--navy); white-space: nowrap; padding: 6px 10px; text-align: right; }
+  .board td.post small { display: block; font-size: 11px; color: var(--gray); font-weight: 600; direction: ltr; unicode-bidi: isolate; text-align: right; }
+  .cell { background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 8px; text-align: center; cursor: pointer; min-width: 108px; transition: transform var(--motion-fast) var(--motion-ease), box-shadow 300ms var(--motion-ease), border-color 300ms; }
+  .cell:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(6,30,79,.10); border-color: rgba(6,30,79,.2); }
+  .cell .who { display: inline-flex; align-items: center; gap: 7px; }
+  .cell .dot { width: 26px; height: 26px; border-radius: 50%; background: var(--teal); color: #fff; display: inline-grid; place-items: center; font-size: 11px; font-weight: 900; flex: none; }
+  .cell b { font-size: 12.5px; font-weight: 800; }
+  .cell.miss { border: 1.5px dashed var(--fuchsia); background: rgba(240,6,120,.04); }
+  .cell.miss b { color: var(--fuchsia); font-weight: 800; }
+  .cell.off { background: transparent; border-style: dashed; color: var(--gray); cursor: default; font-size: 12px; }
+  .cell.off:hover { transform: none; box-shadow: none; border-color: var(--line); }
+  .cell.today-col { background: #fff; }
+  .board-foot { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; font-size: 12.5px; color: var(--gray); font-weight: 600; padding: 12px 10px 8px; }
+  .board-foot i { display: inline-block; width: 11px; height: 11px; border-radius: 4px; margin-inline-end: 5px; vertical-align: -1px; }
+
+  /* ─── הוגנות ─── */
+  .fair-row { display: grid; grid-template-columns: 170px 1fr 56px; gap: 12px; align-items: center; font-size: 13.5px; font-weight: 700; margin-bottom: 9px; }
+  .fair-row .nm { display: flex; align-items: center; gap: 8px; }
+  .fair-row .dot { width: 24px; height: 24px; border-radius: 50%; color: #fff; display: inline-grid; place-items: center; font-size: 10px; font-weight: 900; flex: none; background: var(--teal); }
+  .fair-row b { font-variant-numeric: tabular-nums; text-align: left; color: var(--navy); }
+  .fair-row small { color: var(--gray); font-weight: 600; }
+  @media (max-width: 640px) { .fair-row { grid-template-columns: 130px 1fr 48px; } }
+
+  /* ─── החלפות ─── */
+  .swap-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .swap-line .dot { width: 24px; height: 24px; border-radius: 50%; background: var(--teal); color: #fff; display: inline-grid; place-items: center; font-size: 10px; font-weight: 900; }
+  .arrow-ic { width: 15px; height: 15px; color: var(--gray); }
+
+  .modal .who-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 300px; overflow: auto; padding: 2px; }
+  @media (max-width: 560px) { .modal .who-list { grid-template-columns: 1fr; } }
+  .who-opt { display: flex; align-items: center; gap: 9px; border: 1px solid var(--line); background: #fff; border-radius: 12px; padding: 8px 10px; font-family: inherit; font-size: 13px; font-weight: 700; color: var(--navy); cursor: pointer; text-align: right; transition: border-color 200ms, background 200ms; }
+  .who-opt:hover { border-color: var(--teal); }
+  .who-opt.on { border-color: var(--teal); background: rgba(18,199,199,.08); }
+  .who-opt .dot { width: 26px; height: 26px; border-radius: 50%; background: var(--teal); color: #fff; display: inline-grid; place-items: center; font-size: 11px; font-weight: 900; flex: none; }
+  .who-opt small { display: block; font-size: 11px; color: var(--gray); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<main class="demo-main">
+  <div class="demo-head">
+    <div>
+      <h2>תורנויות</h2>
+      <p>לוח תורנויות שבועי שכולם רואים, חלוקה הוגנת בין אנשי הצוות, ותזכורת וואטסאפ אוטומטית לפני כל תורנות. בלי "לא ידעתי שאני היום".</p>
+    </div>
+    <div class="demo-toolbar">
+      <button type="button" class="btn-sm navy" onclick="sendReminders()">שליחת תזכורות למחר</button>
+      <button type="button" class="btn-sm ghost" onclick="resetDemo()">איפוס דמו</button>
+    </div>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+  <div class="tabs" id="tabs"></div>
+
+  <section class="view on" id="v-board">
+    <div class="board-wrap"><table class="board" id="board"></table>
+      <div class="board-foot">
+        <span><i style="background:rgba(240,6,120,.5)"></i>משבצת ללא שיבוץ — לוחצים ומשבצים</span>
+        <span><i style="background:rgba(18,199,199,.55)"></i>לחיצה על כל משבצת מחליפה תורן/ית</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-fair">
+    <div class="row cols-2">
+      <div class="card">
+        <div class="card-h"><h3>תורנויות מתחילת השנה — לפי איש צוות</h3><span class="hint">החלוקה שכולם רואים</span></div>
+        <div id="fairList"></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>שיבוץ אוטומטי הוגן</h3></div>
+        <p style="font-size:14px;line-height:1.7;color:var(--gray)">המערכת משלימה משבצות חסרות לפי מי שעשה הכי מעט תורנויות עד עכשיו — ומתחשבת בימים שבהם המורה בכלל לא בבית הספר.</p>
+        <div class="btn-row" style="display:flex;gap:10px;margin-top:14px">
+          <button type="button" class="btn-sm primary" onclick="autoAssign()">השלמת שיבוצים חסרים</button>
+        </div>
+        <div id="fairNote" style="margin-top:14px"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-swaps">
+    <div class="card">
+      <div class="card-h"><h3>בקשות החלפה</h3><span class="hint">מורה מבקש/ת — עמית/ה מאשר/ת — הלוח מתעדכן לבד</span></div>
+      <div class="table-wrap"><table class="tbl" id="swapsTbl"></table></div>
+    </div>
+  </section>
+</main>
+
+<script src="../apps-data.js"></script>
+<script src="../logos.js"></script>
+<script src="../store.js"></script>
+<script src="demo-data.js"></script>
+<script src="demo-shell.js"></script>
+<script>
+  DemoShell.init('duties');
+
+  /* ───────── הגדרות ───────── */
+  var DAYS = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי'];
+  var TODAY = 2; /* שלישי — קבוע בדמו */
+  var POSTS = [
+    { id: 'gate-am', name: 'שער ראשי — בוקר', time: '07:30–08:00' },
+    { id: 'yard1',   name: 'חצר — הפסקה ראשונה', time: '09:45–10:05' },
+    { id: 'yard2',   name: 'חצר — הפסקה שנייה', time: '11:40–12:00' },
+    { id: 'hall',    name: 'מסדרונות — קומה ב׳', time: '09:45–12:00' },
+    { id: 'gate-pm', name: 'שער — סיום יום', time: '14:25–14:45' }
+  ];
+  /* שישי מקוצר: רק שער-בוקר וחצר ראשונה */
+  var FRIDAY_POSTS = { 'gate-am': 1, 'yard1': 1 };
+  var STAFF = ['t01', 't02', 't03', 't04', 't05', 't06', 't07', 't08', 't10', 't11', 't12', 't13', 't15', 't16', 't17'];
+  var ICONS = {
+    board: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg>',
+    fair: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 4v16M12 4l-6 3 6-1 6 1z"/><path d="M6 7l-2.5 6a3 3 0 0 0 5 0zM18 7l-2.5 6a3 3 0 0 0 5 0z"/></svg>',
+    swap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg>',
+    arrow: '<svg class="arrow-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>'
+  };
+
+  function tOf(id) { for (var i = 0; i < DEMO.teachers.length; i++) if (DEMO.teachers[i].id === id) return DEMO.teachers[i]; return null; }
+  function initials(n) { var p = n.split(/[\s-]+/); return (p[0] || '').charAt(0) + (p[1] || '').charAt(0); }
+  function firstName(n) { return n.split(' ')[0]; }
+  var HUES = ['#12C7C7', '#7BCB52', '#F00678', '#F4B41B', '#FF7A1A', '#0B7DB5', '#7B4EC8', '#061E4F'];
+  function hue(id) { return HUES[STAFF.indexOf(id) % HUES.length]; }
+  function key(p, d) { return p + '|' + d; }
+  function activeCell(p, d) { return d < 5 || FRIDAY_POSTS[p]; }
+
+  /* ───────── state ───────── */
+  var KEY = 'farm-demo-duties';
+  var S = {};
+
+  function genState() {
+    var rnd = DEMO.rng(11);
+    S = { board: {}, base: {}, swaps: [] };
+    /* עומס מצטבר מתחילת השנה — דטרמיניסטי */
+    STAFF.forEach(function (id, i) { S.base[id] = 6 + Math.floor(rnd() * 7); });
+    /* שיבוץ שבועי — round-robin עם ערבוב קבוע */
+    var pool = STAFF.slice(), pi = Math.floor(rnd() * pool.length);
+    POSTS.forEach(function (p) {
+      for (var d = 0; d < DAYS.length; d++) {
+        if (!activeCell(p.id, d)) continue;
+        S.board[key(p.id, d)] = pool[pi % pool.length];
+        pi += 1 + Math.floor(rnd() * 2);
+      }
+    });
+    /* שתי משבצות נשארות ריקות — כדי להראות "חסר שיבוץ" */
+    delete S.board[key('yard2', 3)];
+    delete S.board[key('gate-pm', 4)];
+    /* בקשות החלפה */
+    S.swaps = [
+      { id: 1, from: 't05', to: 't08', day: 3, post: 'yard1',   reason: 'ישיבת הורים באותה שעה', status: 'pending' },
+      { id: 2, from: 't11', to: 't13', day: 4, post: 'gate-am', reason: 'ליווי טיול שנתי',        status: 'pending' },
+      { id: 3, from: 't02', to: 't07', day: 1, post: 'hall',    reason: 'השתלמות מחוזית',          status: 'done' }
+    ];
+  }
+  function load() { try { var j = localStorage.getItem(KEY); if (j) { S = JSON.parse(j); return; } } catch (e) {} genState(); }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+  function resetDemo() { try { localStorage.removeItem(KEY); } catch (e) {} genState(); renderAll(); DemoShell.toast('הדמו אופס לנתוני ההתחלה'); }
+
+  /* ───────── KPI ───────── */
+  function slots() { var n = 0; POSTS.forEach(function (p) { for (var d = 0; d < DAYS.length; d++) if (activeCell(p.id, d)) n++; }); return n; }
+  function missing() { var m = []; POSTS.forEach(function (p) { for (var d = 0; d < DAYS.length; d++) if (activeCell(p.id, d) && !S.board[key(p.id, d)]) m.push(key(p.id, d)); }); return m; }
+  function renderKpis() {
+    var total = slots(), miss = missing().length, pend = S.swaps.filter(function (s) { return s.status === 'pending'; }).length;
+    document.getElementById('kpis').innerHTML =
+      '<div class="kpi" style="--c:var(--teal)"><b>' + total + '</b><span>משבצות תורנות השבוע</span></div>'
+      + '<div class="kpi" style="--c:var(--green)"><b>' + (total - miss) + '</b><span>מאוישות</span></div>'
+      + '<div class="kpi" style="--c:var(--fuchsia)"><b>' + miss + '</b><span>חסרות שיבוץ</span></div>'
+      + '<div class="kpi" style="--c:var(--gold)"><b>' + pend + '</b><span>בקשות החלפה ממתינות</span></div>';
+  }
+
+  /* ───────── טאבים ───────── */
+  var TABS = [['board', 'הלוח השבועי', 'board'], ['fair', 'הוגנות החלוקה', 'fair'], ['swaps', 'החלפות', 'swap']];
+  function showTab(id) {
+    document.getElementById('tabs').innerHTML = TABS.map(function (t) {
+      var extra = t[0] === 'swaps' ? (function () { var n = S.swaps.filter(function (s) { return s.status === 'pending'; }).length; return n ? ' <small style="color:var(--fuchsia);font-weight:900">' + n + '</small>' : ''; })() : '';
+      return '<button type="button" class="tab' + (t[0] === id ? ' active' : '') + '" onclick="showTab(\'' + t[0] + '\')">' + ICONS[t[2]] + t[1] + extra + '</button>';
+    }).join('');
+    var vs = document.querySelectorAll('.view'); for (var i = 0; i < vs.length; i++) vs[i].classList.toggle('on', vs[i].id === 'v-' + id);
+    if (id === 'board') renderBoard(); if (id === 'fair') renderFair(); if (id === 'swaps') renderSwaps();
+  }
+
+  /* ───────── הלוח ───────── */
+  function cellHTML(p, d) {
+    if (!activeCell(p.id, d)) return '<td><div class="cell off">אין תורנות</div></td>';
+    var tid = S.board[key(p.id, d)];
+    var cls = 'cell' + (d === TODAY ? ' today-col' : '');
+    if (!tid) return '<td><div class="' + cls + ' miss" onclick="openAssign(\'' + p.id + '\',' + d + ')"><b>חסר שיבוץ</b></div></td>';
+    var t = tOf(tid);
+    return '<td><div class="' + cls + '" onclick="openAssign(\'' + p.id + '\',' + d + ')"><span class="who"><span class="dot" style="background:' + hue(tid) + '">' + initials(t.name) + '</span><b>' + firstName(t.name) + ' ' + t.name.split(' ').slice(1).join(' ') + '</b></span></div></td>';
+  }
+  function renderBoard() {
+    var h = '<thead><tr><th></th>' + DAYS.map(function (d, i) { return '<th class="' + (i === TODAY ? 'today' : '') + '">' + d + (i === TODAY ? '<small>היום</small>' : '') + '</th>'; }).join('') + '</tr></thead><tbody>';
+    POSTS.forEach(function (p) {
+      h += '<tr><td class="post">' + p.name + '<small>' + p.time + '</small></td>';
+      for (var d = 0; d < DAYS.length; d++) h += cellHTML(p, d);
+      h += '</tr>';
+    });
+    document.getElementById('board').innerHTML = h + '</tbody>';
+  }
+
+  /* ───────── שיבוץ במודאל ───────── */
+  var curCell = null;
+  function openAssign(pid, d) {
+    curCell = { p: pid, d: d };
+    var p = null; POSTS.forEach(function (x) { if (x.id === pid) p = x; });
+    var cnt = counts();
+    var body = '<p style="font-size:13.5px;color:var(--gray);margin-bottom:12px">יום ' + DAYS[d] + ' · ' + p.name + ' · ' + p.time + '</p><div class="who-list">'
+      + STAFF.map(function (id) {
+        var t = tOf(id), on = S.board[key(pid, d)] === id;
+        return '<button type="button" class="who-opt' + (on ? ' on' : '') + '" onclick="assign(\'' + id + '\')"><span class="dot" style="background:' + hue(id) + '">' + initials(t.name) + '</span><span>' + t.name + '<small>' + cnt[id] + ' תורנויות מתחילת השנה</small></span></button>';
+      }).join('') + '</div>';
+    var old = document.getElementById('assignModal'); if (old) old.parentNode.removeChild(old);
+    document.body.insertAdjacentHTML('beforeend', DemoShell.modalHTML('assignModal', 'מי בתורנות?', body,
+      '<button type="button" class="btn-sm ghost" onclick="clearCell()">פינוי המשבצת</button>'));
+    DemoShell.openModal('assignModal');
+  }
+  function assign(id) {
+    S.board[key(curCell.p, curCell.d)] = id; save();
+    DemoShell.closeModal('assignModal'); renderBoard(); renderKpis();
+    DemoShell.toast(tOf(id).name + ' שובצ/ה — תזכורת וואטסאפ תישלח ערב קודם');
+  }
+  function clearCell() { delete S.board[key(curCell.p, curCell.d)]; save(); DemoShell.closeModal('assignModal'); renderBoard(); renderKpis(); DemoShell.toast('המשבצת פונתה'); }
+
+  /* ───────── הוגנות ───────── */
+  function counts() {
+    var c = {}; STAFF.forEach(function (id) { c[id] = S.base[id] || 0; });
+    for (var k in S.board) { var id = S.board[k]; if (c[id] !== undefined) c[id]++; }
+    return c;
+  }
+  function renderFair() {
+    var c = counts(), max = 1;
+    STAFF.forEach(function (id) { if (c[id] > max) max = c[id]; });
+    var sorted = STAFF.slice().sort(function (a, b) { return c[b] - c[a]; });
+    document.getElementById('fairList').innerHTML = sorted.map(function (id) {
+      var t = tOf(id);
+      return '<div class="fair-row"><span class="nm"><span class="dot" style="background:' + hue(id) + '">' + initials(t.name) + '</span>' + t.name + '</span><div class="bar" style="--c:' + hue(id) + '"><i style="width:' + Math.round(c[id] / max * 100) + '%"></i></div><b>' + c[id] + '</b></div>';
+    }).join('');
+    var vals = STAFF.map(function (id) { return c[id]; });
+    var gap = Math.max.apply(null, vals) - Math.min.apply(null, vals);
+    document.getElementById('fairNote').innerHTML = gap <= 4
+      ? '<span class="status ok">החלוקה מאוזנת — פער של ' + gap + ' תורנויות בלבד בין העמוס לפנוי</span>'
+      : '<span class="status warn">פער של ' + gap + ' תורנויות בין העמוס לפנוי — כדאי לאזן בשיבוץ הבא</span>';
+  }
+  function autoAssign() {
+    var m = missing();
+    if (!m.length) { DemoShell.toast('אין משבצות חסרות — הלוח מלא'); return; }
+    m.forEach(function (k) {
+      var c = counts(), best = STAFF[0];
+      STAFF.forEach(function (id) { if (c[id] < c[best]) best = id; });
+      S.board[k] = best;
+    });
+    save(); renderKpis(); renderFair(); renderBoard();
+    DemoShell.toast('שובצו ' + m.length + ' משבצות לפי החלוקה ההוגנת');
+  }
+
+  /* ───────── החלפות ───────── */
+  function postName(pid) { var n = ''; POSTS.forEach(function (p) { if (p.id === pid) n = p.name; }); return n; }
+  function renderSwaps() {
+    var rows = S.swaps.map(function (s) {
+      var a = tOf(s.from), b = tOf(s.to);
+      var line = '<span class="swap-line"><span class="dot" style="background:' + hue(s.from) + '">' + initials(a.name) + '</span>' + a.name + ICONS.arrow + '<span class="dot" style="background:' + hue(s.to) + '">' + initials(b.name) + '</span>' + b.name + '</span>';
+      var st = s.status === 'pending' ? '<span class="status warn">ממתינה לאישור</span>' : s.status === 'approved' ? '<span class="status ok">אושרה — הלוח עודכן</span>' : '<span class="status muted">הושלמה</span>';
+      var act = s.status === 'pending'
+        ? '<button type="button" class="btn-sm primary" onclick="approveSwap(' + s.id + ')">אישור</button> <button type="button" class="btn-sm ghost" onclick="rejectSwap(' + s.id + ')">דחייה</button>'
+        : '';
+      return '<tr><td>' + line + '</td><td>יום ' + DAYS[s.day] + ' · ' + postName(s.post) + '</td><td>' + s.reason + '</td><td>' + st + '</td><td>' + act + '</td></tr>';
+    }).join('');
+    document.getElementById('swapsTbl').innerHTML = '<thead><tr><th>מי מחליף את מי</th><th>מתי ואיפה</th><th>סיבה</th><th>סטטוס</th><th></th></tr></thead><tbody>' + rows + '</tbody>';
+  }
+  function approveSwap(id) {
+    S.swaps.forEach(function (s) {
+      if (s.id !== id) return;
+      s.status = 'approved';
+      if (S.board[key(s.post, s.day)] === s.from) S.board[key(s.post, s.day)] = s.to;
+    });
+    save(); renderSwaps(); renderKpis();
+    DemoShell.toast('ההחלפה אושרה — הלוח והתזכורות עודכנו');
+  }
+  function rejectSwap(id) {
+    S.swaps.forEach(function (s) { if (s.id === id) s.status = 'done'; });
+    save(); renderSwaps(); renderKpis();
+    DemoShell.toast('הבקשה נדחתה — נשלחה הודעה למבקש/ת');
+  }
+
+  function sendReminders() {
+    var n = 0; POSTS.forEach(function (p) { var d = (TODAY + 1) % 6; if (activeCell(p.id, d) && S.board[key(p.id, d)]) n++; });
+    DemoShell.toast('נשלחו ' + n + ' תזכורות וואטסאפ לתורני יום ' + DAYS[(TODAY + 1) % 6] + ' (בדמו)');
+  }
+
+  /* ───────── הפעלה ───────── */
+  function renderAll() { renderKpis(); showTab('board'); }
+  load();
+  renderAll();
+</script>
+</body>
+</html>

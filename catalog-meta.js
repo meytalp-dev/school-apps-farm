@@ -8,7 +8,7 @@
 var FEATURED = ['student-file', 'attendance', 'pulse', 'parent-meetings', 'broadcast', 'investment-bank'];
 
 /* ── דמואים חיים (demo/<id>.html) ── */
-var DEMOS = ['pulse', 'positions', 'gantt', 'teacher-feedback', 'resources', 'job-card-builder', 'brand-kit', 'identity-studio'];
+var DEMOS = ['pulse', 'positions', 'gantt', 'teacher-feedback', 'duties', 'social-posts', 'brand-kit', 'identity-studio'];
 function hasDemo(id) { return DEMOS.indexOf(id) !== -1; }
 function demoHref(id) { return 'demo/' + id + '.html'; }
 
@@ -16,7 +16,7 @@ function demoHref(id) { return 'demo/' + id + '.html'; }
 var TAGS = {
   'student-file': ['popular'], 'attendance': ['popular'], 'tardiness': ['popular'], 'pulse': ['popular'],
   'monthly-reports': ['popular'], 'investment-bank': ['popular'], 'incident': ['popular'],
-  'parent-meetings': ['new'], 'broadcast': ['new'], 'teacher-assessment': ['new'], 'brand-kit': ['new'], 'identity-studio': ['new'],
+  'parent-meetings': ['new'], 'broadcast': ['new'], 'teacher-assessment': ['new'], 'brand-kit': ['new'], 'identity-studio': ['new'], 'social-posts': ['new', 'ai'],
   'curriculum': ['ai'], 'positions': ['ai'], 'my-conversations': ['ai'], 'risk': ['ai'], 'planning-hub': ['ai']
 };
 var TAG_LABEL = { 'new': 'חדש', 'popular': 'מבוקש', 'ai': 'כולל AI' };
@@ -53,6 +53,7 @@ var LINKS = {
   'brand-kit': ['identity-studio', 'cert-generator', 'zoom-bg', 'job-card-builder', 'landing-recruitment', 'greeting-cards'],
   'identity-studio': ['brand-kit', 'cert-generator', 'zoom-bg', 'greeting-cards', 'job-card-builder'],
   'landing-recruitment': ['parent-testimonials', 'admission', 'brand-kit'],
+  'social-posts': ['brand-kit', 'broadcast', 'greeting-cards', 'landing-recruitment'],
   'competitors': ['swot', 'strategy', 'landing-recruitment'],
   'counselor-dashboard': ['shiluv', 'therapy', 'student-file', 'incident'],
   'teacher-feedback': ['teacher-assessment', 'teacher-plan'],
@@ -70,7 +71,8 @@ var DAY = [
   { time: '19:00', app: 'monthly-reports', text: 'הדוח החודשי לפיקוח? נבנה מעצמו מהנתונים של החודש. את רק קוראת ומאשרת.' }
 ];
 
-/* ── שאלון "בנו את הסל" — 3 שאלות → 5 המלצות ── */
+/* ── שאלון "בנו את הסל" — 5 שאלות → 5 המלצות ──
+ * שאלה 1: כאבים (בחירה מרובה). שאלות 2–5: בחירה אחת, כל תשובה מחזקת מערכות רלוונטיות. */
 var QUIZ = {
   pains: [
     { id: 'attendance', label: 'נוכחות, איחורים ומשמעת', apps: ['attendance', 'tardiness', 'discipline', 'incident'] },
@@ -79,21 +81,48 @@ var QUIZ = {
     { id: 'staff',      label: 'צוות — שיבוץ, משוב, דוחות', apps: ['curriculum', 'timetable', 'teacher-feedback', 'monthly-reports', 'duties'] },
     { id: 'climate',    label: 'אקלים ורגש',              apps: ['pulse', 'investment-bank', 'life-skills', 'morning-openings'] },
     { id: 'planning',   label: 'תכנון, תקציב ואסטרטגיה', apps: ['annual-plan', 'positions', 'budget', 'strategy', 'planning-hub'] },
-    { id: 'story',      label: 'שיווק וגיוס תלמידים',     apps: ['landing-recruitment', 'brand-kit', 'competitors', 'parent-testimonials'] },
+    { id: 'story',      label: 'שיווק, נראות וגיוס תלמידים', apps: ['landing-recruitment', 'social-posts', 'brand-kit', 'competitors', 'parent-testimonials'] },
     { id: 'ops',        label: 'תפעול יומי — משימות, לוחות, נהלים', apps: ['tasks', 'calendar', 'gantt', 'handbook', 'roles'] }
   ],
-  sizes: [
-    { id: 'small', label: 'עד 200 תלמידים', boost: ['directory', 'parent-meetings', 'investment-bank'] },
-    { id: 'mid',   label: '200–500',         boost: ['attendance', 'timetable', 'monthly-reports'] },
-    { id: 'large', label: 'מעל 500',          boost: ['directory', 'risk', 'curriculum', 'positions'] }
-  ],
-  counselor: [
-    { id: 'yes', label: 'כן', boost: ['counselor-dashboard', 'shiluv', 'therapy'] },
-    { id: 'no',  label: 'לא / חלקית', boost: ['conversations', 'risk'] }
+  questions: [
+    {
+      id: 'size', title: 'כמה תלמידים בבית הספר?',
+      options: [
+        { id: 'small', label: 'עד 200 תלמידים', boost: ['directory', 'parent-meetings', 'investment-bank'] },
+        { id: 'mid',   label: '200–500',         boost: ['attendance', 'timetable', 'monthly-reports'] },
+        { id: 'large', label: 'מעל 500',          boost: ['directory', 'risk', 'curriculum', 'positions'] }
+      ]
+    },
+    {
+      id: 'stage', title: 'איזה בית ספר אתם?', hint: 'שכבת הגיל קובעת אילו מערכות ירגישו הכי מהר',
+      options: [
+        { id: 'elementary', label: 'יסודי',              boost: ['morning-openings', 'investment-bank', 'life-skills', 'parent-meetings'] },
+        { id: 'middle',     label: 'חטיבת ביניים',       boost: ['pulse', 'discipline', 'tardiness'] },
+        { id: 'high',       label: 'תיכון / שש-שנתי',    boost: ['bagrut', 'exams', 'exam-prep-form'] },
+        { id: 'special',    label: 'חינוך מיוחד / אחר',  boost: ['personal-plan', 'therapy', 'shiluv', 'transportation'] }
+      ]
+    },
+    {
+      id: 'today', title: 'איך המידע מתנהל אצלכם היום?', hint: 'אין תשובה לא נכונה — זה עוזר לנו לדעת מאיפה מתחילים',
+      options: [
+        { id: 'excel',    label: 'אקסלים וקבצים מפוזרים',        boost: ['student-file', 'directory', 'monthly-reports'] },
+        { id: 'whatsapp', label: 'בעיקר וואטסאפ וטלפונים',       boost: ['broadcast', 'directory', 'calendar'] },
+        { id: 'bigsys',   label: 'יש מערכת גדולה — אבל לא נוחה', boost: ['student-file', 'attendance', 'role-dashboard'] },
+        { id: 'head',     label: 'בעיקר בראש ובמחברות',          boost: ['tasks', 'calendar', 'handbook'] }
+      ]
+    },
+    {
+      id: 'users', title: 'מי יעבוד עם המערכות ביום-יום?',
+      options: [
+        { id: 'me',      label: 'בעיקר אני וההנהלה',   boost: ['tasks', 'my-conversations', 'planning-hub'] },
+        { id: 'staff',   label: 'כל הצוות',             boost: ['monthly-reports', 'timetable', 'duties'] },
+        { id: 'parents', label: 'גם ההורים והקהילה',    boost: ['parent-meetings', 'broadcast', 'parent-testimonials'] }
+      ]
+    }
   ]
 };
 
-function recommend(pains, size, counselor) {
+function recommend(pains, answers) {
   var score = {};
   function add(id, n) { score[id] = (score[id] || 0) + n; }
   for (var i = 0; i < QUIZ.pains.length; i++) {
@@ -101,8 +130,11 @@ function recommend(pains, size, counselor) {
     var a = QUIZ.pains[i].apps;
     for (var j = 0; j < a.length; j++) add(a[j], 10 - j);
   }
-  for (var s = 0; s < QUIZ.sizes.length; s++) if (QUIZ.sizes[s].id === size) QUIZ.sizes[s].boost.forEach(function (id) { add(id, 3); });
-  for (var c = 0; c < QUIZ.counselor.length; c++) if (QUIZ.counselor[c].id === counselor) QUIZ.counselor[c].boost.forEach(function (id) { add(id, 4); });
+  QUIZ.questions.forEach(function (q) {
+    for (var k = 0; k < q.options.length; k++) {
+      if (q.options[k].id === (answers || {})[q.id]) q.options[k].boost.forEach(function (id) { add(id, 3); });
+    }
+  });
   /* תיק תלמיד תמיד רלוונטי — עוגן */
   add('student-file', 2);
   var ids = Object.keys(score).sort(function (x, y) { return score[y] - score[x]; });
