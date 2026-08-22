@@ -58,6 +58,23 @@
   .st-pick { display: flex; gap: 8px; flex-wrap: wrap; }
   .modal-card { max-width: 560px; }
   .ai-draft { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-top: 8px; font-size: 13px; line-height: 1.7; white-space: pre-line; }
+
+  /* ─── הצעות ויזואל ─── */
+  .vis-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+  .vis-head .f { margin: 0; }
+  .vis-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  @media (max-width: 560px) { .vis-grid { grid-template-columns: repeat(2, 1fr); } }
+  .vis-tile { position: relative; aspect-ratio: 1; border-radius: 14px; overflow: hidden; border: 2px solid transparent; cursor: pointer; background: var(--bg); padding: 0; transition: transform 200ms var(--motion-ease), box-shadow 250ms; }
+  .vis-tile:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(6,30,79,.14); }
+  .vis-tile.sel { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(18,199,199,.2); }
+  .vis-tile canvas, .vis-tile svg { width: 100%; height: 100%; display: block; }
+  .vis-tile .vt-tag { position: absolute; bottom: 6px; right: 6px; left: 6px; font-size: 9.5px; font-weight: 800; color: #fff; background: rgba(6,30,79,.55); backdrop-filter: blur(3px); border-radius: 8px; padding: 3px 6px; text-align: center; pointer-events: none; }
+  .vis-tile .vt-dl { position: absolute; top: 6px; left: 6px; width: 26px; height: 26px; border-radius: 8px; border: none; background: rgba(255,255,255,.94); color: var(--navy); display: grid; place-items: center; cursor: pointer; opacity: 0; transition: opacity 180ms; }
+  .vis-tile:hover .vt-dl { opacity: 1; }
+  .vis-tile .vt-dl svg { width: 13px; height: 13px; }
+  .vis-tile.ai-lock .vt-pro { position: absolute; top: 6px; right: 6px; font-size: 9px; font-weight: 900; background: var(--fuchsia); color: #fff; border-radius: 999px; padding: 2px 7px; }
+  .vis-note { font-size: 11.5px; color: var(--gray); font-weight: 600; margin-top: 7px; }
+  .vis-ind { width: 13px; height: 13px; color: var(--teal); vertical-align: -2px; margin-inline-start: 5px; }
 </style>
 </head>
 <body>
@@ -207,7 +224,7 @@
     var sorted = S.posts.slice().sort(function (a, b) { return a.day - b.day || (a.time < b.time ? -1 : 1); });
     var rows = sorted.map(function (p) {
       return '<tr><td style="white-space:nowrap"><b>' + p.day + '.11</b> · ' + p.time + '</td>'
-        + '<td><span class="qtxt">' + DemoShell.esc(p.text) + '</span></td>'
+        + '<td><span class="qtxt">' + DemoShell.esc(p.text) + (p.vis ? '<svg class="vis-ind" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.5-3.5a2 2 0 0 0-2.8 0L6 20"/></svg>' : '') + '</span></td>'
         + '<td style="white-space:nowrap">' + chanTags(p.ch) + '</td>'
         + '<td>' + stChip(p.st) + '</td>'
         + '<td style="white-space:nowrap"><button type="button" class="btn-sm" onclick="openEdit(' + p.id + ')">עריכה</button> <button type="button" class="btn-sm ghost" onclick="dupPost(' + p.id + ')">שכפול</button></td></tr>';
@@ -240,12 +257,117 @@
     DemoShell.toast('נוצרה טיוטה — ערכו אותה ותזמנו');
   }
 
+  /* ───────── הצעות ויזואל — כרטיס ממותג (canvas) + התאמת נושא ───────── */
+  var BRAND = { navy: '#061E4F', teal: '#12C7C7', fuchsia: '#F00678', paper: '#F4F8FC' };
+  var TOPICS = [
+    { id: 'chanuka', tag: 'חנוכה וחגים',      re: /חנוכה|נר |נרות|מדליק|סופגני|חג /,                bg: ['#0B1F4E', '#25418F'], ic: '#FFC53D', icon: 'M12 3c1.6 1.8 1.6 3.4 0 5-1.6-1.6-1.6-3.2 0-5zM12 9v8M6.5 21h11M8.5 13.5h7' },
+    { id: 'books',   tag: 'קריאה וספרייה',    re: /ספר|קריאה|ספרי|כורסא/,                            bg: ['#0B5E5E', '#12C7C7'], ic: '#FFFFFF', icon: 'M12 6.5c-2.2-1.6-5.4-1.6-8 0v11c2.6-1.6 5.8-1.6 8 0 2.2-1.6 5.4-1.6 8 0v-11c-2.6-1.6-5.8-1.6-8 0zM12 6.5v11' },
+    { id: 'science', tag: 'מדעים ורובוטיקה',  re: /רובוט|מדע|ניסוי|מעבד|הנדס|חשמל|טכנולוג/,          bg: ['#3A2470', '#7B4EC8'], ic: '#FFFFFF', icon: 'M9.5 3h5M10.5 3v5.2L5.6 17a2.2 2.2 0 0 0 2 3h8.8a2.2 2.2 0 0 0 2-3l-4.9-8.8V3M8.5 14h7' },
+    { id: 'tour',    tag: 'סיורים והרשמה',    re: /סיור|הרשמה|רישום|היכרות|מחפשים בית ספר|מקומות/,   bg: ['#1B5E37', '#4CAF6E'], ic: '#FFFFFF', icon: 'M5 21V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v15M5 21h14M13.5 12h.01M9 21v-5h6v5' },
+    { id: 'parents', tag: 'הורים ואסיפות',    re: /הורים|אסיפ|ערב ההורים|שעות/,                      bg: ['#8A5A00', '#C98600'], ic: '#FFFFFF', icon: 'M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2.5 20c.7-3.6 10.3-3.6 11 0M17 8a2.5 2.5 0 1 0 0-5M15.5 12.6c3.2.3 5.6 1.7 6 4.4' },
+    { id: 'community', tag: 'קהילה ומעשים טובים', re: /קהיל|מעשים טובים|התנדב|שכונה|תרומ|תודה/,       bg: ['#8F0448', '#F00678'], ic: '#FFFFFF', icon: 'M12 20s-7-4.5-9-9a4.6 4.6 0 0 1 8-3.6L12 8.5l1-1.1a4.6 4.6 0 0 1 8 3.6c-2 4.5-9 9-9 9z' },
+    { id: 'win',     tag: 'הישגים ותחרויות',  re: /גמר|זכ|הישג|נבחרת|אלוף|תחרות|שיא/,                bg: ['#7A4D00', '#E0A000'], ic: '#FFFFFF', icon: 'M8 4h8v5a4 4 0 0 1-8 0V4zM8 5H5.5a2.8 2.8 0 0 0 2.7 4M16 5h2.5a2.8 2.8 0 0 1-2.7 4M12 13v4M8.5 21h7M10 17h4' },
+    { id: 'staff',   tag: 'צוות ומורים',      re: /מורה|מורים|צוות|חדר מורים|המחנכ/,                 bg: ['#123058', '#0B7DB5'], ic: '#FFFFFF', icon: 'M4 4h16v10H4zM8 20l4-4 4 4M12 14v2M8 8h5M8 11h8' },
+    { id: 'art',     tag: 'אמנות ויצירה',     re: /ציור|אמנות|קיר|יציר|עיצב/,                        bg: ['#8C2B4A', '#E0685C'], ic: '#FFFFFF', icon: 'M12 3a9 9 0 1 0 8.6 11.7c.3-1.1-.6-2.2-1.8-2.2h-2.3a2 2 0 0 1-2-2V8.2c0-1.1-.9-2-2-2zM7.5 11h.01M11 7h.01M16 13.5h.01' }
+  ];
+  var TOPIC_DEFAULT = { id: 'school', tag: 'בית הספר שלנו', bg: ['#0B2B66', '#12C7C7'], ic: '#FFFFFF', icon: 'M12 3 2 9l10 6 10-6-10-6zM6 12v5c3.5 2.5 8.5 2.5 12 0v-5M21 10v5' };
+
+  function detectTopic(t) { for (var i = 0; i < TOPICS.length; i++) if (TOPICS[i].re.test(t)) return TOPICS[i]; return TOPIC_DEFAULT; }
+  function keySentence(t) {
+    t = t.replace(/\s+/g, ' ').trim();
+    var s = t.split(/[.!?׃]/)[0].trim();
+    if (s.length < 15 && t.length > s.length + 2) s = t.slice(0, 120);
+    if (s.length > 120) s = s.slice(0, 117).replace(/\s\S*$/, '') + '…';
+    return s.trim();
+  }
+  function wrapLines(x, text, maxW) {
+    var words = text.split(' '), lines = [], cur = '';
+    for (var i = 0; i < words.length; i++) {
+      var next = cur ? cur + ' ' + words[i] : words[i];
+      if (x.measureText(next).width > maxW && cur) { lines.push(cur); cur = words[i]; } else cur = next;
+    }
+    if (cur) lines.push(cur);
+    return lines.slice(0, 5);
+  }
+  function drawCard(cv, variant, text) {
+    var W = 1080, x = cv.getContext('2d');
+    cv.width = W; cv.height = W;
+    var dark = variant === 'A';
+    x.fillStyle = dark ? BRAND.navy : BRAND.paper; x.fillRect(0, 0, W, W);
+    /* דקורציה */
+    x.beginPath(); x.arc(dark ? 130 : W - 110, dark ? W - 90 : 90, 330, 0, 7);
+    x.fillStyle = dark ? 'rgba(18,199,199,.16)' : 'rgba(240,6,120,.08)'; x.fill();
+    x.beginPath(); x.arc(dark ? W - 120 : 140, dark ? 140 : W - 140, 58, 0, 7);
+    x.fillStyle = dark ? 'rgba(240,6,120,.85)' : 'rgba(18,199,199,.8)'; x.fill();
+    /* שם בית הספר */
+    x.direction = 'rtl'; x.textAlign = 'center';
+    x.fillStyle = dark ? BRAND.teal : BRAND.navy;
+    x.font = '700 36px Heebo, sans-serif';
+    x.fillText(DEMO.school.name + ' · ' + DEMO.school.year, W / 2, 130);
+    /* כותרת */
+    x.font = '800 72px Heebo, sans-serif';
+    var lines = wrapLines(x, keySentence(text), 860);
+    var lh = 96, y0 = W / 2 - ((lines.length - 1) * lh) / 2 + 10;
+    x.fillStyle = dark ? '#FFFFFF' : BRAND.navy;
+    for (var i = 0; i < lines.length; i++) x.fillText(lines[i], W / 2, y0 + i * lh);
+    /* פס הדגשה */
+    x.fillStyle = dark ? BRAND.fuchsia : BRAND.teal;
+    var by = y0 + lines.length * lh + 20;
+    x.beginPath(); x.roundRect((W - 140) / 2, Math.min(by, W - 120), 140, 12, 6); x.fill();
+    return cv;
+  }
+  function topicSVG(tp) {
+    return '<svg viewBox="0 0 100 100"><defs><linearGradient id="g-' + tp.id + '" x1="0" y1="0" x2="1" y2="1">'
+      + '<stop offset="0" stop-color="' + tp.bg[0] + '"/><stop offset="1" stop-color="' + tp.bg[1] + '"/></linearGradient></defs>'
+      + '<rect width="100" height="100" fill="url(#g-' + tp.id + ')"/>'
+      + '<circle cx="86" cy="14" r="22" fill="rgba(255,255,255,.1)"/><circle cx="12" cy="88" r="16" fill="rgba(255,255,255,.08)"/>'
+      + '<g transform="translate(29,29) scale(1.75)"><path d="' + tp.icon + '" fill="none" stroke="' + tp.ic + '" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></g></svg>';
+  }
+  var DL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11M7.5 10 12 14.5 16.5 10M4 20h16"/></svg>';
+  function suggestVisuals() {
+    var ta = document.getElementById('pTxt');
+    var txt = (ta ? ta.value : edit.text) || '';
+    if (!txt.trim()) { DemoShell.toast('כתבו קודם את הפוסט — ההצעות נגזרות ממנו'); return; }
+    var tp = detectTopic(txt), g = document.getElementById('visGrid');
+    g.innerHTML =
+      '<button type="button" class="vis-tile" data-vis="cardA" onclick="pickVis(this)"><canvas></canvas><span class="vt-tag">כרטיס ממותג · כהה</span><span class="vt-dl" onclick="dlVis(event,this)" title="הורדת PNG">' + DL_SVG + '</span></button>'
+      + '<button type="button" class="vis-tile" data-vis="cardB" onclick="pickVis(this)"><canvas></canvas><span class="vt-tag">כרטיס ממותג · בהיר</span><span class="vt-dl" onclick="dlVis(event,this)" title="הורדת PNG">' + DL_SVG + '</span></button>'
+      + '<button type="button" class="vis-tile" data-vis="topic:' + tp.id + '" onclick="pickVis(this)">' + topicSVG(tp) + '<span class="vt-tag">' + tp.tag + '</span></button>'
+      + '<button type="button" class="vis-tile ai-lock" onclick="aiVis()"><svg viewBox="0 0 100 100"><rect width="100" height="100" fill="' + BRAND.navy + '"/><circle cx="50" cy="44" r="26" fill="rgba(18,199,199,.2)"/><g transform="translate(38,32) scale(1)"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8z" fill="#12C7C7"/></g></svg><span class="vt-pro">מערכת מלאה</span><span class="vt-tag">תמונת AI בסגנון ביה"ס</span></button>';
+    var draw = function () {
+      var cs = g.querySelectorAll('canvas');
+      if (cs[0]) drawCard(cs[0], 'A', txt);
+      if (cs[1]) drawCard(cs[1], 'B', txt);
+    };
+    draw();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+    var sel = g.querySelector('[data-vis="' + edit.vis + '"]'); if (sel) sel.classList.add('sel');
+    document.getElementById('visNote').textContent = 'זוהה נושא: ' + tp.tag + ' · הכרטיסים נוצרים עכשיו, בצבעים של ' + DEMO.school.name + '. לחיצה בוחרת ויזואל לפוסט.';
+  }
+  function pickVis(tile) {
+    var g = tile.parentNode, all = g.querySelectorAll('.vis-tile');
+    for (var i = 0; i < all.length; i++) all[i].classList.remove('sel');
+    if (edit.vis === tile.getAttribute('data-vis')) { edit.vis = null; return; }
+    edit.vis = tile.getAttribute('data-vis'); tile.classList.add('sel');
+  }
+  function dlVis(ev, btn) {
+    ev.stopPropagation();
+    var cv = btn.parentNode.querySelector('canvas'); if (!cv) return;
+    var a = document.createElement('a');
+    a.href = cv.toDataURL('image/png');
+    a.download = 'post-card-' + DEMO.school.short + '.png'; a.click();
+    DemoShell.toast('הכרטיס ירד כתמונה — מוכן להעלאה לרשת');
+  }
+  function aiVis() {
+    DemoShell.toast('במערכת המלאה: תמונת AI נוצרת בענן לפי הפוסט, נעולה על השפה הוויזואלית של בית הספר. הדמו רץ כולו במחשב שלכם.');
+  }
+
   /* ───────── עריכה / פוסט חדש ───────── */
   var edit = null;
   function openEdit(id) {
     var p = id ? byId(id) : null;
-    edit = p ? { id: p.id, day: p.day, time: p.time, ch: p.ch.slice(), st: p.st, text: p.text }
-             : { id: 0, day: Math.min(30, TODAY + 3), time: '17:30', ch: ['fb'], st: 'draft', text: '' };
+    edit = p ? { id: p.id, day: p.day, time: p.time, ch: p.ch.slice(), st: p.st, text: p.text, vis: p.vis || null }
+             : { id: 0, day: Math.min(30, TODAY + 3), time: '17:30', ch: ['fb'], st: 'draft', text: '', vis: null };
     var chBtns = Object.keys(CH).map(function (c) {
       return '<button type="button" class="chan-opt' + (edit.ch.indexOf(c) !== -1 ? ' on' : '') + '" style="' + (edit.ch.indexOf(c) !== -1 ? 'background:' + CH[c].c : '') + '" onclick="toggleCh(this,\'' + c + '\')">' + CH[c].svg + CH[c].name + '</button>';
     }).join('');
@@ -253,6 +375,9 @@
       return '<button type="button" class="chan-opt' + (edit.st === s[0] ? ' on' : '') + '" style="' + (edit.st === s[0] ? 'background:var(--navy)' : '') + '" onclick="setSt(this,\'' + s[0] + '\')">' + s[1] + '</button>';
     }).join('');
     var body = '<div class="q" style="margin-bottom:12px"><label class="f">מה מפרסמים?</label><textarea class="in" id="pTxt" style="width:100%;min-height:96px">' + DemoShell.esc(edit.text) + '</textarea></div>'
+      + '<div class="q" style="margin-bottom:12px"><div class="vis-head"><label class="f">ויזואל לפוסט</label>'
+      + '<button type="button" class="btn-sm" onclick="suggestVisuals()">' + ICONS.spark + ' הציעו לפי הפוסט</button></div>'
+      + '<div class="vis-grid" id="visGrid"></div><div class="vis-note" id="visNote">כתבו את הפוסט ולחצו "הציעו לפי הפוסט" — או ערכו פוסט קיים וההצעות יופיעו לבד.</div></div>'
       + '<div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">'
       + '<label class="f">יום בחודש (נובמבר)<input class="in" id="pDay" type="number" min="1" max="30" value="' + edit.day + '"></label>'
       + '<label class="f">שעת פרסום<input class="in" id="pTime" value="' + edit.time + '"></label></div>'
@@ -263,6 +388,7 @@
     var old = document.getElementById('editModal'); if (old) old.parentNode.removeChild(old);
     document.body.insertAdjacentHTML('beforeend', DemoShell.modalHTML('editModal', edit.id ? 'עריכת פוסט' : 'פוסט חדש', body, actions));
     DemoShell.openModal('editModal');
+    if (edit.text.trim()) suggestVisuals();
   }
   function toggleCh(btn, c) {
     var i = edit.ch.indexOf(c);
@@ -281,8 +407,8 @@
     edit.day = Math.max(1, Math.min(30, +document.getElementById('pDay').value || TODAY));
     edit.time = document.getElementById('pTime').value || '17:30';
     if (!edit.text.trim()) { DemoShell.toast('כתבו משהו קודם — אפילו שורה אחת'); return; }
-    if (edit.id) { var p = byId(edit.id); p.text = edit.text; p.day = edit.day; p.time = edit.time; p.ch = edit.ch; p.st = edit.st; }
-    else S.posts.push({ id: S.nextId++, day: edit.day, time: edit.time, ch: edit.ch, st: edit.st, text: edit.text });
+    if (edit.id) { var p = byId(edit.id); p.text = edit.text; p.day = edit.day; p.time = edit.time; p.ch = edit.ch; p.st = edit.st; p.vis = edit.vis; }
+    else S.posts.push({ id: S.nextId++, day: edit.day, time: edit.time, ch: edit.ch, st: edit.st, text: edit.text, vis: edit.vis });
     save(); DemoShell.closeModal('editModal'); renderAll();
     DemoShell.toast(edit.st === 'sched' ? 'הפוסט תוזמן — יתפרסם לבד ב-' + edit.day + '.11 בשעה ' + edit.time : 'נשמר בדמו');
   }
