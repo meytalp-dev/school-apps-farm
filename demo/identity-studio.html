@@ -238,6 +238,9 @@ input[type=range]{flex:1;accent-color:var(--brand);height:34px;}
 .toast.show{opacity:1;transform:translate(50%,0);}
 .footnote{margin-top:34px;font-size:12.5px;color:var(--text-soft);text-align:center;}
 @media (max-width:640px){ .prev-grid{grid-template-columns:1fr;} }
+/* מצב מוטמע (iframe בתוך דמו הזהות): ?embed=1 */
+body.embed header.top,body.embed .footnote{display:none;}
+body.embed .wrap{padding:14px clamp(12px,2.5vw,28px) 40px;}
 </style>
 </head>
 <body>
@@ -446,7 +449,7 @@ input[type=range]{flex:1;accent-color:var(--brand);height:34px;}
       <button class="btn-soft" onclick="goHome()">התחלה מחדש</button>
     </div>
 
-    <div class="footnote">דמו של <b>סטודיו הזהות</b> — הצבעים חולצו ונבנו כולם בדפדפן, שום דבר לא נשלח לשרת · <a href="../app.html?id=identity-studio" style="color:inherit;font-weight:700">לפרטי המערכת</a> · <a href="../catalog.html" style="color:inherit;font-weight:700">לחוות האפליקציות</a></div>
+    <div class="footnote">דמו של <b>סטודיו הזהות</b> — הצבעים חולצו ונבנו כולם בדפדפן, שום דבר לא נשלח לשרת · <a href="../app.html?id=brand-kit" style="color:inherit;font-weight:700">לפרטי המערכת</a> · <a href="../catalog.html" style="color:inherit;font-weight:700">לחוות האפליקציות</a></div>
   </section>
 
 </div>
@@ -456,6 +459,7 @@ input[type=range]{flex:1;accent-color:var(--brand);height:34px;}
 /* ================================================================
    סטודיו הזהות — מנוע: שאלון/חילוץ → 3 כיוונים → תצוגות חיות
    ================================================================ */
+if(/[?&]embed=1/.test(location.search)) document.body.classList.add('embed');
 
 /* ---------- data ---------- */
 const STAGES = ['גן וצהרון','יסודי','חטיבת ביניים','תיכון','רב-גילאי'];

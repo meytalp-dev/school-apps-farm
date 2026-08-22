@@ -13,6 +13,14 @@ var DemoShell = (function () {
     var app = getApp(appId);
     if (!app) return;
     document.title = 'דמו · ' + app.name + ' — חוות האפליקציות';
+    /* מצב מוטמע (iframe בתוך דמו אחר): ?embed=1 — בלי סרגל עליון ופוטר */
+    if (/[?&]embed=1/.test(location.search)) {
+      document.documentElement.classList.add('embed');
+      var toastE = document.createElement('div'); toastE.className = 'toast'; toastE.id = 'demoToast'; document.body.appendChild(toastE);
+      if (!document.getElementById('cart-root')) { var crE = document.createElement('div'); crE.id = 'cart-root'; document.body.appendChild(crE); }
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { var mE = document.querySelector('.modal.open'); if (mE) mE.classList.remove('open'); } });
+      return;
+    }
     var bar = document.createElement('header');
     bar.className = 'demo-bar';
     bar.innerHTML = '<div class="demo-bar-inner">'

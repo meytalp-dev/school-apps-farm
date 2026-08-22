@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>דמו — ערכת זהות ואחידות בית-ספרית — חוות האפליקציות</title>
+<title>דמו — זהות ואחידות בית-ספרית — חוות האפליקציות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -148,13 +148,19 @@
   .dl b { font-size: 15px; font-weight: 800; }
   .dl p { font-size: 13px; color: var(--gray); flex: 1; }
   @media (max-width: 860px) { .dl { grid-template-columns: 1fr; } }
+
+  /* ─── דמו מוטמע (שאלון + פוסטים) ─── */
+  .embed-frame { display: block; width: 100%; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
+  .embed-frame.wiz { height: min(740px, 78vh); }
+  .embed-frame.posts { height: min(980px, 84vh); }
+  .embed-note { font-size: 12.5px; color: var(--gray); margin-top: 10px; }
 </style>
 </head>
 <body>
 
 <main class="demo-main">
   <div class="demo-head">
-    <div><h2>ערכת הזהות של בית ספר אימפקט</h2><p>מקום אחד לכל מי שמכין תוצר: לוגו, צבעים, פונטים, סלוגן וקול. אחידות שמחזקת גאוות יחידה — ומזינה את מחוללי התעודות, המודעות והמצגות.</p></div>
+    <div><h2>זהות ואחידות בית-ספרית</h2><p>מסע אחד שלם: מתחילים בשאלון מיפוי שבונה את הזהות, ממשיכים לסיפור בית הספר ולערכה המלאה — לוגו, צבעים, סלוגן וקול — ומסיימים בזהות בפעולה: הפוסטים לרשתות שמתלבשים בה אוטומטית.</p></div>
     <div class="demo-toolbar">
       <button type="button" class="btn-sm primary" onclick="BK.downloadAll()">הורדת הערכה</button>
       <button type="button" class="btn-sm" onclick="BK.share()">שיתוף לצוות</button>
@@ -173,9 +179,18 @@
   <div class="bk-layout">
     <div class="bk-sections" id="secs">
 
+      <!-- שאלון מיפוי — בונים זהות -->
+      <section class="card" id="s-wizard">
+        <div class="sec-k">01 · שאלון מיפוי</div>
+        <h3 class="sec-h">עוד אין זהות? מתחילים כאן</h3>
+        <p class="sec-p">עונים על שאלון קצר — חזון, ערכים, אופי — או מעלים לוגו קיים, ומקבלים שלושה כיווני זהות שלמים לבחירה. הכיוון שנבחר הופך לערכה כמו זו שבסעיפים הבאים.</p>
+        <iframe class="embed-frame wiz" src="identity-studio.html?embed=1" title="שאלון מיפוי לבניית זהות" loading="lazy"></iframe>
+        <div class="embed-note">השאלון רץ כאן, בתוך הדמו — הכול נשאר בדפדפן שלכם.</div>
+      </section>
+
       <!-- סיפור -->
       <section class="card" id="s-story">
-        <div class="sec-k">01 · סיפור המותג</div>
+        <div class="sec-k">02 · סיפור בית הספר</div>
         <h3 class="sec-h">בית ספר שבו כל ילד מגלה שיש לו השפעה</h3>
         <p class="sec-p">שלושה משפטים שכל אחד בצוות יכול לספר — למי שמגיע ליום פתוח, להורה חדש, למורה שמצטרפת.</p>
         <div class="story">
@@ -188,7 +203,7 @@
 
       <!-- לוגו -->
       <section class="card" id="s-logo">
-        <div class="sec-k">02 · לוגו</div>
+        <div class="sec-k">03 · לוגו</div>
         <h3 class="sec-h">הסימן: אות א׳ עם ניצוץ</h3>
         <p class="sec-p">א׳ של אימפקט, קו נועז, ונקודת-ניצוץ ורודה — הרגע שבו משהו קורה. ארבע גרסאות, כל אחת לתפקיד אחר. כל גרסה ניתנת להורדה כ-SVG (וקטור, לכל גודל).</p>
         <div class="logo-grid" id="logoGrid"></div>
@@ -202,7 +217,7 @@
 
       <!-- צבעים -->
       <section class="card" id="s-colors">
-        <div class="sec-k">03 · צבעים</div>
+        <div class="sec-k">04 · צבעים</div>
         <h3 class="sec-h">פלטת אימפקט</h3>
         <p class="sec-p">שלושה צבעי ליבה, ניצוץ אחד וניטרלים. לחיצה על צבע — מעתיקה את הקוד.</p>
         <div id="palette"></div>
@@ -215,7 +230,7 @@
 
       <!-- טיפוגרפיה -->
       <section class="card" id="s-type">
-        <div class="sec-k">04 · טיפוגרפיה</div>
+        <div class="sec-k">05 · טיפוגרפיה</div>
         <h3 class="sec-h">Heebo — פונט אחד לכל דבר</h3>
         <p class="sec-p">משפחה אחת, שבעה גדלים, ארבעה משקלים. כותרות כבדות וצפופות; טקסט רץ נושם.</p>
         <div id="typeScale"></div>
@@ -224,7 +239,7 @@
 
       <!-- אלמנטים -->
       <section class="card" id="s-elements">
-        <div class="sec-k">05 · אלמנטים גרפיים</div>
+        <div class="sec-k">06 · אלמנטים גרפיים</div>
         <h3 class="sec-h">אריח חוזר ופס גרדיאנט</h3>
         <p class="sec-p">שני אלמנטים שנותנים "אימפקט" לכל תוצר בלי לוגו: אריח נקודות לרקעים ועטיפות, ופס גרדיאנט לכותרות ולמצגות.</p>
         <div class="el-grid">
@@ -235,7 +250,7 @@
 
       <!-- סלוגנים -->
       <section class="card" id="s-slogans">
-        <div class="sec-k">06 · מערכת סלוגנים</div>
+        <div class="sec-k">07 · מערכת סלוגנים</div>
         <h3 class="sec-h">סלוגן ראשי + ארבעה לפי קהל</h3>
         <p class="sec-p">הראשי מופיע ליד הלוגו. תתי-הסלוגנים מותאמים למי שקורא — הורים, תלמידים, צוות וקהילה. לחיצה מעתיקה.</p>
         <div class="slogan-main" onclick="BK.copy('לומדים. יוצרים. משפיעים.','הסלוגן הועתק')"><b>לומדים. יוצרים. משפיעים<i>.</i></b><small>הסלוגן הראשי · גרסה מינימלית: "משפיעים." · הנקודה האחרונה תמיד בפוקסיה</small></div>
@@ -244,7 +259,7 @@
 
       <!-- קול -->
       <section class="card" id="s-voice">
-        <div class="sec-k">07 · קול המותג</div>
+        <div class="sec-k">08 · קול המותג</div>
         <h3 class="sec-h">איך אימפקט מדבר</h3>
         <p class="sec-p">שלושה עקרונות — ולכל אחד דוגמה של "כך" ו"לא כך". ואחריהם: מילים שאנחנו אוהבים, ומילים שאנחנו מניחים בצד.</p>
         <div class="voice" id="voice"></div>
@@ -256,7 +271,7 @@
 
       <!-- חוברת כיוונים -->
       <section class="card" id="s-dirs">
-        <div class="sec-k">08 · חוברת כיוונים להנהלה</div>
+        <div class="sec-k">09 · חוברת כיוונים להנהלה</div>
         <h3 class="sec-h">שלושה כיוונים — ההנהלה מצביעה</h3>
         <p class="sec-p">לפני שנועלים מותג, ההנהלה רואה כמה כיוונים זה לצד זה, קוראת ניתוח קצר ומצביעה. הכיוון שנבחר הופך לערכה שלמעלה. לחצו על "מצביעים" כדי לנסות.</p>
         <div class="dirs" id="dirs"></div>
@@ -265,7 +280,7 @@
 
       <!-- הורדות -->
       <section class="card" id="s-dl">
-        <div class="sec-k">09 · הורדות</div>
+        <div class="sec-k">10 · הורדות</div>
         <h3 class="sec-h">קבצים מוכנים לשימוש</h3>
         <p class="sec-p">כל הקבצים נוצרים כאן, בדפדפן, מהערכה עצמה — כך שהם תמיד מעודכנים.</p>
         <div class="dl">
@@ -275,11 +290,20 @@
         </div>
       </section>
 
+      <!-- הזהות בפעולה — פוסטים לרשתות -->
+      <section class="card" id="s-posts">
+        <div class="sec-k">11 · הזהות בפעולה</div>
+        <h3 class="sec-h">הפוסטים לרשתות — כבר בזהות של בית הספר</h3>
+        <p class="sec-p">הערכה לא נשארת במגירה: כל פוסט שיוצא לפייסבוק, לאינסטגרם ולקהילת הוואטסאפ מתלבש אוטומטית בצבעים, בפונט ובקול של בית הספר. זה לוח הפוסטים המלא — נסו לערוך פוסט, לתזמן, ולבקש הצעות ויזואל ממותגות.</p>
+        <iframe class="embed-frame posts" src="social-posts.html?embed=1" title="פוסטים מתוזמנים לרשתות — בזהות בית הספר" loading="lazy"></iframe>
+        <div class="embed-note">מערכת הפוסטים קיימת גם כמערכת עצמאית בקטלוג — <a href="../app.html?id=social-posts" style="color:inherit;font-weight:700">פוסטים מתוזמנים לרשתות</a>.</div>
+      </section>
+
     </div>
 
     <nav class="bk-nav" id="bkNav" aria-label="סעיפי הערכה">
       <span class="nav-t">סעיפים</span>
-      <a href="#s-story">סיפור</a><a href="#s-logo">לוגו</a><a href="#s-colors">צבעים</a><a href="#s-type">טיפוגרפיה</a><a href="#s-elements">אלמנטים</a><a href="#s-slogans">סלוגנים</a><a href="#s-voice">קול</a><a href="#s-dirs">חוברת כיוונים</a><a href="#s-dl">הורדות</a>
+      <a href="#s-wizard">שאלון מיפוי</a><a href="#s-story">סיפור</a><a href="#s-logo">לוגו</a><a href="#s-colors">צבעים</a><a href="#s-type">טיפוגרפיה</a><a href="#s-elements">אלמנטים</a><a href="#s-slogans">סלוגנים</a><a href="#s-voice">קול</a><a href="#s-dirs">חוברת כיוונים</a><a href="#s-dl">הורדות</a><a href="#s-posts">הזהות בפעולה</a>
     </nav>
   </div>
 </main>

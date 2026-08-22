@@ -8,7 +8,7 @@
 var FEATURED = ['student-file', 'attendance', 'pulse', 'parent-meetings', 'broadcast', 'investment-bank'];
 
 /* ── דמואים חיים (demo/<id>.html) ── */
-var DEMOS = ['pulse', 'positions', 'gantt', 'teacher-feedback', 'duties', 'social-posts', 'message-composer', 'brand-kit', 'identity-studio'];
+var DEMOS = ['pulse', 'positions', 'gantt', 'teacher-feedback', 'duties', 'social-posts', 'message-composer', 'brand-kit'];
 function hasDemo(id) { return DEMOS.indexOf(id) !== -1; }
 function demoHref(id) { return 'demo/' + id + '.html'; }
 
@@ -16,7 +16,7 @@ function demoHref(id) { return 'demo/' + id + '.html'; }
 var TAGS = {
   'student-file': ['popular'], 'attendance': ['popular'], 'tardiness': ['popular'], 'pulse': ['popular'],
   'monthly-reports': ['popular'], 'investment-bank': ['popular'], 'incident': ['popular'],
-  'parent-meetings': ['new'], 'broadcast': ['new'], 'teacher-assessment': ['new'], 'brand-kit': ['new'], 'identity-studio': ['new'], 'social-posts': ['new', 'ai'], 'message-composer': ['new', 'ai'],
+  'parent-meetings': ['new'], 'broadcast': ['new'], 'teacher-assessment': ['new'], 'brand-kit': ['new'], 'social-posts': ['new', 'ai'], 'message-composer': ['new', 'ai'],
   'curriculum': ['ai'], 'positions': ['ai'], 'my-conversations': ['ai'], 'risk': ['ai'], 'planning-hub': ['ai']
 };
 var TAG_LABEL = { 'new': 'חדש', 'popular': 'מבוקש', 'ai': 'כולל AI' };
@@ -50,11 +50,10 @@ var LINKS = {
   'exams': ['exam-prep-form', 'bagrut'],
   'strategy': ['swot', 'competitors', 'planning-hub'],
   'planning-hub': ['annual-plan', 'gantt', 'positions'],
-  'brand-kit': ['identity-studio', 'cert-generator', 'zoom-bg', 'job-card-builder', 'landing-recruitment', 'greeting-cards'],
-  'identity-studio': ['brand-kit', 'cert-generator', 'zoom-bg', 'greeting-cards', 'job-card-builder'],
+  'brand-kit': ['social-posts', 'cert-generator', 'zoom-bg', 'job-card-builder', 'landing-recruitment', 'greeting-cards'],
   'landing-recruitment': ['parent-testimonials', 'admission', 'brand-kit'],
   'social-posts': ['brand-kit', 'broadcast', 'greeting-cards', 'landing-recruitment'],
-  'message-composer': ['broadcast', 'brand-kit', 'identity-studio', 'directory'],
+  'message-composer': ['broadcast', 'brand-kit', 'directory'],
   'competitors': ['swot', 'strategy', 'landing-recruitment'],
   'counselor-dashboard': ['shiluv', 'therapy', 'student-file', 'incident'],
   'teacher-feedback': ['teacher-assessment', 'teacher-plan'],
