@@ -8,7 +8,7 @@
 var FEATURED = ['student-file', 'attendance', 'pulse', 'parent-meetings', 'broadcast', 'investment-bank'];
 
 /* ── דמואים חיים (demo/<id>.html) ── */
-var DEMOS = ['pulse', 'positions', 'gantt', 'teacher-feedback', 'resources', 'job-card-builder', 'brand-kit'];
+var DEMOS = ['pulse', 'positions', 'gantt', 'teacher-feedback', 'resources', 'job-card-builder', 'brand-kit', 'identity-studio'];
 function hasDemo(id) { return DEMOS.indexOf(id) !== -1; }
 function demoHref(id) { return 'demo/' + id + '.html'; }
 
@@ -16,7 +16,7 @@ function demoHref(id) { return 'demo/' + id + '.html'; }
 var TAGS = {
   'student-file': ['popular'], 'attendance': ['popular'], 'tardiness': ['popular'], 'pulse': ['popular'],
   'monthly-reports': ['popular'], 'investment-bank': ['popular'], 'incident': ['popular'],
-  'parent-meetings': ['new'], 'broadcast': ['new'], 'teacher-assessment': ['new'], 'brand-kit': ['new'],
+  'parent-meetings': ['new'], 'broadcast': ['new'], 'teacher-assessment': ['new'], 'brand-kit': ['new'], 'identity-studio': ['new'],
   'curriculum': ['ai'], 'positions': ['ai'], 'my-conversations': ['ai'], 'risk': ['ai'], 'planning-hub': ['ai']
 };
 var TAG_LABEL = { 'new': 'חדש', 'popular': 'מבוקש', 'ai': 'כולל AI' };
@@ -50,7 +50,8 @@ var LINKS = {
   'exams': ['exam-prep-form', 'bagrut'],
   'strategy': ['swot', 'competitors', 'planning-hub'],
   'planning-hub': ['annual-plan', 'gantt', 'positions'],
-  'brand-kit': ['cert-generator', 'zoom-bg', 'job-card-builder', 'landing-recruitment', 'greeting-cards'],
+  'brand-kit': ['identity-studio', 'cert-generator', 'zoom-bg', 'job-card-builder', 'landing-recruitment', 'greeting-cards'],
+  'identity-studio': ['brand-kit', 'cert-generator', 'zoom-bg', 'greeting-cards', 'job-card-builder'],
   'landing-recruitment': ['parent-testimonials', 'admission', 'brand-kit'],
   'competitors': ['swot', 'strategy', 'landing-recruitment'],
   'counselor-dashboard': ['shiluv', 'therapy', 'student-file', 'incident'],
