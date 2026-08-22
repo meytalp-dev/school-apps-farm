@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דמו · מחולל הודעות לקהילה — חוות האפליקציות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+  .view { display: none; } .view.on { display: block; }
+  .tabs { margin-bottom: 20px; }
+  .tab svg { width: 14px; height: 14px; margin-inline-end: 6px; vertical-align: -2px; }
+
+  .gen { display: grid; grid-template-columns: minmax(340px, 1fr) minmax(380px, 1.1fr); gap: 20px; align-items: start; }
+  @media (max-width: 980px) { .gen { grid-template-columns: 1fr; } }
+
+  /* ─── בחירות ─── */
+  .pick-label { font-size: 13px; font-weight: 900; color: var(--navy); margin: 16px 0 8px; display: flex; align-items: center; gap: 6px; }
+  .pick-label:first-child { margin-top: 0; }
+  .pick-label small { font-weight: 600; color: var(--gray); }
+  .pick-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pk { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 8px 14px; font-family: inherit; font-size: 13px; font-weight: 800; color: var(--navy); cursor: pointer; transition: all 200ms var(--motion-ease); }
+  .pk svg { width: 14px; height: 14px; }
+  .pk:hover { border-color: var(--navy); transform: translateY(-1px); }
+  .pk.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .pk.on.aud-parents { background: #25D366; border-color: #25D366; }
+  .pk.on.aud-staff { background: var(--teal); border-color: var(--teal); }
+  .fields { display: grid; gap: 10px; margin-top: 6px; }
+  .fields .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 520px) { .fields .two { grid-template-columns: 1fr; } }
+  .fields textarea.in { min-height: 84px; }
+
+  /* פלטות מערכת-הזהות */
+  .pal-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .pal { width: 40px; height: 28px; border-radius: 9px; border: 2px solid transparent; cursor: pointer; padding: 0; display: inline-grid; grid-template-columns: 1fr 1fr; overflow: hidden; transition: transform 180ms var(--motion-ease); }
+  .pal i { display: block; height: 100%; }
+  .pal:hover { transform: translateY(-2px); }
+  .pal.on { border-color: var(--navy); box-shadow: 0 0 0 2px #fff inset; }
+  .pal-note { font-size: 11.5px; color: var(--gray); font-weight: 600; }
+
+  /* ─── תצוגה מקדימה ─── */
+  .prev-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .prev-head h3 { font-size: 15px; font-weight: 900; }
+  .prev-head .hint { font-size: 12px; color: var(--gray); font-weight: 600; }
+
+  /* וואטסאפ */
+  .wa { border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: rgba(37,211,102,.06); }
+  .wa-top { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--pc1, var(--teal)); color: #fff; }
+  .wa-top .mark { width: 34px; height: 34px; border-radius: 50%; background: #fff; display: grid; place-items: center; flex: none; }
+  .wa-top .mark svg { width: 22px; height: 22px; }
+  .wa-top b { font-size: 14px; display: block; }
+  .wa-top small { font-size: 11.5px; opacity: .85; }
+  .wa-body { padding: 16px 14px 18px; min-height: 220px; }
+  .bubble { position: relative; background: #fff; border-radius: 14px; border-top-right-radius: 4px; padding: 12px 14px 20px; max-width: 92%; box-shadow: 0 2px 8px rgba(6,30,79,.08); font-size: 14px; line-height: 1.75; white-space: pre-line; }
+  .bubble .accent { display: block; width: 46px; height: 4px; border-radius: 999px; background: var(--pc2, var(--fuchsia)); margin-bottom: 8px; }
+  .bubble .meta { position: absolute; bottom: 5px; left: 10px; display: flex; align-items: center; gap: 4px; font-size: 10.5px; color: var(--gray); }
+  .bubble .meta svg { width: 13px; height: 13px; color: var(--teal); }
+
+  /* מכתב רשמי */
+  .letter { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 28px 30px; box-shadow: 0 14px 36px rgba(6,30,79,.07); }
+  .lt-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 3px solid var(--pc1, var(--teal)); padding-bottom: 12px; margin-bottom: 16px; }
+  .lt-head .who { display: flex; align-items: center; gap: 10px; }
+  .lt-head .mark { width: 40px; height: 40px; border-radius: 12px; background: var(--pc1, var(--teal)); display: grid; place-items: center; }
+  .lt-head .mark svg { width: 26px; height: 26px; }
+  .lt-head b { font-size: 16px; font-weight: 900; display: block; letter-spacing: -.3px; }
+  .lt-head small { font-size: 11.5px; color: var(--gray); font-weight: 600; }
+  .lt-date { font-size: 12px; color: var(--gray); font-weight: 700; }
+  .lt-to { font-size: 13.5px; font-weight: 700; margin-bottom: 4px; }
+  .lt-re { font-size: 14.5px; font-weight: 900; margin: 10px 0 12px; }
+  .lt-re i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; background: var(--pc2, var(--fuchsia)); margin-inline-end: 7px; }
+  .lt-body { font-size: 13.5px; line-height: 1.9; white-space: pre-line; }
+  .lt-sig { margin-top: 22px; font-size: 13.5px; font-weight: 700; }
+  .lt-sig small { display: block; color: var(--gray); font-weight: 600; font-size: 12px; }
+  @media (max-width: 520px) { .letter { padding: 18px 16px; } }
+
+  .prev-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+
+  /* ─── ארכיון ─── */
+  .aud-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 800; padding: 3px 10px; border-radius: 999px; color: #fff; }
+  .atxt { max-width: 380px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+  @media (max-width: 700px) { .atxt { max-width: 160px; } }
+
+  @media print {
+    .demo-bar, .demo-foot, .demo-head, .tabs, .kpis, .gen > .card:first-child, .prev-actions, .prev-head, .toast, .cart-fab { display: none !important; }
+    body, .demo-main { background: #fff !important; padding: 0 !important; }
+    .gen { grid-template-columns: 1fr; }
+    .letter, .wa { box-shadow: none; border: none; }
+  }
+</style>
+</head>
+<body>
+
+<main class="demo-main">
+  <div class="demo-head">
+    <div>
+      <h2>מחולל הודעות לקהילה</h2>
+      <p>הודעה אחת — שלושה קולות: חם ופשוט להורים, ענייני לצוות, רשמי ומכתבי לפיקוח. בוחרים קהל וסוג, ממלאים פרטים — וההודעה מנוסחת ומעוצבת בזהות בית הספר, מוכנה לשליחה.</p>
+    </div>
+    <div class="demo-toolbar">
+      <button type="button" class="btn-sm ghost" onclick="resetDemo()">איפוס דמו</button>
+    </div>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+  <div class="tabs" id="tabs"></div>
+
+  <section class="view on" id="v-gen">
+    <div class="gen">
+      <div class="card">
+        <div class="pick-label">למי ההודעה?</div>
+        <div class="pick-row" id="audRow"></div>
+        <div class="pick-label">איזה סוג הודעה?</div>
+        <div class="pick-row" id="typeRow"></div>
+        <div class="pick-label">באיזה טון? <small>· לפיקוח תמיד רשמי</small></div>
+        <div class="pick-row" id="toneRow"></div>
+        <div class="pick-label">הפרטים</div>
+        <div class="fields">
+          <label class="f">נושא<input class="in" id="fSubject" oninput="cur.subject=this.value;renderPrev()"></label>
+          <div class="two">
+            <label class="f">תאריך<input class="in" id="fDate" placeholder="יום חמישי, 26.11" oninput="cur.date=this.value;renderPrev()"></label>
+            <label class="f">שעה<input class="in" id="fTime" placeholder="17:30" oninput="cur.time=this.value;renderPrev()"></label>
+          </div>
+          <label class="f">מה חשוב שיידעו?<textarea class="in" id="fDetails" oninput="cur.details=this.value;renderPrev()"></textarea></label>
+        </div>
+        <div class="pick-label">העיצוב <small>· נמשך מערכת הזהות של בית הספר</small></div>
+        <div class="pal-row" id="palRow"></div>
+      </div>
+
+      <div>
+        <div class="prev-head"><h3>כך זה ייראה אצל מי שמקבל</h3><span class="hint" id="prevHint"></span></div>
+        <div id="prevBox"></div>
+        <div class="prev-actions">
+          <button type="button" class="btn-sm primary" onclick="sendDemo()">שליחה בדמו</button>
+          <button type="button" class="btn-sm navy" onclick="copyText()">העתקת הטקסט</button>
+          <button type="button" class="btn-sm" onclick="saveArchive()">שמירה לארכיון</button>
+          <button type="button" class="btn-sm ghost" id="printBtn" onclick="window.print()" style="display:none">הדפסה / PDF</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-arch">
+    <div class="card">
+      <div class="card-h"><h3>ארכיון ההודעות</h3><span class="hint">כל מה שיצא מבית הספר — מתועד. לחיצה טוענת מחדש למחולל</span></div>
+      <div class="table-wrap"><table class="tbl" id="archTbl"></table></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-ai"><div id="aiHost"></div></section>
+</main>
+
+<script src="../apps-data.js"></script>
+<script src="../logos.js"></script>
+<script src="../store.js"></script>
+<script src="demo-data.js"></script>
+<script src="demo-shell.js"></script>
+<script>
+  DemoShell.init('message-composer');
+
+  /* ───────── הגדרות ───────── */
+  var AUD = {
+    parents: { name: 'הורים', c: '#25D366', chan: '14 קבוצות הורים · וואטסאפ', hint: 'בועת וואטסאפ — כמו שההורים יראו',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 19c.5-3.3 3-5 6.5-5s6 1.7 6.5 5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14c2.8 0 4.8 1.4 5.5 4"/></svg>' },
+    staff:   { name: 'צוות', c: '#12C7C7', chan: 'קבוצת הצוות · וואטסאפ ומייל', hint: 'הודעת צוות — עניינית וברורה',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>' },
+    sup:     { name: 'מפקחת ורשות', c: '#061E4F', chan: 'מייל רשמי · PDF חתום', hint: 'מכתב רשמי על נייר בית הספר',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h4"/></svg>' }
+  };
+  var TYPES = [
+    ['update',   'עדכון'],
+    ['reminder', 'תזכורת'],
+    ['event',    'הזמנה לאירוע'],
+    ['greeting', 'ברכה'],
+    ['urgent',   'הודעה דחופה'],
+    ['report',   'דיווח לפיקוח']
+  ];
+  var TONES = [['warm', 'חם'], ['plain', 'ענייני'], ['formal', 'רשמי']];
+  var PALETTES = [
+    { id: 'impact', name: 'אימפקט', c1: '#12C7C7', c2: '#F00678' },
+    { id: 'yam',    name: 'ים',      c1: '#0B7DB5', c2: '#12C7C7' },
+    { id: 'horesh', name: 'חורש',    c1: '#7BCB52', c2: '#C98600' }
+  ];
+  var ICONS = {
+    gen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 11.5a8 8 0 0 1-11.6 7.1L4 20l1.9-5.4A8 8 0 1 1 21 11.5z"/><path d="M8.5 10h7M8.5 13.5h4.5"/></svg>',
+    arch: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="4" width="18" height="5" rx="1.5"/><path d="M5 9v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9"/><path d="M10 13h4"/></svg>',
+    spark: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8z"/><path d="M19 14l.9 2.6L22.5 17.5l-2.6.9L19 21l-.9-2.6-2.6-.9 2.6-.9z" opacity=".7"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 13l4 4L14 9.5"/><path d="M10.5 13.5 13 16l8.5-8.5"/></svg>',
+    school: '<svg viewBox="0 0 240 284" fill="none"><g stroke="CUR1" stroke-width="16" stroke-linecap="round"><path d="M45 110C57 55 118 26 171 48C212 65 235 107 230 153"/><path d="M19 149C16 79 73 23 142 27C199 30 242 77 240 133"/><path d="M79 212C52 136 82 70 142 57C180 49 213 72 220 110"/><path d="M137 255C110 226 110 183 132 158C149 140 177 143 190 164"/></g><g stroke="CUR2" stroke-width="16" stroke-linecap="round"><path d="M88 135C100 111 126 112 140 136C154 111 181 111 194 136"/><path d="M88 135C102 164 127 184 141 199C156 184 181 163 194 136"/></g></svg>'
+  };
+  function schoolMark(c1, c2, white) {
+    return ICONS.school.replace('CUR1', white ? '#FFFFFF' : c1).replace('CUR2', white ? '#FFFFFF' : c2);
+  }
+
+  /* ───────── state ───────── */
+  var KEY = 'farm-demo-message-composer';
+  var S = {};
+  var cur = { aud: 'parents', type: 'update', tone: 'warm', palette: 'impact',
+    subject: 'שינוי בלוח ההסעות ביום חמישי',
+    date: 'יום חמישי, 26.11', time: '13:30',
+    details: 'בשל עבודות ברחוב האלון, ההסעות ייצאו מהשער האחורי. שאר הלוח ללא שינוי.' };
+
+  function genState() {
+    S = { archive: [
+      { d: '20.11', aud: 'parents', type: 'update',   subject: 'שינוי בלוח ההסעות ביום חמישי' },
+      { d: '19.11', aud: 'staff',   type: 'reminder', subject: 'הגשת ציוני אמצע סמסטר עד יום שני' },
+      { d: '17.11', aud: 'parents', type: 'event',    subject: 'ערב הורים שכבת ז — פתיחת רישום' },
+      { d: '16.11', aud: 'sup',     type: 'report',   subject: 'עדכון חודשי — תוכנית מצוינות במתמטיקה' },
+      { d: '12.11', aud: 'staff',   type: 'update',   subject: 'ישיבת צוות מלא — שינוי מיקום' },
+      { d: '10.11', aud: 'parents', type: 'greeting', subject: 'ברכת הצלחה לנבחרת הרובוטיקה' },
+      { d: '6.11',  aud: 'sup',     type: 'update',   subject: 'הזמנה לביקור בשבוע החנוכה' },
+      { d: '4.11',  aud: 'parents', type: 'urgent',   subject: 'קיצור יום לימודים בשל תקלת חשמל' },
+      { d: '2.11',  aud: 'staff',   type: 'greeting', subject: 'תודה על ערב החשיפה — היה מרגש' }
+    ] };
+  }
+  function load() { try { var j = localStorage.getItem(KEY); if (j) { S = JSON.parse(j); return; } } catch (e) {} genState(); }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+  function resetDemo() { try { localStorage.removeItem(KEY); } catch (e) {} genState(); renderKpis(); renderPicks(); renderPrev(); showTab('gen'); DemoShell.toast('הדמו אופס לנתוני ההתחלה'); }
+
+  /* ───────── ניסוח: פתיח + גוף + חתימה, לפי קהל וטון ───────── */
+  function typeName(t) { for (var i = 0; i < TYPES.length; i++) if (TYPES[i][0] === t) return TYPES[i][1]; return t; }
+  function opening() {
+    if (cur.aud === 'sup') return '';
+    if (cur.aud === 'parents') return cur.tone === 'warm' ? 'הורים יקרים, ערב טוב!' : cur.tone === 'plain' ? 'להורי בית ספר אימפקט שלום,' : 'להורי התלמידים שלום רב,';
+    return cur.tone === 'warm' ? 'צוות יקר,' : cur.tone === 'plain' ? 'לצוות שלום,' : 'לחברי הצוות שלום רב,';
+  }
+  function closing() {
+    if (cur.aud === 'sup') return 'בברכה,\nרונית לוי\nמנהלת בית ספר אימפקט';
+    if (cur.tone === 'warm') return cur.aud === 'parents' ? 'תודה על השותפות,\nצוות בית ספר אימפקט' : 'תודה שאתם שם,\nרונית';
+    if (cur.tone === 'plain') return 'בברכה,\nהנהלת בית הספר';
+    return 'בברכה,\nרונית לוי, מנהלת';
+  }
+  function whenLine() {
+    var w = [];
+    if (cur.date) w.push(cur.date);
+    if (cur.time) w.push('בשעה ' + cur.time);
+    return w.join(', ');
+  }
+  function body() {
+    var s = cur.subject || 'ההודעה שלכם', d = cur.details || '', w = whenLine();
+    if (cur.type === 'update') return s + (w ? ' — ' + w : '') + '.' + (d ? '\n' + d : '');
+    if (cur.type === 'reminder') return (cur.tone === 'warm' ? 'תזכורת קטנה: ' : 'תזכורת: ') + s + (w ? ' — ' + w : '') + '.' + (d ? '\n' + d : '');
+    if (cur.type === 'event') return (cur.aud === 'parents' && cur.tone === 'warm' ? 'נשמח לראותכם! ' : '') + (w ? 'ב' + w + ' ' : '') + 'יתקיים: ' + s + '.' + (d ? '\n' + d : '') + (cur.aud !== 'sup' ? '\nמחכים לכם.' : '');
+    if (cur.type === 'greeting') return s + '!' + (d ? '\n' + d : '') + (cur.tone === 'warm' ? '\nגאים ושמחים לחגוג יחד אתכם.' : '');
+    if (cur.type === 'urgent') return (cur.aud === 'sup' ? 'הריני לעדכן על אירוע חריג: ' : 'עדכון חשוב: ') + s + (w ? ' — ' + w : '') + '.' + (d ? '\n' + d : '') + (cur.aud === 'parents' ? '\nנעדכן בכל שינוי. תודה על הסבלנות וההבנה.' : '');
+    /* report — לפיקוח */
+    return 'הריני להעביר עדכון בנושא שבנדון.' + (d ? '\n' + d : '') + (w ? '\nמועד רלוונטי: ' + w + '.' : '') + '\nנשמח להרחיב בכל ערוץ שיידרש, ומזמינים אתכם להתרשם מקרוב.';
+  }
+  function fullText() {
+    if (cur.aud === 'sup') return body() + '\n\n' + closing();
+    return opening() + '\n' + body() + '\n\n' + closing();
+  }
+
+  /* ───────── KPI ───────── */
+  function renderKpis() {
+    var p = 0, st = 0, sp = 0;
+    S.archive.forEach(function (a) { if (a.aud === 'parents') p++; else if (a.aud === 'staff') st++; else sp++; });
+    document.getElementById('kpis').innerHTML =
+      '<div class="kpi" style="--c:var(--teal)"><b>' + S.archive.length + '</b><span>הודעות יצאו החודש</span></div>'
+      + '<div class="kpi" style="--c:var(--green)"><b>' + p + '</b><span>להורים</span></div>'
+      + '<div class="kpi" style="--c:var(--navy)"><b>' + st + '</b><span>לצוות</span></div>'
+      + '<div class="kpi" style="--c:var(--gold)"><b>' + sp + '</b><span>לפיקוח ולרשות</span></div>';
+  }
+
+  /* ───────── טאבים ───────── */
+  var TABS = [['gen', 'המחולל', 'gen'], ['arch', 'ארכיון', 'arch'], ['ai', 'עוזר הניסוח', 'spark']];
+  var curTab = 'gen';
+  function showTab(id) {
+    curTab = id;
+    document.getElementById('tabs').innerHTML = TABS.map(function (t) { return '<button type="button" class="tab' + (t[0] === id ? ' active' : '') + '" onclick="showTab(\'' + t[0] + '\')">' + ICONS[t[2]] + t[1] + '</button>'; }).join('');
+    var vs = document.querySelectorAll('.view'); for (var i = 0; i < vs.length; i++) vs[i].classList.toggle('on', vs[i].id === 'v-' + id);
+    if (id === 'arch') renderArch();
+  }
+
+  /* ───────── בחירות ───────── */
+  function renderPicks() {
+    document.getElementById('audRow').innerHTML = Object.keys(AUD).map(function (a) {
+      return '<button type="button" class="pk aud-' + a + (cur.aud === a ? ' on' : '') + '" onclick="setAud(\'' + a + '\')">' + AUD[a].svg + AUD[a].name + '</button>';
+    }).join('');
+    var types = TYPES.filter(function (t) { return t[0] !== 'report' || cur.aud === 'sup'; });
+    document.getElementById('typeRow').innerHTML = types.map(function (t) {
+      return '<button type="button" class="pk' + (cur.type === t[0] ? ' on' : '') + '" onclick="cur.type=\'' + t[0] + '\';renderPicks();renderPrev()">' + t[1] + '</button>';
+    }).join('');
+    document.getElementById('toneRow').innerHTML = TONES.map(function (t) {
+      var dis = cur.aud === 'sup' && t[0] !== 'formal';
+      return '<button type="button" class="pk' + (cur.tone === t[0] ? ' on' : '') + '"' + (dis ? ' disabled style="opacity:.35;cursor:default"' : '') + ' onclick="cur.tone=\'' + t[0] + '\';renderPicks();renderPrev()">' + t[1] + '</button>';
+    }).join('');
+    document.getElementById('palRow').innerHTML = PALETTES.map(function (p) {
+      return '<button type="button" class="pal' + (cur.palette === p.id ? ' on' : '') + '" title="' + p.name + '" onclick="cur.palette=\'' + p.id + '\';renderPicks();renderPrev()"><i style="background:' + p.c1 + '"></i><i style="background:' + p.c2 + '"></i></button>';
+    }).join('') + '<span class="pal-note">ערכת "' + PALETTES.filter(function (p) { return p.id === cur.palette; })[0].name + '" — מתוך סטודיו הזהות</span>';
+    document.getElementById('fSubject').value = cur.subject;
+    document.getElementById('fDate').value = cur.date;
+    document.getElementById('fTime').value = cur.time;
+    document.getElementById('fDetails').value = cur.details;
+  }
+  function setAud(a) {
+    cur.aud = a;
+    if (a === 'sup') { cur.tone = 'formal'; if (cur.type === 'greeting' || cur.type === 'urgent') cur.type = 'update'; }
+    else if (cur.type === 'report') cur.type = 'update';
+    renderPicks(); renderPrev();
+  }
+
+  /* ───────── תצוגה מקדימה ───────── */
+  function pal() { return PALETTES.filter(function (p) { return p.id === cur.palette; })[0]; }
+  function renderPrev() {
+    var P = pal(), box = document.getElementById('prevBox');
+    document.getElementById('prevHint').textContent = AUD[cur.aud].hint;
+    document.getElementById('printBtn').style.display = cur.aud === 'sup' ? '' : 'none';
+    if (cur.aud === 'sup') {
+      box.innerHTML = '<div class="letter" style="--pc1:' + P.c1 + ';--pc2:' + P.c2 + '">'
+        + '<div class="lt-head"><div class="who"><span class="mark">' + schoolMark(P.c1, P.c2, true) + '</span><div><b>בית ספר אימפקט</b><small>' + DEMO.school.city + ' · שנה"ל ' + DEMO.school.year + '</small></div></div><span class="lt-date">כ׳ בחשוון תשפ"ז · 20.11.2026</span></div>'
+        + '<div class="lt-to">לכבוד: המפקחת הכוללת, גב׳ ד. אלמוג</div>'
+        + '<div class="lt-re"><i></i>הנדון: ' + DemoShell.esc(cur.subject || '—') + '</div>'
+        + '<div class="lt-body">' + DemoShell.esc(fullText()) + '</div>'
+        + '<div class="lt-sig"></div>'
+        + '</div>';
+    } else {
+      box.innerHTML = '<div class="wa" style="--pc1:' + P.c1 + ';--pc2:' + P.c2 + '">'
+        + '<div class="wa-top"><span class="mark">' + schoolMark(P.c1, P.c2, false) + '</span><div><b>בית ספר אימפקט</b><small>' + AUD[cur.aud].chan + '</small></div></div>'
+        + '<div class="wa-body"><div class="bubble"><span class="accent"></span>' + DemoShell.esc(fullText()) + '<span class="meta">17:30 ' + ICONS.check + '</span></div></div>'
+        + '</div>';
+    }
+  }
+
+  /* ───────── פעולות ───────── */
+  function sendDemo() {
+    var msg = cur.aud === 'parents' ? 'נשלח ל-14 קבוצות ההורים דרך מרכז הוואטסאפ (בדמו)'
+      : cur.aud === 'staff' ? 'נשלח לקבוצת הצוות ולמייל של 34 אנשי צוות (בדמו)'
+      : 'המכתב נשלח במייל למפקחת — עותק נשמר בארכיון (בדמו)';
+    pushArch(); renderKpis(); DemoShell.toast(msg);
+  }
+  function copyText() {
+    var t = fullText(), done = function () { DemoShell.toast('הטקסט הועתק — אפשר להדביק בכל מקום'); };
+    try { navigator.clipboard.writeText(t).then(done, done); } catch (e) { done(); }
+  }
+  function pushArch() { S.archive.unshift({ d: '20.11', aud: cur.aud, type: cur.type, subject: cur.subject || '—' }); save(); }
+  function saveArchive() { pushArch(); renderKpis(); DemoShell.toast('נשמר בארכיון ההודעות'); }
+
+  /* ───────── ארכיון ───────── */
+  function audChip(a) { return '<span class="aud-chip" style="background:' + AUD[a].c + '">' + AUD[a].name + '</span>'; }
+  function renderArch() {
+    document.getElementById('archTbl').innerHTML = '<thead><tr><th>תאריך</th><th>קהל</th><th>סוג</th><th>נושא</th><th></th></tr></thead><tbody>'
+      + S.archive.map(function (a, i) {
+        return '<tr><td style="white-space:nowrap"><b>' + a.d + '</b></td><td>' + audChip(a.aud) + '</td><td>' + typeName(a.type) + '</td><td><span class="atxt">' + DemoShell.esc(a.subject) + '</span></td>'
+          + '<td style="white-space:nowrap"><button type="button" class="btn-sm" onclick="loadArch(' + i + ')">טעינה למחולל</button></td></tr>';
+      }).join('') + '</tbody>';
+  }
+  function loadArch(i) {
+    var a = S.archive[i];
+    cur.aud = a.aud; cur.type = a.type; cur.subject = a.subject;
+    if (a.aud === 'sup') cur.tone = 'formal';
+    renderPicks(); renderPrev(); showTab('gen');
+    DemoShell.toast('ההודעה נטענה — ערכו ושלחו שוב');
+  }
+
+  /* ───────── עוזר הניסוח (AI מדומה) ───────── */
+  document.getElementById('aiHost').innerHTML = DemoShell.aiPanel('mcAi', 'עוזר הניסוח', 'מנסח רגיש ומדויק — בדמו התשובות מוכנות מראש',
+    ['הודעה על ביטול לימודים בגלל מזג אוויר', 'ניסוח עדין להורים אחרי אירוע חריג', 'ברכת חנוכה לצוות', 'עדכון למפקחת על תוכנית חדשה']);
+  var AI_DRAFTS = {
+    weather: { aud: 'parents', type: 'urgent', tone: 'plain', subject: 'ביטול הלימודים מחר בשל מזג האוויר', details: 'בהתאם להנחיות הרשות, הלימודים מחר מבוטלים. נעדכן עד השעה 20:00 לגבי יום המחרת. שמרו על עצמכם.' },
+    sensitive: { aud: 'parents', type: 'update', tone: 'formal', subject: 'עדכון בעקבות אירוע בשעת ההפסקה', details: 'האירוע טופל מיידית על ידי הצוות, וכל התלמידים בטוחים. הצוות החינוכי מלווה את הכיתות המעורבות, ואנו זמינים לכל שאלה.' },
+    chanuka: { aud: 'staff', type: 'greeting', tone: 'warm', subject: 'חג אורים שמח לצוות היקר שלנו', details: 'תודה על האור שאתם מדליקים כאן כל בוקר, כל השנה. מסיבת הצוות — ביום שלישי אחרי ההדלקה.' },
+    program: { aud: 'sup', type: 'report', tone: 'formal', subject: 'השקת תוכנית מצוינות במתמטיקה — שכבות ט–י', details: 'התוכנית יצאה לדרך בהשתתפות 42 תלמידים, בשיתוף המחלקה לחינוך. מצורפים מדדי ההצלחה שהוגדרו; עדכון ראשון יועבר בסוף הרבעון.' }
+  };
+  DemoShell.aiRegister('mcAi', function (q) {
+    var d = /מזג|ביטול|סערה|גשם|שלג/.test(q) ? 'weather' : /חריג|רגיש|עדין|אירוע|אלימות/.test(q) ? 'sensitive' : /חנוכה|חג|ברכה/.test(q) ? 'chanuka' : /מפקח|פיקוח|רשות|תוכנית|דיווח/.test(q) ? 'program' : null;
+    if (!d) return 'ספרו לי מה קרה ולמי ההודעה — ואנסח. למשל: "הודעה להורים על ביטול טיול", "מכתב למפקחת על פרויקט חדש". במערכת האמיתית אני מכיר את סגנון בית הספר.';
+    var a = AI_DRAFTS[d];
+    return 'ניסחתי עבור <b>' + AUD[a.aud].name + '</b> (' + typeName(a.type) + '):<div style="background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:8px;font-size:13px;line-height:1.7"><b>' + a.subject + '</b><br>' + a.details + '</div><button type="button" class="btn-sm primary" style="margin-top:8px" onclick="adoptAi(\'' + d + '\')">טעינה למחולל</button>';
+  });
+  function adoptAi(d) {
+    var a = AI_DRAFTS[d];
+    cur.aud = a.aud; cur.type = a.type; cur.tone = a.tone; cur.subject = a.subject; cur.details = a.details; cur.date = ''; cur.time = '';
+    renderPicks(); renderPrev(); showTab('gen');
+    DemoShell.toast('הטיוטה נטענה למחולל — בחרו עיצוב ושלחו');
+  }
+
+  /* ───────── הפעלה ───────── */
+  load();
+  renderKpis();
+  showTab('gen');
+  renderPicks();
+  renderPrev();
+</script>
+</body>
+</html>
