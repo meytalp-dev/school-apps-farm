@@ -76,7 +76,7 @@
   @media (max-width: 980px) { .row.embed { grid-template-columns: 1fr; } }
   .device { background: linear-gradient(165deg, #061E4F, #123A7A); border-radius: 36px; padding: 16px 14px; box-shadow: 0 20px 46px rgba(6,30,79,0.28); width: 100%; max-width: 400px; margin: 0 auto; }
   .device::before { content: ''; display: block; width: 56px; height: 5px; border-radius: 999px; background: rgba(255,255,255,0.25); margin: 0 auto 10px; }
-  .device iframe { display: block; width: 100%; height: 640px; border: none; border-radius: 22px; background: #E7F5F6; }
+  .device iframe { display: block; width: 100%; height: 640px; border: none; border-radius: 22px; background: #111; }
   .embed-txt { font-size: 13.5px; line-height: 1.75; color: var(--gray); margin-bottom: 12px; }
   .embed-points { list-style: none; margin: 0 0 14px; }
   .embed-points li { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 1.6; padding: 5px 0; }
@@ -174,24 +174,25 @@
   <!-- ===== מילוי פולס ===== -->
   <section class="view" id="v-fill">
 
-    <!-- השאלון האמיתי — כמו שהילדים פוגשים אותו -->
+    <!-- השאלון האמיתי — כמו שהתלמידים פוגשים אותו -->
     <div class="row embed" style="margin-bottom:18px">
       <div class="card">
-        <div class="card-h"><h3>השאלון עצמו — כמו שהילדים פוגשים אותו</h3><span class="hint">גרסת כיתות א׳–ב׳ · "השונית של נוני"</span></div>
-        <p class="embed-txt">זו לא הדמיה — זה שאלון הפולס האמיתי לצעירים, פועל כאן במלואו. נוני התמנון מספר סיפור קצר על כל ממד, שואל שאלה אחת, והילד או הילדה גוררים את נוני אל הפנים המתאימות. בלי מספרים, בלי שיפוט, ובלי תשובה "נכונה".</p>
+        <div class="card-h"><h3>השאלון עצמו — כמו שהתלמידים פוגשים אותו</h3><span class="hint">פולס אחד לכל ממד · כ-2 דקות · אנונימי</span></div>
+        <p class="embed-txt">זו לא הדמיה — זה שאלון הפולס האמיתי, פועל כאן במלואו. כל פולס ממוקד בממד אחד ובנוי כמו סטורי: פתיחה עם משחק קצר ("נכון או לא נכון?", "מה עדיף?"), בחירת כיתה, היגדים שעונים עליהם בגרירת סליידר עם פרצוף שמשתנה, ובסיום — קונפטי.</p>
         <ul class="embed-points">
-          <li>ארבעה ממדים בשפת ילדים: מקום · חברים · רגש · לגלות</li>
-          <li>כל שאלה מוקראת בקול (הקלטה אנושית) — מתאים גם למי שעוד לא קוראים</li>
-          <li>נוני מגיב לכל תשובה באותה תגובה חמה — כדי לא להטות את הילדים לתשובה "השמחה"</li>
-          <li>בגרסה לחטיבה ותיכון אותם ממדים נמדדים ב-10 היגדים — זה הטופס שמתחת</li>
+          <li>החימום המשחקי מוריד התנגדות — התלמידים כבר "בפנים" כשמגיעים להיגדים</li>
+          <li>באמצע מוסתרת שאלת ערנות ("סמנו את התשובה שכתוב בה ירוק") — מסננת מילוי אוטומטי</li>
+          <li>בלי ציונים ובלי שמות — התשובות מצטרפות למפת הממדים של הכיתה ושל בית הספר</li>
         </ul>
+        <p class="embed-txt" style="margin-bottom:8px;font-weight:700;color:var(--navy)">בחרו ממד להתנסות:</p>
+        <div id="dimPick" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px"></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button type="button" class="btn-sm primary" onclick="restartPulseApp()">להתחיל מההתחלה</button>
-          <a class="btn-sm ghost" href="pulse-app/pulse-questionnaire.html" target="_blank" rel="noopener">פתיחה במסך מלא</a>
+          <a class="btn-sm ghost" id="pulseFull" href="pulse-app/pulse-questionnaire.html?dim=belong" target="_blank" rel="noopener">פתיחה במסך מלא</a>
         </div>
       </div>
       <div class="card" style="display:flex;align-items:center;justify-content:center">
-        <div class="device"><iframe id="pulseFrame" src="pulse-app/pulse-questionnaire.html" loading="lazy" title="שאלון פולס לילדים — השונית של נוני"></iframe></div>
+        <div class="device"><iframe id="pulseFrame" src="pulse-app/pulse-questionnaire.html?dim=belong" loading="lazy" title="שאלון פולס לתלמידים"></iframe></div>
       </div>
     </div>
 
@@ -438,7 +439,29 @@
     document.getElementById('fillPer').textContent = PERIODS[per].name;
     document.getElementById('fillStatus').innerHTML = DEMO.classes.map(function (c) { var r = R[c][per], pct = Math.round(r.n / CLASS_SIZE[c] * 100); return '<div class="dimrow" style="grid-template-columns:36px 1fr 60px"><span style="font-weight:800">' + c + '</span><div class="bar" style="--c:' + (pct < 60 ? 'var(--fuchsia)' : 'var(--teal)') + '"><i style="width:' + Math.min(100, pct) + '%"></i></div><b style="font-size:13px">' + r.n + '/' + CLASS_SIZE[c] + '</b></div>'; }).join('');
   }
-  function restartPulseApp() { document.getElementById('pulseFrame').src = 'pulse-app/pulse-questionnaire.html?r=' + Date.now(); }
+  /* בורר ממדים לשאלון המוטמע — אותם חמשת הממדים של הדמו */
+  var APP_DIMS = [
+    { id: 'belong', name: 'שייכות', c: '#E06090' },
+    { id: 'respect', name: 'כבוד', c: '#5B9BD5' },
+    { id: 'motiv', name: 'מוטיבציה', c: '#E8A838' },
+    { id: 'capable', name: 'מסוגלות', c: '#8B6BC0' },
+    { id: 'auto', name: 'אוטונומיה', c: '#7AB648' }
+  ];
+  var appDim = 'belong';
+  function renderDimPick() {
+    document.getElementById('dimPick').innerHTML = APP_DIMS.map(function (d) {
+      var on = d.id === appDim;
+      return '<button type="button" onclick="pickAppDim(\'' + d.id + '\')" style="font:inherit;font-size:12.5px;font-weight:800;cursor:pointer;padding:7px 14px;border-radius:999px;border:1.5px solid ' + d.c + ';transition:all .15s;' + (on ? 'background:' + d.c + ';color:#fff;box-shadow:0 4px 12px ' + d.c + '55' : 'background:#fff;color:' + d.c) + '">' + d.name + '</button>';
+    }).join('');
+  }
+  function pickAppDim(id) { appDim = id; renderDimPick(); loadPulseApp(); }
+  function loadPulseApp() {
+    var url = 'pulse-app/pulse-questionnaire.html?dim=' + appDim;
+    document.getElementById('pulseFrame').src = url + '&r=' + Date.now();
+    document.getElementById('pulseFull').href = url;
+  }
+  function restartPulseApp() { loadPulseApp(); }
+  renderDimPick();
   function pickAns(i, v) { answers[i] = v; renderFill(); }
   function clearFill() { answers = {}; renderFill(); }
   function submitFill() {
