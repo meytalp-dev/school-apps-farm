@@ -152,15 +152,23 @@
   /* ─── דמו מוטמע (שאלון + פוסטים) ─── */
   .embed-frame { display: block; width: 100%; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
   .embed-frame.wiz { height: min(740px, 78vh); }
-  .embed-frame.posts { height: min(980px, 84vh); }
+  .embed-frame.posts { height: min(1020px, 86vh); }
   .embed-note { font-size: 12.5px; color: var(--gray); margin-top: 10px; }
+
+  /* ─── לשוניות: ערכת הזהות · פוסטים לרשתות ─── */
+  .bkview { display: none; } .bkview.on { display: block; }
+  .tabs { margin-bottom: 20px; }
+  .tab svg { width: 14px; height: 14px; margin-inline-end: 6px; vertical-align: -2px; }
+  .posts-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
+  .posts-head h3 { font-size: 24px; font-weight: 900; letter-spacing: -.6px; line-height: 1.15; margin-bottom: 6px; }
+  .posts-head p { color: var(--gray); font-size: 14.5px; max-width: 620px; }
 </style>
 </head>
 <body>
 
 <main class="demo-main">
   <div class="demo-head">
-    <div><h2>זהות ואחידות בית-ספרית</h2><p>מסע אחד שלם: מתחילים בשאלון מיפוי שבונה את הזהות, ממשיכים לסיפור בית הספר ולערכה המלאה — לוגו, צבעים, סלוגן וקול — ומסיימים בזהות בפעולה: הפוסטים לרשתות שמתלבשים בה אוטומטית.</p></div>
+    <div><h2>זהות ואחידות בית-ספרית</h2><p>מסע אחד שלם: מתחילים בשאלון מיפוי שבונה את הזהות, ממשיכים לסיפור בית הספר ולערכה המלאה — לוגו, צבעים, סלוגן וקול. ובלשונית "פוסטים לרשתות" רואים את הזהות בפעולה: הפוסטים מתלבשים בה אוטומטית.</p></div>
     <div class="demo-toolbar">
       <button type="button" class="btn-sm primary" onclick="BK.downloadAll()">הורדת הערכה</button>
       <button type="button" class="btn-sm" onclick="BK.share()">שיתוף לצוות</button>
@@ -176,6 +184,12 @@
     <div class="kpi" style="--c:var(--green)"><b id="kpiUse">27</b><span>תוצרים שנוצרו מהערכה החודש</span></div>
   </div>
 
+  <div class="tabs" id="bkTabs">
+    <button type="button" class="tab active" data-v="kit" onclick="BK.showView('kit')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9c0-1.1-.9-2-2-2h-2a2 2 0 0 1-2-2V6c0-1.1-.9-2-2-2z"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="7" r="1"/><circle cx="16" cy="14" r="1"/></svg>ערכת הזהות</button>
+    <button type="button" class="tab" data-v="posts" onclick="BK.showView('posts')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg>פוסטים לרשתות — הזהות בפעולה</button>
+  </div>
+
+  <div class="bkview on" id="bkv-kit">
   <div class="bk-layout">
     <div class="bk-sections" id="secs">
 
@@ -290,21 +304,29 @@
         </div>
       </section>
 
-      <!-- הזהות בפעולה — פוסטים לרשתות -->
-      <section class="card" id="s-posts">
-        <div class="sec-k">11 · הזהות בפעולה</div>
-        <h3 class="sec-h">הפוסטים לרשתות — כבר בזהות של בית הספר</h3>
-        <p class="sec-p">הערכה לא נשארת במגירה: כל פוסט שיוצא לפייסבוק, לאינסטגרם ולקהילת הוואטסאפ מתלבש אוטומטית בצבעים, בפונט ובקול של בית הספר. זה לוח הפוסטים המלא — נסו לערוך פוסט, לתזמן, ולבקש הצעות ויזואל ממותגות.</p>
-        <iframe class="embed-frame posts" src="social-posts.html?embed=1" title="פוסטים מתוזמנים לרשתות — בזהות בית הספר" loading="lazy"></iframe>
-        <div class="embed-note">מערכת הפוסטים קיימת גם כמערכת עצמאית בקטלוג — <a href="../app.html?id=social-posts" style="color:inherit;font-weight:700">פוסטים מתוזמנים לרשתות</a>.</div>
-      </section>
-
     </div>
 
     <nav class="bk-nav" id="bkNav" aria-label="סעיפי הערכה">
       <span class="nav-t">סעיפים</span>
-      <a href="#s-wizard">שאלון מיפוי</a><a href="#s-story">סיפור</a><a href="#s-logo">לוגו</a><a href="#s-colors">צבעים</a><a href="#s-type">טיפוגרפיה</a><a href="#s-elements">אלמנטים</a><a href="#s-slogans">סלוגנים</a><a href="#s-voice">קול</a><a href="#s-dirs">חוברת כיוונים</a><a href="#s-dl">הורדות</a><a href="#s-posts">הזהות בפעולה</a>
+      <a href="#s-wizard">שאלון מיפוי</a><a href="#s-story">סיפור</a><a href="#s-logo">לוגו</a><a href="#s-colors">צבעים</a><a href="#s-type">טיפוגרפיה</a><a href="#s-elements">אלמנטים</a><a href="#s-slogans">סלוגנים</a><a href="#s-voice">קול</a><a href="#s-dirs">חוברת כיוונים</a><a href="#s-dl">הורדות</a>
     </nav>
+  </div>
+  </div>
+
+  <!-- לשונית: הזהות בפעולה — לוח הפוסטים המלא -->
+  <div class="bkview" id="bkv-posts">
+    <section class="card" style="padding:28px">
+      <div class="posts-head">
+        <div>
+          <div class="sec-k">הזהות בפעולה</div>
+          <h3>הפוסטים לרשתות — כבר בזהות של בית הספר</h3>
+          <p>הערכה לא נשארת במגירה: כל פוסט שיוצא לפייסבוק, לאינסטגרם ולקהילת הוואטסאפ מתלבש אוטומטית בצבעים, בפונט ובקול של בית הספר. זה לוח הפוסטים המלא — נסו לערוך פוסט, לתזמן, ולבקש הצעות ויזואל ממותגות.</p>
+        </div>
+        <a class="btn-sm navy" href="../app.html?id=social-posts">למערכת הפוסטים המלאה</a>
+      </div>
+      <iframe class="embed-frame posts" id="postsFrame" data-src="social-posts.html?embed=1" title="פוסטים מתוזמנים לרשתות — בזהות בית הספר"></iframe>
+      <div class="embed-note">מערכת הפוסטים קיימת גם כמערכת עצמאית בקטלוג — הלשונית הזו מראה איך ערכת הזהות מזינה אותה.</div>
+    </section>
   </div>
 </main>
 
@@ -521,9 +543,21 @@ var BK = (function () {
   function share() { copy(location.href.split('#')[0], 'הקישור לערכה הועתק — שלחו לצוות'); }
   function reset() { try { localStorage.removeItem(KEY); } catch (e) {} state = load(); renderDirs(); toast('הדמו אופס'); }
 
+  /* ─── לשוניות: ערכת הזהות · פוסטים ─── */
+  function showView(v) {
+    document.querySelectorAll('#bkTabs .tab').forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-v') === v); });
+    document.querySelectorAll('.bkview').forEach(function (x) { x.classList.toggle('on', x.id === 'bkv-' + v); });
+    if (v === 'posts') {
+      var fr = document.getElementById('postsFrame');
+      if (fr && !fr.src) fr.src = fr.getAttribute('data-src');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  if (location.hash === '#posts') showView('posts');
+
   renderLogos(); renderPalette(); renderType(); renderSubs(); renderVoice(); renderDirs(); spy();
 
-  return { copy: copy, copySVG: copySVG, downloadSVG: downloadSVG, downloadSVGAll: downloadSVGAll, downloadPNG: downloadPNG, downloadPalette: downloadPalette, downloadAll: downloadAll, share: share, reset: reset, vote: vote };
+  return { copy: copy, copySVG: copySVG, downloadSVG: downloadSVG, downloadSVGAll: downloadSVGAll, downloadPNG: downloadPNG, downloadPalette: downloadPalette, downloadAll: downloadAll, share: share, reset: reset, vote: vote, showView: showView };
 })();
 </script>
 </body>
