@@ -16,6 +16,8 @@
   .qbox svg { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--gray); pointer-events: none; }
   .qbox .in { padding-right: 30px; width: 160px; }
   .btn-sm svg { flex: 0 0 auto; }
+  .moe-btn svg { width: 14px; height: 14px; }
+  .moe-btn.on { background: #5B2D9E; border-color: #5B2D9E; color: #fff; box-shadow: 0 6px 14px rgba(91,45,158,.28); }
 
   /* ─── חודשים + מקרא ─── */
   .board { display: flex; align-items: center; justify-content: space-between; gap: 10px 18px; flex-wrap: wrap; margin-bottom: 12px; }
@@ -86,10 +88,11 @@
 
 <main class="demo-main">
   <div class="demo-head">
-    <div><h2>לוח גאנט — תשפ"ז</h2><p>כל יום של השנה בשורה אחת: מה קורה, למי, ומי אחראי.</p></div>
+    <div><h2>לוח גאנט — תשפ"ז</h2><p>כל יום של השנה בשורה אחת: מה קורה, למי, ומי אחראי — כולל אירועים ומטלות ארציים של משרד החינוך, מסומנים בנפרד מאירועי בית הספר.</p></div>
     <div class="demo-toolbar">
       <select class="in" id="selM" onchange="setMonth(this.value)"><option value="all">כל השנה</option></select>
       <select class="in" id="selC" onchange="setClass(this.value)"><option value="all">כל הכיתות</option></select>
+      <button type="button" class="btn-sm moe-btn" id="moeBtn" onclick="toggleMoe()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg>אירועי משרד החינוך</button>
       <span class="qbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input class="in" id="q" placeholder="חיפוש פעילות…" oninput="setQ(this.value)"></span>
       <button type="button" class="btn-sm primary" onclick="openAdd()">+ הוסף אירוע</button>
       <button type="button" class="btn-sm ghost" onclick="DemoShell.toast('לוח צוות — מסך נפרד במערכת האמיתית')">לוח צוות</button>
@@ -132,6 +135,7 @@ var TYPES = {
   pulse:   { n: 'ממד / פולס', c: 'var(--navy)', bg: 'rgba(18,199,199,.34)' },
   peak:    { n: 'ימי שיא', c: 'var(--fuchsia)', bg: 'rgba(240,6,120,.1)' },
   heb:     { n: 'לוח עברי / שורשים', c: 'var(--gold)', bg: 'rgba(201,134,0,.15)' },
+  moe:     { n: 'משרד החינוך — ממלכתי', c: '#5B2D9E', bg: 'rgba(91,45,158,.12)' },
   bagrut:  { n: 'בגרות', c: 'var(--navy)', bg: 'rgba(6,30,79,.1)' },
   cert:    { n: 'תעודות', c: 'var(--green)', bg: 'rgba(123,203,82,.24)' },
   meet:    { n: 'ישיבות צוות', c: 'var(--gray)', bg: 'rgba(100,116,139,.13)' },
@@ -170,6 +174,16 @@ function seed() {
   EVENTS = []; eid = 0;
   var L = [
     ['2026-09-01', 'פתיחת שנה', 'peak', 'all', 19, 'מערך יום פתיחה, חלוקת מערכות, היכרות', 'טקס בחצר 8:30'],
+    ['2026-09-07', 'שבוע זהירות בדרכים — פתיחה ארצית', 'moe', 'all', 'משרד החינוך', 'מערכי זה"ב לכל השכבות, תיאום עם משטרת ישראל', 'מטלה ארצית — דיווח ביצוע במנהלת'],
+    ['2026-11-04', 'יום הזיכרון ליצחק רבין — טקס ממלכתי', 'moe', 'all', 'משרד החינוך', 'מערך טקס ממלכתי, ערכת מטה', 'אירוע ממלכתי — כלל בתי הספר'],
+    ['2026-11-16', 'יום הסובלנות הבינלאומי', 'moe', 'all', 'משרד החינוך', 'מערכי שיח לשעת חינוך'],
+    ['2026-12-10', 'יום זכויות האדם — פעילות ארצית', 'moe', 'all', 'משרד החינוך', 'מערכים מותאמי גיל לשעת חינוך'],
+    ['2026-12-31', 'יום השפה העברית', 'moe', 'all', 'משרד החינוך', 'פעילויות שפה, חידון בית-ספרי'],
+    ['2027-02-07', 'שבוע הבריונות ברשת — פתיחה', 'moe', 'all', 'משרד החינוך', 'מערכי שעת חינוך, הרצאת מומחה', 'שבוע ארצי — מטלת דיווח למחוז'],
+    ['2027-02-09', 'שבוע הבריונות ברשת — סדנאות גלישה בטוחה', 'moe', 'all', 'משרד החינוך', 'סדנאות בכל הכיתות בשיתוף היועצות'],
+    ['2027-02-11', 'שבוע הבריונות ברשת — שיח הורים', 'moe', 'all', 'משרד החינוך', 'מפגש הורים מקוון בנושא רשתות חברתיות'],
+    ['2027-03-14', 'יום המעשים הטובים', 'moe', 'all', 'משרד החינוך', 'תיאום פעילויות תרומה לקהילה'],
+    ['2027-06-06', 'יום ירושלים — פעילות ממלכתית', 'moe', 'all', 'משרד החינוך', 'מערכים ומצגות מהמטה'],
     ['2026-09-06', 'פתיחה לנושא "שייכות"', 'pulse', 'all', 18, 'מערך שיעור פתיחה, כרטיסי היכרות, חוזה כיתה'],
     ['2026-09-08', 'פולס פתיחה — שייכות', 'pulse', 'all', 17, 'שאלון פולס בכל כיתה', 'המחנכות רואות תוצאות באותו יום'],
     ['2026-09-10', 'הכנת לימוד — ראש השנה', 'heb', 'all', 10, 'דפי לימוד, דבש ותפוח לכיתות'],
@@ -279,23 +293,30 @@ function tgLabel(tg) { if (!tg) return 'צוות בלבד'; if (tg === 'all') re
 function owner(o) { return typeof o === 'number' ? TCH[o].name + ' · ' + TCH[o].role : o; }
 
 /* מצב */
-var state = { m: 'all', c: 'all', q: '' }, idx = {};
+var state = { m: 'all', c: 'all', q: '', moe: false }, idx = {};
 function buildIdx() { idx = {}; EVENTS.forEach(function (e) { (idx[e.d] = idx[e.d] || []).push(e); }); }
 function setMonth(v) { state.m = v; render(); document.getElementById('wrap').scrollTop = 0; }
 function setClass(v) { state.c = v; render(); }
 function setQ(v) { state.q = v.trim().toLowerCase(); render(); }
+function toggleMoe() {
+  state.moe = !state.moe;
+  document.getElementById('moeBtn').classList.toggle('on', state.moe);
+  render(); document.getElementById('wrap').scrollTop = 0;
+  DemoShell.toast(state.moe ? 'מציג רק ימים עם אירועי משרד החינוך' : 'מציג את כל הלוח');
+}
 
 function visibleDays() {
   var out = [], q = state.q;
   for (var d = new Date(START); d <= END; d = DEMO.addDays(d, 1)) {
     if (state.m !== 'all' && d.getMonth() !== +state.m) continue;
+    if (state.moe) { var me = idx[key(d)] || [], hasMoe = false; for (var mi = 0; mi < me.length; mi++) if (me[mi].k === 'moe') { hasMoe = true; break; } if (!hasMoe) continue; }
     if (q) { var k = key(d), evs = idx[k] || [], hit = HOL[k] && HOL[k].n.indexOf(q) >= 0; for (var i = 0; i < evs.length && !hit; i++) if (evs[i].t.toLowerCase().indexOf(q) >= 0) hit = true; if (!hit) continue; }
     out.push(d);
   }
   return out;
 }
 
-function chip(e) { var off = state.c !== 'all' && e.tg && tgClasses(e.tg).indexOf(state.c) < 0; return '<button type="button" class="ev k-' + e.k + (off ? ' off' : '') + '" onclick="showEv(' + e.id + ')" title="' + esc(TYPES[e.k].n) + '">' + esc(e.t) + '</button>'; }
+function chip(e) { var off = (state.c !== 'all' && e.tg && tgClasses(e.tg).indexOf(state.c) < 0) || (state.moe && e.k !== 'moe'); return '<button type="button" class="ev k-' + e.k + (off ? ' off' : '') + '" onclick="showEv(' + e.id + ')" title="' + esc(TYPES[e.k].n) + '">' + esc(e.t) + '</button>'; }
 
 function render() {
   buildIdx();
@@ -333,13 +354,14 @@ function render() {
 }
 
 function renderKpis() {
-  var all = 0, mo = 0, peak = 0, par = 0;
-  EVENTS.forEach(function (e) { if (e.k === 'meet') return; all++; if (e.d.slice(0, 7) === '2026-11') mo++; if (e.k === 'peak') peak++; if (e.k === 'parents') par++; });
+  var all = 0, mo = 0, peak = 0, par = 0, moe = 0;
+  EVENTS.forEach(function (e) { if (e.k === 'meet') return; all++; if (e.d.slice(0, 7) === '2026-11') mo++; if (e.k === 'peak') peak++; if (e.k === 'parents') par++; if (e.k === 'moe') moe++; });
   document.getElementById('kpis').innerHTML =
     '<div class="kpi" style="--c:var(--navy)"><b>' + all + '</b><span>אירועים בשנה (בלי ישיבות)</span></div>'
     + '<div class="kpi" style="--c:var(--teal)"><b>' + mo + '</b><span>החודש — נובמבר</span></div>'
     + '<div class="kpi" style="--c:var(--fuchsia)"><b>' + peak + '</b><span>ימי שיא</span></div>'
-    + '<div class="kpi" style="--c:var(--gold)"><b>' + par + '</b><span>אסיפות וערבי הורים</span></div>';
+    + '<div class="kpi" style="--c:var(--gold)"><b>' + par + '</b><span>אסיפות וערבי הורים</span></div>'
+    + '<div class="kpi" style="--c:#5B2D9E"><b>' + moe + '</b><span>אירועי משרד החינוך</span></div>';
 }
 
 /* חודשים + מקרא */
@@ -416,8 +438,9 @@ function saveAdd() {
   DemoShell.toast('האירוע נוסף ללוח (בדמו)');
 }
 function resetDemo() {
-  seed(); state = { m: 'all', c: 'all', q: '' };
+  seed(); state = { m: 'all', c: 'all', q: '', moe: false };
   document.getElementById('selM').value = 'all'; document.getElementById('selC').value = 'all'; document.getElementById('q').value = '';
+  document.getElementById('moeBtn').classList.remove('on');
   render(); goMonth(10); DemoShell.toast('הדמו אופס לנתוני ההתחלה');
 }
 

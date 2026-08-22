@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>דמו — ערכת מיתוג בית-ספרית — חוות האפליקציות</title>
+<title>דמו — ערכת זהות ואחידות בית-ספרית — חוות האפליקציות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -154,7 +154,7 @@
 
 <main class="demo-main">
   <div class="demo-head">
-    <div><h2>ערכת המיתוג של בית ספר אימפקט</h2><p>מקום אחד לכל מי שמכין תוצר: לוגו, צבעים, פונטים, סלוגן וקול. מה שמופיע כאן — מזין את מחוללי התעודות, המודעות והמצגות.</p></div>
+    <div><h2>ערכת הזהות של בית ספר אימפקט</h2><p>מקום אחד לכל מי שמכין תוצר: לוגו, צבעים, פונטים, סלוגן וקול. אחידות שמחזקת גאוות יחידה — ומזינה את מחוללי התעודות, המודעות והמצגות.</p></div>
     <div class="demo-toolbar">
       <button type="button" class="btn-sm primary" onclick="BK.downloadAll()">הורדת הערכה</button>
       <button type="button" class="btn-sm" onclick="BK.share()">שיתוף לצוות</button>
@@ -487,7 +487,7 @@ var BK = (function () {
     ctx.fillStyle = '#F00678'; ctx.font = '900 74px Heebo, Arial, sans-serif'; ctx.fillText('.', 214 / 300 * W, 352);
   }
   function paletteText() {
-    var out = 'ערכת המיתוג — בית ספר אימפקט\nסלוגן: לומדים. יוצרים. משפיעים.\n\n';
+    var out = 'ערכת הזהות — בית ספר אימפקט\nסלוגן: לומדים. יוצרים. משפיעים.\n\n';
     PALETTE.forEach(function (g) { out += '## ' + g.g + '\n'; g.items.forEach(function (c) { out += c.n + '  ' + c.hex + '  ' + c.v + '  — ' + c.d + '\n'; }); out += '\n'; });
     out += '## CSS\n:root {\n'; PALETTE.forEach(function (g) { g.items.forEach(function (c) { out += '  ' + c.v + ': ' + c.hex + ';\n'; }); }); out += '}\n\nפונט: Heebo (400 / 600 / 800 / 900)\n';
     return out;
