@@ -31,9 +31,9 @@
   .story div { padding: 18px; border-radius: 16px; background: var(--bg); border: 1px solid var(--line); }
   .story b { display: block; font-size: 15px; font-weight: 800; margin-bottom: 6px; }
   .story p { font-size: 14px; line-height: 1.7; color: #334155; }
-  .story-line { margin-top: 18px; padding: 22px 26px; border-radius: 18px; background: var(--navy); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .story-line { margin-top: 18px; padding: 22px 26px; border-radius: 18px; background: var(--bkDeep, var(--navy)); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   .story-line b { font-size: clamp(22px, 3vw, 30px); font-weight: 900; letter-spacing: -.8px; }
-  .story-line b i { font-style: normal; color: var(--fuchsia); }
+  .story-line b i { font-style: normal; color: var(--bkS, var(--fuchsia)); }
   .story-line small { color: rgba(255,255,255,.7); font-size: 13px; }
   @media (max-width: 720px) { .story { grid-template-columns: 1fr; } }
 
@@ -87,17 +87,17 @@
   .el b { display: block; padding: 12px 14px; font-size: 14px; font-weight: 800; border-bottom: 1px solid var(--line); }
   .el p { padding: 10px 14px; font-size: 12.5px; color: var(--gray); }
   .pattern { height: 150px; background-color: var(--bg);
-    background-image: radial-gradient(circle at 12px 12px, rgba(6,30,79,.9) 3px, transparent 3.5px), radial-gradient(circle at 36px 36px, var(--fuchsia) 3px, transparent 3.5px), linear-gradient(135deg, transparent 46%, rgba(18,199,199,.35) 46%, rgba(18,199,199,.35) 54%, transparent 54%);
+    background-image: radial-gradient(circle at 12px 12px, rgba(6,30,79,.9) 3px, transparent 3.5px), radial-gradient(circle at 36px 36px, var(--bkS, var(--fuchsia)) 3px, transparent 3.5px), linear-gradient(135deg, transparent 46%, color-mix(in srgb, var(--bkP, var(--teal)) 35%, transparent) 46%, color-mix(in srgb, var(--bkP, var(--teal)) 35%, transparent) 54%, transparent 54%);
     background-size: 48px 48px, 48px 48px, 48px 48px; }
-  .grad { height: 150px; background: linear-gradient(90deg, var(--navy) 0%, var(--teal) 55%, var(--fuchsia) 100%); position: relative; }
+  .grad { height: 150px; background: linear-gradient(90deg, var(--bkDeep, var(--navy)) 0%, var(--bkP, var(--teal)) 55%, var(--bkS, var(--fuchsia)) 100%); position: relative; }
   .grad::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 60%, rgba(6,30,79,.25)); }
-  .grad-bar { height: 8px; border-radius: 999px; background: linear-gradient(90deg, var(--navy), var(--teal), var(--fuchsia)); margin: 14px; }
+  .grad-bar { height: 8px; border-radius: 999px; background: linear-gradient(90deg, var(--bkDeep, var(--navy)), var(--bkP, var(--teal)), var(--bkS, var(--fuchsia))); margin: 14px; }
   @media (max-width: 720px) { .el-grid { grid-template-columns: 1fr; } }
 
   /* ─── סלוגנים ─── */
-  .slogan-main { padding: 34px 26px; border-radius: 20px; background: linear-gradient(135deg, rgba(18,199,199,.12), rgba(240,6,120,.08)); text-align: center; margin-bottom: 16px; }
+  .slogan-main { padding: 34px 26px; border-radius: 20px; background: linear-gradient(135deg, color-mix(in srgb, var(--bkP, var(--teal)) 13%, #fff), color-mix(in srgb, var(--bkS, var(--fuchsia)) 9%, #fff)); text-align: center; margin-bottom: 16px; }
   .slogan-main b { display: block; font-size: clamp(28px, 4.5vw, 46px); font-weight: 900; letter-spacing: -1.4px; line-height: 1.1; }
-  .slogan-main b i { font-style: normal; color: var(--fuchsia); }
+  .slogan-main b i { font-style: normal; color: var(--bkS, var(--fuchsia)); }
   .slogan-main small { display: block; margin-top: 8px; color: var(--gray); font-size: 13.5px; }
   .sub-slogans { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .sub-slogans div { padding: 16px 18px; border-radius: 16px; border: 1px solid var(--line); background: var(--white); position: relative; }
@@ -162,13 +162,111 @@
   .posts-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
   .posts-head h3 { font-size: 24px; font-weight: 900; letter-spacing: -.6px; line-height: 1.15; margin-bottom: 6px; }
   .posts-head p { color: var(--gray); font-size: 14.5px; max-width: 620px; }
+
+  /* ─── משתני-כיוון: ברירת המחדל = הזהות הנוכחית ─── */
+  body { --bkDeep: #061E4F; --bkP: #12C7C7; --bkS: #F00678; }
+
+  /* ─── פס המסע ─── */
+  .journey { display: flex; gap: 4px; background: var(--white); border: 1px solid var(--line); border-radius: 22px; padding: 10px; margin-bottom: 20px; overflow-x: auto; }
+  .jstep { flex: 1; min-width: 106px; border: none; background: transparent; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 12px 8px 10px; border-radius: 16px; position: relative; transition: background var(--motion-fast); }
+  .jstep:hover { background: rgba(18,199,199,.09); }
+  .jstep .jn { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: rgba(6,30,79,.07); color: var(--navy); transition: all var(--motion-fast); }
+  .jstep .jn svg { width: 17px; height: 17px; }
+  .jstep:hover .jn { background: var(--navy); color: #fff; }
+  .jstep b { font-size: 13.5px; font-weight: 800; color: var(--navy); letter-spacing: -.2px; white-space: nowrap; }
+  .jstep small { font-size: 11px; color: var(--gray); font-weight: 600; white-space: nowrap; }
+  .jstep:not(:first-child)::before { content: ''; position: absolute; top: 29px; right: -4px; width: 8px; height: 2px; background: rgba(6,30,79,.15); }
+
+  /* ─── 01 · העלאת חומרים ─── */
+  .up-zone { border: 2px dashed rgba(6,30,79,.18); border-radius: 20px; padding: 24px; text-align: center; background: var(--bg); cursor: pointer; transition: border-color var(--motion-fast), background var(--motion-fast); }
+  .up-zone:hover { border-color: var(--teal); background: rgba(18,199,199,.05); }
+  .up-zone svg { width: 36px; height: 36px; color: var(--navy); opacity: .55; }
+  .up-zone b { display: block; font-size: 15.5px; font-weight: 800; margin-top: 8px; }
+  .up-zone small { color: var(--gray); font-size: 12.5px; }
+  .up-files { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 14px; }
+  .up-file { display: flex; align-items: center; gap: 11px; background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 10px 13px; }
+  .up-file .fi { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; color: #fff; flex: none; }
+  .up-file .fi svg { width: 17px; height: 17px; }
+  .up-file b { font-size: 13.5px; font-weight: 800; display: block; }
+  .up-file small { font-size: 11.5px; color: var(--gray); display: block; margin-top: 1px; }
+  .up-file .ok { margin-inline-start: auto; color: #3E7F1E; font-size: 11.5px; font-weight: 800; white-space: nowrap; background: rgba(123,203,82,.14); border-radius: 999px; padding: 4px 10px; }
+  .up-act { display: flex; align-items: center; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+  @media (max-width: 640px) { .up-files { grid-template-columns: 1fr; } }
+
+  /* ─── 02 · אבחון המותג ─── */
+  .dg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .dg { border: 1px solid var(--line); border-radius: 18px; padding: 18px; background: var(--white); }
+  .dg h4 { font-size: 12.5px; font-weight: 800; color: var(--gray); letter-spacing: .5px; margin-bottom: 11px; }
+  .dg h4:not(:first-child) { margin-top: 18px; }
+  .dg-grid.reveal .dg { animation: heroRise 600ms var(--motion-ease) both; }
+  .dg-grid.reveal .dg:nth-child(2) { animation-delay: .12s; }
+  .dg-grid.reveal .dg:nth-child(3) { animation-delay: .24s; }
+  .traits { display: flex; flex-wrap: wrap; gap: 8px; }
+  .traits span { padding: 8px 15px; border-radius: 999px; font-size: 14.5px; font-weight: 800; background: rgba(6,30,79,.07); color: var(--navy); }
+  .traits.hot span:nth-child(3n+1) { background: rgba(18,199,199,.13); color: #0B7A7A; }
+  .traits.hot span:nth-child(3n+2) { background: rgba(240,6,120,.09); color: var(--fuchsia); }
+  .tension .tt { display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; margin-bottom: 9px; }
+  .tension .tb { position: relative; height: 10px; border-radius: 999px; background: linear-gradient(90deg, rgba(6,30,79,.16), rgba(240,6,120,.28)); }
+  .tension .tb i { position: absolute; top: 50%; right: 64%; transform: translate(50%,-50%); width: 20px; height: 20px; border-radius: 50%; background: var(--fuchsia); border: 3px solid #fff; box-shadow: 0 4px 12px rgba(6,30,79,.28); }
+  .tension p { font-size: 12.5px; color: var(--gray); margin-top: 9px; line-height: 1.6; }
+  .dg-list { display: flex; flex-direction: column; gap: 8px; }
+  .dg-issues { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .dg-issue { background: rgba(240,6,120,.045); border-radius: 14px; padding: 14px; }
+  .dg-issue b { display: block; font-size: 14px; font-weight: 800; color: var(--fuchsia); margin-bottom: 6px; }
+  .dg-issue p { font-size: 12.5px; color: var(--gray); line-height: 1.6; }
+  .found-blues { display: flex; gap: 6px; margin: 4px 0 8px; }
+  .found-blues i { width: 32px; height: 32px; border-radius: 10px; display: block; }
+  .found-fonts { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 8px; }
+  .found-fonts span { padding: 4px 12px; border-radius: 10px; background: var(--white); border: 1px solid var(--line); font-size: 14.5px; }
+  .tone-ex { font-size: 12.5px; background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; margin: 4px 0 8px; line-height: 1.55; }
+  .dg-foot { margin-top: 16px; font-size: 12.5px; color: var(--gray); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: space-between; }
+  @media (max-width: 860px) { .dg-grid, .dg-issues { grid-template-columns: 1fr; } }
+
+  /* ─── 09 · עולם התמונות ─── */
+  .ph-rules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 18px; }
+  .ph-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; align-items: start; }
+  .ph { border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--white); margin: 0; transition: transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast); }
+  .ph:hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(6,30,79,.12); }
+  .ph svg { display: block; width: 100%; height: auto; }
+  .ph figcaption { padding: 9px 12px; font-size: 12px; font-weight: 700; color: var(--gray); border-top: 1px solid var(--line); }
+  @media (max-width: 860px) { .ph-grid { grid-template-columns: repeat(2, 1fr); } .ph-rules { grid-template-columns: 1fr; } }
+
+  /* ─── 13 · ציון המותג ─── */
+  .score-wrap { display: grid; grid-template-columns: 220px 1fr; gap: 26px; align-items: center; margin-bottom: 22px; }
+  .gauge { position: relative; width: 190px; margin: 0 auto; }
+  .gauge svg { width: 100%; height: auto; display: block; }
+  .gauge circle.track { fill: none; stroke: rgba(6,30,79,.08); stroke-width: 14; }
+  .gauge circle.val { fill: none; stroke: var(--teal); stroke-width: 14; stroke-linecap: round; transform: rotate(-90deg); transform-origin: center; stroke-dasharray: 502; stroke-dashoffset: 502; transition: stroke-dashoffset 1.2s var(--motion-ease); }
+  .gauge .gv { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+  .gauge .gv b { display: block; font-size: 46px; font-weight: 900; letter-spacing: -2px; line-height: 1; }
+  .gauge .gv small { display: block; font-size: 11.5px; color: var(--gray); font-weight: 700; margin-top: 4px; }
+  .gauge .gv .delta { color: #1E9E5A; font-weight: 900; }
+  .dim { display: grid; grid-template-columns: 150px 1fr 40px; gap: 14px; align-items: center; padding: 9px 0; border-bottom: 1px dashed var(--line); }
+  .dim:last-child { border-bottom: none; }
+  .dim > div b { font-size: 13.5px; font-weight: 800; display: block; }
+  .dim > div small { display: block; font-size: 11.5px; color: var(--gray); font-weight: 600; margin-top: 1px; }
+  .dim .v { font-size: 15px; font-weight: 900; text-align: left; font-variant-numeric: tabular-nums; }
+  .check-grid { display: grid; grid-template-columns: 235px 1fr; gap: 20px; align-items: start; }
+  .flyer { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: 0 10px 26px rgba(6,30,79,.08); }
+  .flyer svg { display: block; width: 100%; height: auto; }
+  .match-res { display: none; }
+  .match-res.on { display: block; animation: heroRise 500ms var(--motion-ease) both; }
+  .match-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .match-head b { font-size: 38px; font-weight: 900; letter-spacing: -2px; color: var(--fuchsia); line-height: 1; }
+  .match-head span { font-size: 13.5px; font-weight: 800; }
+  .match-head span small { display: block; color: var(--gray); font-weight: 600; font-size: 12px; margin-top: 2px; }
+  .mrow { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; padding: 9px 12px; border-radius: 12px; margin-bottom: 6px; line-height: 1.55; }
+  .mrow.y { background: rgba(123,203,82,.1); } .mrow.w { background: rgba(244,180,27,.13); } .mrow.x { background: rgba(240,6,120,.07); }
+  .mrow i { font-style: normal; font-weight: 900; width: 16px; flex: none; }
+  .mrow.y i { color: #3E7F1E; } .mrow.w i { color: #9A6700; } .mrow.x i { color: var(--fuchsia); }
+  @media (max-width: 860px) { .score-wrap, .check-grid { grid-template-columns: 1fr; } .dim { grid-template-columns: 110px 1fr 36px; } .flyer { max-width: 260px; } }
 </style>
 </head>
 <body>
 
 <main class="demo-main">
   <div class="demo-head">
-    <div><h2>זהות ואחידות בית-ספרית</h2><p>מסע אחד שלם: מתחילים בשאלון מיפוי שבונה את הזהות, ממשיכים לסיפור בית הספר ולערכה המלאה — לוגו, צבעים, סלוגן וקול. ובלשונית "פוסטים לרשתות" רואים את הזהות בפעולה: הפוסטים מתלבשים בה אוטומטית.</p></div>
+    <div><h2>זהות ואחידות בית-ספרית</h2><p>מעלים את מה שכבר עשיתם — והמערכת מגלה את המותג שמסתתר בפנים: אבחון, שלושה כיוונים לבחירה, ערכה שלמה ועולם תמונות. הזהות מזינה את הפוסטים לרשתות, וציון העקביות שומר שכל תוצר ייראה "אתם".</p></div>
     <div class="demo-toolbar">
       <button type="button" class="btn-sm primary" onclick="BK.downloadAll()">הורדת הערכה</button>
       <button type="button" class="btn-sm" onclick="BK.share()">שיתוף לצוות</button>
@@ -176,12 +274,21 @@
     </div>
   </div>
 
+  <div class="journey" role="navigation" aria-label="שלבי המסע">
+    <button type="button" class="jstep" onclick="BK.go('s-upload')"><span class="jn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg></span><b>מגלים</b><small>מעלים את מה שיש</small></button>
+    <button type="button" class="jstep" onclick="BK.go('s-diag')"><span class="jn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M8 11h6M11 8v6"/></svg></span><b>מאבחנים</b><small>מי אתם באמת</small></button>
+    <button type="button" class="jstep" onclick="BK.go('s-dirs')"><span class="jn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg></span><b>בוחרים כיוון</b><small>ההנהלה מצביעה</small></button>
+    <button type="button" class="jstep" onclick="BK.go('s-story')"><span class="jn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9c0-1.1-.9-2-2-2h-2a2 2 0 0 1-2-2V6c0-1.1-.9-2-2-2z"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="7" r="1"/></svg></span><b>הערכה</b><small>לוגו · צבעים · קול</small></button>
+    <button type="button" class="jstep" onclick="BK.showView('posts')"><span class="jn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg></span><b>בפעולה</b><small>הפוסטים לרשתות</small></button>
+    <button type="button" class="jstep" onclick="BK.go('s-score')"><span class="jn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 1 9-9"/><path d="M12 12l6-4.5"/><path d="M19 17l1.5 1.5L23.5 15"/></svg></span><b>בודקים</b><small>ציון עקביות</small></button>
+  </div>
+
   <div class="kpis">
-    <div class="kpi" style="--c:var(--navy)"><b>4</b><span>גרסאות לוגו</span></div>
+    <div class="kpi" style="--c:var(--navy)"><b>4</b><span>קבצים נותחו + מקור ברשת</span></div>
     <div class="kpi" style="--c:var(--teal)"><b>9</b><span>צבעי מותג</span></div>
-    <div class="kpi" style="--c:var(--fuchsia)"><b>5</b><span>סלוגנים לפי קהל</span></div>
     <div class="kpi" style="--c:var(--yellow)"><b>3</b><span>כיוונים להצבעה</span></div>
     <div class="kpi" style="--c:var(--green)"><b id="kpiUse">27</b><span>תוצרים שנוצרו מהערכה החודש</span></div>
+    <div class="kpi" style="--c:var(--fuchsia)"><b>74</b><span>ציון עקביות המותג</span></div>
   </div>
 
   <div class="tabs" id="bkTabs">
@@ -193,18 +300,86 @@
   <div class="bk-layout">
     <div class="bk-sections" id="secs">
 
+      <!-- העלאת חומרים — מגלים -->
+      <section class="card" id="s-upload">
+        <div class="sec-k">01 · מעלים את מה שכבר יש</div>
+        <h3 class="sec-h">תנו לנו את מה שכבר עשיתם — נבין אתכם</h3>
+        <p class="sec-p">לא עוד ארבעים שאלות. מעלים את הלוגו, מסמך החזון, מצגת מיום הפתוח — ומחברים את עמוד הפייסבוק. המערכת קוראת הכול ומגלה את המותג שמסתתר בפנים.</p>
+        <div class="up-zone" role="button" tabindex="0" onclick="BK.fakeUpload()" onkeydown="if(event.key==='Enter')BK.fakeUpload()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V6M7.5 10.5 12 6l4.5 4.5"/><path d="M4 16v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2"/></svg>
+          <b>גוררים לכאן קבצים — או לוחצים לבחירה</b>
+          <small>PDF · Word · PowerPoint · תמונות · קישור לאתר או לעמוד — עד 20 קבצים</small>
+        </div>
+        <div class="up-files">
+          <div class="up-file"><span class="fi" style="background:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></span><span><b>לוגו-ביהס.png</b><small>שתי גרסאות זוהו · הצבעים חולצו</small></span><span class="ok">נקלט ✓</span></div>
+          <div class="up-file"><span class="fi" style="background:var(--teal)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h6"/></svg></span><span><b>חזון בית הספר.docx</b><small>14 משפטי מפתח · 5 ערכים זוהו</small></span><span class="ok">נקלט ✓</span></div>
+          <div class="up-file"><span class="fi" style="background:var(--fuchsia)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M12 17v4M8 21h8"/></svg></span><span><b>מצגת יום פתוח.pptx</b><small>18 שקפים · 3 פונטים שונים נמצאו</small></span><span class="ok">נקלט ✓</span></div>
+          <div class="up-file"><span class="fi" style="background:#0B7DB5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 8h3V4.5h-3c-2.5 0-4 1.7-4 4.2V11H7v3.5h3V20h3.5v-5.5h3l.5-3.5h-3.5V9c0-.6.4-1 1-1z"/></svg></span><span><b>עמוד הפייסבוק של ביה"ס</b><small>32 פוסטים אחרונים נסרקו · הקול נלמד</small></span><span class="ok">נסרק ✓</span></div>
+        </div>
+        <div class="up-act">
+          <button type="button" class="btn-sm primary" onclick="BK.analyze()">ניתוח החומרים ←</button>
+          <span class="embed-note" style="margin:0">בדמו החומרים כבר "הועלו" — במערכת המלאה אלה הקבצים שלכם.</span>
+        </div>
+      </section>
+
+      <!-- אבחון המותג — מאבחנים -->
+      <section class="card" id="s-diag">
+        <div class="sec-k">02 · אבחון המותג</div>
+        <h3 class="sec-h">ככה אנחנו מבינים אתכם</h3>
+        <p class="sec-p">לפני צבעים ולוגו — אבחון. מכל החומרים שהעליתם המערכת מזקקת מי אתם, למי אתם מדברים, מה שווה לשמר — ומה שובר כרגע את האחידות.</p>
+        <div class="dg-grid" id="dgGrid">
+          <div class="dg">
+            <h4>האישיות שעולה מהחומרים</h4>
+            <div class="traits hot"><span>חם</span><span>מעשי</span><span>בגובה העיניים</span><span>אופטימי</span><span>לא ממסדי</span></div>
+            <h4>הקהלים המרכזיים</h4>
+            <div class="traits"><span>הורים ששוקלים רישום</span><span>הקהילה בשכונה</span><span>הרשות והפיקוח</span></div>
+          </div>
+          <div class="dg">
+            <h4>המתח המותגי</h4>
+            <div class="tension">
+              <div class="tt"><span>מקצועיות</span><span>אנושיות</span></div>
+              <div class="tb"><i></i></div>
+              <p>הכתיבה שלכם נוטה בבירור לצד האנושי — וזה נכס. הכיוון: לשמור על החום, ולתת לו מסגרת ויזואלית מקצועית אחת.</p>
+            </div>
+            <h4>מה שווה לשמר</h4>
+            <div class="dg-list">
+              <div class="rule do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg><span><b>השפה הישירה</b> בפוסטים — "בואו תראו", לא "הרינו מתכבדים".</span></div>
+              <div class="rule do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg><span><b>התמונות האותנטיות</b> מהחצר — הן שמביאות הכי הרבה תגובות.</span></div>
+            </div>
+          </div>
+          <div class="dg" style="grid-column:1/-1">
+            <h4>מה שובר כרגע את האחידות</h4>
+            <div class="dg-issues">
+              <div class="dg-issue"><b>חמישה כחולים שונים</b>
+                <div class="found-blues"><i style="background:#1B3C8C"></i><i style="background:#0E2A6B"></i><i style="background:#2455B0"></i><i style="background:#123058"></i><i style="background:#0B7DB5"></i></div>
+                <p>באתר, במצגת ובדפי העבודה — כל אחד כחול אחר. עין של הורה לא יודעת שזה אותו בית ספר.</p></div>
+              <div class="dg-issue"><b>שלושה פונטים מתחלפים</b>
+                <div class="found-fonts"><span style="font-family:David,serif">David</span><span style="font-family:Arial,sans-serif">Arial</span><span style="font-family:Heebo">Heebo</span></div>
+                <p>המצגות ב-David, המסמכים ב-Arial, האתר ב-Heebo. בוחרים אחד — והוא הולך לכל מקום.</p></div>
+              <div class="dg-issue"><b>הטון קופץ בין ערוצים</b>
+                <div class="tone-ex">באתר: "בית חינוך שוחר מצוינות וערכים"<br>בפייסבוק: "איזה בוקר היה לנו!"</div>
+                <p>הפייסבוק הוא האמיתי שלכם. האתר עוד מדבר בשפה של מישהו אחר.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="dg-foot">
+          <span>האבחון בדמו נוצר מארבעה קבצים וממקור אחד ברשת · במערכת המלאה — מהחומרים האמיתיים שלכם.</span>
+          <button type="button" class="btn-sm navy" onclick="BK.go('s-dirs')">ומכאן — בוחרים כיוון ←</button>
+        </div>
+      </section>
+
       <!-- שאלון מיפוי — בונים זהות -->
       <section class="card" id="s-wizard">
-        <div class="sec-k">01 · שאלון מיפוי</div>
-        <h3 class="sec-h">עוד אין זהות? מתחילים כאן</h3>
-        <p class="sec-p">עונים על שאלון קצר — חזון, ערכים, אופי — או מעלים לוגו קיים, ומקבלים שלושה כיווני זהות שלמים לבחירה. הכיוון שנבחר הופך לערכה כמו זו שבסעיפים הבאים.</p>
+        <div class="sec-k">03 · שאלון מיפוי</div>
+        <h3 class="sec-h">אין עדיין חומרים להעלות? מתחילים כאן</h3>
+        <p class="sec-p">בית ספר חדש, או כזה שמתחיל מדף חלק — עונה על שאלון קצר במקום להעלות קבצים: חזון, ערכים, אופי. גם מכאן מגיעים לשלושה כיווני זהות שלמים לבחירה.</p>
         <iframe class="embed-frame wiz" src="identity-studio.html?embed=1" title="שאלון מיפוי לבניית זהות" loading="lazy"></iframe>
         <div class="embed-note">השאלון רץ כאן, בתוך הדמו — הכול נשאר בדפדפן שלכם.</div>
       </section>
 
       <!-- סיפור -->
       <section class="card" id="s-story">
-        <div class="sec-k">02 · סיפור בית הספר</div>
+        <div class="sec-k">04 · סיפור בית הספר</div>
         <h3 class="sec-h">בית ספר שבו כל ילד מגלה שיש לו השפעה</h3>
         <p class="sec-p">שלושה משפטים שכל אחד בצוות יכול לספר — למי שמגיע ליום פתוח, להורה חדש, למורה שמצטרפת.</p>
         <div class="story">
@@ -217,7 +392,7 @@
 
       <!-- לוגו -->
       <section class="card" id="s-logo">
-        <div class="sec-k">03 · לוגו</div>
+        <div class="sec-k">05 · לוגו</div>
         <h3 class="sec-h">הסימן: אות א׳ עם ניצוץ</h3>
         <p class="sec-p">א׳ של אימפקט, קו נועז, ונקודת-ניצוץ ורודה — הרגע שבו משהו קורה. ארבע גרסאות, כל אחת לתפקיד אחר. כל גרסה ניתנת להורדה כ-SVG (וקטור, לכל גודל).</p>
         <div class="logo-grid" id="logoGrid"></div>
@@ -231,7 +406,7 @@
 
       <!-- צבעים -->
       <section class="card" id="s-colors">
-        <div class="sec-k">04 · צבעים</div>
+        <div class="sec-k">06 · צבעים</div>
         <h3 class="sec-h">פלטת אימפקט</h3>
         <p class="sec-p">שלושה צבעי ליבה, ניצוץ אחד וניטרלים. לחיצה על צבע — מעתיקה את הקוד.</p>
         <div id="palette"></div>
@@ -244,7 +419,7 @@
 
       <!-- טיפוגרפיה -->
       <section class="card" id="s-type">
-        <div class="sec-k">05 · טיפוגרפיה</div>
+        <div class="sec-k">07 · טיפוגרפיה</div>
         <h3 class="sec-h">Heebo — פונט אחד לכל דבר</h3>
         <p class="sec-p">משפחה אחת, שבעה גדלים, ארבעה משקלים. כותרות כבדות וצפופות; טקסט רץ נושם.</p>
         <div id="typeScale"></div>
@@ -253,7 +428,7 @@
 
       <!-- אלמנטים -->
       <section class="card" id="s-elements">
-        <div class="sec-k">06 · אלמנטים גרפיים</div>
+        <div class="sec-k">08 · אלמנטים גרפיים</div>
         <h3 class="sec-h">אריח חוזר ופס גרדיאנט</h3>
         <p class="sec-p">שני אלמנטים שנותנים "אימפקט" לכל תוצר בלי לוגו: אריח נקודות לרקעים ועטיפות, ופס גרדיאנט לכותרות ולמצגות.</p>
         <div class="el-grid">
@@ -262,9 +437,81 @@
         </div>
       </section>
 
+      <!-- עולם התמונות -->
+      <section class="card" id="s-photos">
+        <div class="sec-k">09 · עולם התמונות</div>
+        <h3 class="sec-h">איך נראית תמונה של אימפקט</h3>
+        <p class="sec-p">ארבעה עקרונות צילום — ותבניות ויזואל חיות שנבנות מהערכה עצמה. בחרו כיוון אחר בחוברת הכיוונים למטה, ותראו את כולן נצבעות מחדש.</p>
+        <div class="ph-rules">
+          <div class="rule do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg><span><b>אור טבעי, ילדים בפעולה</b> — באמצע עשייה, לא מסתכלים למצלמה.</span></div>
+          <div class="rule dont"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>לא סטוק מבוים</b> — ידיים משולבות על רקע לבן זה לא אנחנו.</span></div>
+          <div class="rule do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg><span><b>מצלמים תהליך</b> — הידיים בעבודה, הטיוטה, הבלגן היצירתי.</span></div>
+          <div class="rule dont"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>פרטיות קודמת לכול</b> — פנים של תלמידים רק עם אישור הורים בתוקף.</span></div>
+        </div>
+        <div class="ph-grid">
+          <figure class="ph">
+            <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="פוסטר יום פתוח">
+              <rect width="300" height="400" style="fill:var(--bkDeep)"/>
+              <circle cx="272" cy="36" r="96" style="fill:var(--bkP)" opacity=".18"/>
+              <circle cx="16" cy="368" r="64" style="fill:var(--bkS)" opacity=".15"/>
+              <g fill="#fff" opacity=".22"><circle cx="36" cy="36" r="3"/><circle cx="60" cy="36" r="3"/><circle cx="36" cy="60" r="3"/><circle cx="60" cy="60" r="3"/><circle cx="84" cy="36" r="3"/><circle cx="84" cy="60" r="3"/></g>
+              <g transform="translate(228,88) scale(.75)"><g fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12L52 52"/><path d="M51 10Q50 21 42 27L34 33"/><path d="M29 34Q29 43 24 49L18 54"/></g><circle cx="57" cy="5" r="4.5" style="fill:var(--bkS)"/></g>
+              <text x="272" y="208" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="52" letter-spacing="-2" fill="#fff">בואו לראות</text>
+              <text x="272" y="262" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="52" letter-spacing="-2" fill="#fff">מקרוב<tspan style="fill:var(--bkS)">.</tspan></text>
+              <rect x="120" y="296" width="152" height="38" rx="19" style="fill:var(--bkS)"/>
+              <text x="196" y="321" text-anchor="middle" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="16" fill="#fff">יום פתוח · 3.10</text>
+              <text x="272" y="378" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="700" font-size="12" fill="#fff" opacity=".6">בית ספר אימפקט</text>
+            </svg>
+            <figcaption>פוסטר · יום פתוח</figcaption>
+          </figure>
+          <figure class="ph">
+            <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="כרטיס ציטוט בוגרת">
+              <defs><linearGradient id="phg2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--bkDeep)"/><stop offset=".55" style="stop-color:var(--bkP)"/><stop offset="1" style="stop-color:var(--bkS)"/></linearGradient></defs>
+              <rect width="300" height="400" fill="#F8FAFC"/>
+              <text x="268" y="112" text-anchor="end" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="88" style="fill:var(--bkS)">״</text>
+              <text x="268" y="172" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="27" letter-spacing="-1" style="fill:var(--bkDeep)">המורים כאן</text>
+              <text x="268" y="208" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="27" letter-spacing="-1" style="fill:var(--bkDeep)">האמינו בי</text>
+              <text x="268" y="244" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="27" letter-spacing="-1" style="fill:var(--bkDeep)">לפני שאני</text>
+              <text x="268" y="280" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="27" letter-spacing="-1" style="fill:var(--bkDeep)">האמנתי בעצמי<tspan style="fill:var(--bkS)">.</tspan></text>
+              <text x="268" y="318" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="600" font-size="13" fill="#64748B">נ׳ · בוגרת מחזור תשפ״ב</text>
+              <rect x="0" y="386" width="300" height="14" fill="url(#phg2)"/>
+            </svg>
+            <figcaption>כרטיס ציטוט · גאוות בוגרים</figcaption>
+          </figure>
+          <figure class="ph">
+            <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="עטיפת סטורי">
+              <defs><linearGradient id="phg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--bkDeep)"/><stop offset="1" style="stop-color:var(--bkP)"/></linearGradient></defs>
+              <rect width="300" height="400" fill="url(#phg3)"/>
+              <circle cx="64" cy="84" r="26" style="fill:var(--bkS)"/>
+              <g fill="#fff" opacity=".2"><circle cx="252" cy="330" r="3"/><circle cx="276" cy="330" r="3"/><circle cx="252" cy="354" r="3"/><circle cx="276" cy="354" r="3"/></g>
+              <text x="272" y="196" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="58" letter-spacing="-2.5" fill="#fff">מה תשנו</text>
+              <text x="272" y="256" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="58" letter-spacing="-2.5" fill="#fff">השנה?</text>
+              <text x="272" y="298" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="700" font-size="15" fill="#fff" opacity=".85">מחכים לתשובות שלכם בתגובות</text>
+              <text x="272" y="376" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="700" font-size="12" fill="#fff" opacity=".6">אימפקט · סטורי</text>
+            </svg>
+            <figcaption>עטיפת סטורי · לתלמידים</figcaption>
+          </figure>
+          <figure class="ph">
+            <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="תעודת הוקרה">
+              <defs><linearGradient id="phg4" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--bkDeep)"/><stop offset=".55" style="stop-color:var(--bkP)"/><stop offset="1" style="stop-color:var(--bkS)"/></linearGradient></defs>
+              <rect width="300" height="400" fill="#FFFFFF"/>
+              <rect x="14" y="14" width="272" height="372" rx="14" fill="none" style="stroke:var(--bkDeep)" opacity=".22" stroke-width="1.5"/>
+              <g transform="translate(122,44) scale(.9)"><g fill="none" style="stroke:var(--bkDeep)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12L52 52"/><path d="M51 10Q50 21 42 27L34 33"/><path d="M29 34Q29 43 24 49L18 54"/></g><circle cx="57" cy="5" r="4.5" style="fill:var(--bkS)"/></g>
+              <text x="150" y="158" text-anchor="middle" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="30" letter-spacing="-1" style="fill:var(--bkDeep)">תעודת הוקרה</text>
+              <text x="150" y="188" text-anchor="middle" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="600" font-size="13" fill="#64748B">מוענקת לתלמידת כיתה ו׳2</text>
+              <text x="150" y="230" text-anchor="middle" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="17" style="fill:var(--bkDeep)">על תרומה לקהילת בית הספר</text>
+              <rect x="90" y="266" width="120" height="8" rx="4" fill="url(#phg4)"/>
+              <text x="150" y="342" text-anchor="middle" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="14" style="fill:var(--bkDeep)">לומדים. יוצרים. משפיעים<tspan style="fill:var(--bkS)">.</tspan></text>
+            </svg>
+            <figcaption>תעודת הוקרה · מהמחולל</figcaption>
+          </figure>
+        </div>
+        <div class="embed-note" style="margin-top:12px">במערכת המלאה: מנוע התמונות יוצר מהעקרונות האלה סטים שלמים — תמונות אתר, רשתות ומצגות — בלי שתכתבו אף פרומפט. בדמו אלה תבניות חיות שנבנות מהערכה.</div>
+      </section>
+
       <!-- סלוגנים -->
       <section class="card" id="s-slogans">
-        <div class="sec-k">07 · מערכת סלוגנים</div>
+        <div class="sec-k">10 · מערכת סלוגנים</div>
         <h3 class="sec-h">סלוגן ראשי + ארבעה לפי קהל</h3>
         <p class="sec-p">הראשי מופיע ליד הלוגו. תתי-הסלוגנים מותאמים למי שקורא — הורים, תלמידים, צוות וקהילה. לחיצה מעתיקה.</p>
         <div class="slogan-main" onclick="BK.copy('לומדים. יוצרים. משפיעים.','הסלוגן הועתק')"><b>לומדים. יוצרים. משפיעים<i>.</i></b><small>הסלוגן הראשי · גרסה מינימלית: "משפיעים." · הנקודה האחרונה תמיד בפוקסיה</small></div>
@@ -273,7 +520,7 @@
 
       <!-- קול -->
       <section class="card" id="s-voice">
-        <div class="sec-k">08 · קול המותג</div>
+        <div class="sec-k">11 · קול המותג</div>
         <h3 class="sec-h">איך אימפקט מדבר</h3>
         <p class="sec-p">שלושה עקרונות — ולכל אחד דוגמה של "כך" ו"לא כך". ואחריהם: מילים שאנחנו אוהבים, ומילים שאנחנו מניחים בצד.</p>
         <div class="voice" id="voice"></div>
@@ -285,16 +532,72 @@
 
       <!-- חוברת כיוונים -->
       <section class="card" id="s-dirs">
-        <div class="sec-k">09 · חוברת כיוונים להנהלה</div>
+        <div class="sec-k">12 · חוברת כיוונים להנהלה</div>
         <h3 class="sec-h">שלושה כיוונים — ההנהלה מצביעה</h3>
         <p class="sec-p">לפני שנועלים מותג, ההנהלה רואה כמה כיוונים זה לצד זה, קוראת ניתוח קצר ומצביעה. הכיוון שנבחר הופך לערכה שלמעלה. לחצו על "מצביעים" כדי לנסות.</p>
         <div class="dirs" id="dirs"></div>
         <div class="vote-foot"><span id="voteSum"></span><span>ההצבעה פתוחה עד 15.9 · 8 חברי הנהלה</span></div>
       </section>
 
+      <!-- ציון המותג -->
+      <section class="card" id="s-score">
+        <div class="sec-k">13 · ציון המותג</div>
+        <h3 class="sec-h">כמה התוצרים שלכם באמת "אתם"?</h3>
+        <p class="sec-p">הערכה היא לא סוף הדרך — היא ההתחלה. המערכת עוקבת אחרי כל מה שיוצא מבית הספר, נותנת ציון עקביות, ומראה בדיוק איפה מאבדים נקודות.</p>
+        <div class="score-wrap">
+          <div class="gauge">
+            <svg viewBox="0 0 190 190"><circle class="track" cx="95" cy="95" r="80"/><circle class="val" id="gaugeVal" cx="95" cy="95" r="80"/></svg>
+            <div class="gv"><div><b>74</b><small>עקביות המותג · <span class="delta">‎+6 החודש</span></small></div></div>
+          </div>
+          <div>
+            <div class="dim"><div><b>צבעוניות</b><small>כמעט כל התוצרים כבר בפלטה</small></div><div class="bar" style="--c:var(--green)"><i style="width:92%"></i></div><span class="v">92</span></div>
+            <div class="dim"><div><b>קול וניסוח</b><small>הפוסטים מדברים בקול אחד</small></div><div class="bar" style="--c:var(--green)"><i style="width:86%"></i></div><span class="v">86</span></div>
+            <div class="dim"><div><b>טיפוגרפיה</b><small>המצגות עדיין בורחות לפונטים אחרים</small></div><div class="bar" style="--c:var(--yellow)"><i style="width:68%"></i></div><span class="v">68</span></div>
+            <div class="dim"><div><b>אחידות ברשתות</b><small>אינסטגרם עקבי, פייסבוק פחות</small></div><div class="bar" style="--c:var(--yellow)"><i style="width:61%"></i></div><span class="v">61</span></div>
+            <div class="dim"><div><b>עולם התמונות</b><small>רוב התמונות עוד לא בסגנון שהוגדר</small></div><div class="bar" style="--c:var(--fuchsia)"><i style="width:42%"></i></div><span class="v">42</span></div>
+          </div>
+        </div>
+        <div class="card-h"><h3>בדיקת תוצר מול המותג</h3><span class="hint">מעלים פלייר, פוסט או מצגת — ומקבלים ציון התאמה ותיקונים</span></div>
+        <div class="check-grid">
+          <div class="flyer">
+            <svg viewBox="0 0 235 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="פלייר לדוגמה שנבדק">
+              <rect width="235" height="320" fill="#FFFFFF"/>
+              <rect width="235" height="66" fill="#2455B0"/>
+              <text x="224" y="26" text-anchor="start" direction="rtl" font-family="Arial, sans-serif" font-weight="700" font-size="12" fill="#fff">הזמנה לערב הורים שכבת ז׳ —</text>
+              <text x="224" y="42" text-anchor="start" direction="rtl" font-family="Arial, sans-serif" font-weight="700" font-size="12" fill="#fff">הרצאת אורח בנושא מסכים, גבולות,</text>
+              <text x="224" y="58" text-anchor="start" direction="rtl" font-family="Arial, sans-serif" font-weight="700" font-size="12" fill="#fff">שינה ומה שביניהם</text>
+              <rect y="66" width="235" height="104" fill="#E2E8F0"/>
+              <g fill="#94A3B8"><circle cx="92" cy="104" r="13"/><path d="M70 148c2-16 42-16 44 0z"/><circle cx="140" cy="106" r="13"/><path d="M118 148c2-16 42-16 44 0z"/></g>
+              <text x="117" y="164" text-anchor="middle" font-family="Arial" font-size="8" fill="#94A3B8">stock photo</text>
+              <rect x="20" y="188" width="195" height="7" rx="3" fill="#CBD5E1"/>
+              <rect x="48" y="203" width="167" height="7" rx="3" fill="#CBD5E1"/>
+              <rect x="76" y="218" width="139" height="7" rx="3" fill="#E2E8F0"/>
+              <rect x="60" y="248" width="115" height="26" rx="13" fill="#2455B0"/>
+              <text x="117" y="265" text-anchor="middle" direction="rtl" font-family="Arial" font-weight="700" font-size="11" fill="#fff">להרשמה</text>
+              <rect y="300" width="235" height="20" fill="#64748B"/>
+            </svg>
+          </div>
+          <div>
+            <button type="button" class="btn-sm primary" id="checkBtn" onclick="BK.checkFlyer()">בדקו את הפלייר לדוגמה</button>
+            <div class="match-res" id="matchRes">
+              <div class="match-head"><b>71%</b><span>התאמה למותג<small>פלייר "ערב הורים" · הועלה מ-Canva</small></span></div>
+              <div class="mrow y"><i>✓</i><span><b>הצבעים קרובים לפלטה</b> — הכחול סוטה מ"עומק" ב-8%. החלפה אוטומטית אפשרית.</span></div>
+              <div class="mrow y"><i>✓</i><span><b>יש היררכיה ברורה</b> — כותרת, תמונה, פרטים, קריאה לפעולה.</span></div>
+              <div class="mrow w"><i>!</i><span><b>הכותרת ארוכה מדי</b> — 13 מילים. הקול שלנו: עד 7. למשל: "ערב הורים ז׳ — מדברים על מסכים."</span></div>
+              <div class="mrow w"><i>!</i><span><b>התמונה מרגישה תאגידית</b> — סטוק מבוים. עולם התמונות שלנו: אותנטי, מהחצר.</span></div>
+              <div class="mrow x"><i>✕</i><span><b>חסר האלמנט המזוהה</b> — אין נקודה ורודה ואין פס גרדיאנט. בלעדיהם זה יכול להיות כל בית ספר.</span></div>
+              <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+                <button type="button" class="btn-sm navy" onclick="BK.autofix()">תיקון אוטומטי לפי הערכה</button>
+                <span class="embed-note" style="margin:0;align-self:center">הבדיקה בדמו מוכנה מראש · במערכת המלאה — על כל קובץ שתעלו.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- הורדות -->
       <section class="card" id="s-dl">
-        <div class="sec-k">10 · הורדות</div>
+        <div class="sec-k">14 · הורדות</div>
         <h3 class="sec-h">קבצים מוכנים לשימוש</h3>
         <p class="sec-p">כל הקבצים נוצרים כאן, בדפדפן, מהערכה עצמה — כך שהם תמיד מעודכנים.</p>
         <div class="dl">
@@ -308,7 +611,7 @@
 
     <nav class="bk-nav" id="bkNav" aria-label="סעיפי הערכה">
       <span class="nav-t">סעיפים</span>
-      <a href="#s-wizard">שאלון מיפוי</a><a href="#s-story">סיפור</a><a href="#s-logo">לוגו</a><a href="#s-colors">צבעים</a><a href="#s-type">טיפוגרפיה</a><a href="#s-elements">אלמנטים</a><a href="#s-slogans">סלוגנים</a><a href="#s-voice">קול</a><a href="#s-dirs">חוברת כיוונים</a><a href="#s-dl">הורדות</a>
+      <a href="#s-upload">מעלים חומרים</a><a href="#s-diag">אבחון המותג</a><a href="#s-wizard">שאלון מיפוי</a><a href="#s-story">סיפור</a><a href="#s-logo">לוגו</a><a href="#s-colors">צבעים</a><a href="#s-type">טיפוגרפיה</a><a href="#s-elements">אלמנטים</a><a href="#s-photos">עולם התמונות</a><a href="#s-slogans">סלוגנים</a><a href="#s-voice">קול</a><a href="#s-dirs">חוברת כיוונים</a><a href="#s-score">ציון המותג</a><a href="#s-dl">הורדות</a>
     </nav>
   </div>
   </div>
@@ -463,11 +766,29 @@ var BK = (function () {
   }
 
   /* ─── חוברת כיוונים + הצבעה ─── */
+  /* pal = הצבעים שהכיוון מלביש על כל הערכה (עומק / מוביל / ניצוץ) */
   var DIRS = [
-    { id: 'spark', name: 'כיוון א׳ — "ניצוץ"', slogan: 'משפיעים.', bg: '#F00678', fg: '#FFFFFF', sp: '#F4B41B', desc: 'נועז, צעיר, פוקסיה מובילה. מתאים לבית ספר שרוצה להיראות אחרת מהשכנים. חשש: עלול להיתפס כפחות "רציני" מול הרשות.', base: 3 },
-    { id: 'flow', name: 'כיוון ב׳ — "זרם"', slogan: 'לומדים. יוצרים. משפיעים.', bg: '#12C7C7', fg: '#061E4F', sp: '#F00678', desc: 'רגוע ובהיר, טורקיז ולבן. משדר פתיחות וקהילה. חשש: דומה למותגים של רשתות חינוך אחרות.', base: 4 },
-    { id: 'depth', name: 'כיוון ג׳ — "עומק"', slogan: 'בית ספר שמשאיר סימן.', bg: '#061E4F', fg: '#FFFFFF', sp: '#F00678', desc: 'קלאסי וסמכותי, כחול עמוק עם ניצוץ אחד. עובד מצוין במסמכים ותעודות. חשש: פחות "מדבר" לתלמידים.', base: 1 }
+    { id: 'spark', name: 'כיוון א׳ — "ניצוץ"', slogan: 'משפיעים.', bg: '#F00678', fg: '#FFFFFF', sp: '#F4B41B', pal: { deep: '#061E4F', p: '#F00678', s: '#F4B41B' }, desc: 'נועז, צעיר, פוקסיה מובילה. מתאים לבית ספר שרוצה להיראות אחרת מהשכנים. חשש: עלול להיתפס כפחות "רציני" מול הרשות.', base: 3 },
+    { id: 'flow', name: 'כיוון ב׳ — "זרם"', slogan: 'לומדים. יוצרים. משפיעים.', bg: '#12C7C7', fg: '#061E4F', sp: '#F00678', pal: { deep: '#061E4F', p: '#12C7C7', s: '#F00678' }, desc: 'רגוע ובהיר, טורקיז ולבן. משדר פתיחות וקהילה. חשש: דומה למותגים של רשתות חינוך אחרות.', base: 4 },
+    { id: 'depth', name: 'כיוון ג׳ — "עומק"', slogan: 'בית ספר שמשאיר סימן.', bg: '#061E4F', fg: '#FFFFFF', sp: '#F00678', pal: { deep: '#061E4F', p: '#123058', s: '#F00678' }, desc: 'קלאסי וסמכותי, כחול עמוק עם ניצוץ אחד. עובד מצוין במסמכים ותעודות. חשש: פחות "מדבר" לתלמידים.', base: 1 }
   ];
+  var DIR_KEY = 'farm-brand-dir';
+  function applyDir(id, silent) {
+    var d = null;
+    for (var i = 0; i < DIRS.length; i++) if (DIRS[i].id === id) d = DIRS[i];
+    var st = document.body.style;
+    if (!d) {
+      st.removeProperty('--bkDeep'); st.removeProperty('--bkP'); st.removeProperty('--bkS');
+      try { localStorage.removeItem(DIR_KEY); } catch (e) {}
+      return;
+    }
+    st.setProperty('--bkDeep', d.pal.deep); st.setProperty('--bkP', d.pal.p); st.setProperty('--bkS', d.pal.s);
+    try { localStorage.setItem(DIR_KEY, JSON.stringify({ id: d.id, name: d.name.split('"')[1] || d.name, deep: d.pal.deep, p: d.pal.p, s: d.pal.s })); } catch (e) {}
+    /* אם לוח הפוסטים כבר נטען — טוענים מחדש כדי שהכרטיסים ייצבעו בכיוון */
+    var fr = document.getElementById('postsFrame');
+    if (fr && fr.src) fr.src = fr.getAttribute('data-src');
+    if (!silent) toast('כל הערכה נצבעה בכיוון שנבחר — כולל עולם התמונות והפוסטים לרשתות');
+  }
   var state = load();
   function load() { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.votes) return s; } catch (e) {} return { votes: { spark: 3, flow: 4, depth: 1 }, mine: null }; }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
@@ -486,7 +807,41 @@ var BK = (function () {
     if (state.mine === id) { toast('כבר הצבעתם לכיוון הזה'); return; }
     if (state.mine) state.votes[state.mine]--;
     state.votes[id]++; state.mine = id; save(); renderDirs();
-    toast('ההצבעה נשמרה בדמו');
+    applyDir(id);
+  }
+
+  /* ─── מסע: קפיצה לסעיף (גם מתוך לשונית הפוסטים) ─── */
+  function go(id) {
+    showView('kit');
+    var el = document.getElementById(id);
+    if (el) setTimeout(function () { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+  }
+
+  /* ─── העלאה + אבחון (דמו) ─── */
+  function fakeUpload() { toast('בדמו החומרים כבר נקלטו — במערכת המלאה זה חלון ההעלאה שלכם'); }
+  function analyze() {
+    var g = document.getElementById('dgGrid');
+    g.classList.remove('reveal'); void g.offsetWidth; g.classList.add('reveal');
+    go('s-diag');
+    toast('האבחון עודכן מארבעה קבצים וממקור אחד ברשת');
+  }
+
+  /* ─── ציון המותג ─── */
+  function initGauge() {
+    var el = document.getElementById('gaugeVal');
+    if (!el) return;
+    var obs = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { el.style.strokeDashoffset = 502 * (1 - 0.74); obs.disconnect(); }
+    }, { threshold: 0.4 });
+    obs.observe(el);
+  }
+  function checkFlyer() {
+    document.getElementById('checkBtn').style.display = 'none';
+    document.getElementById('matchRes').classList.add('on');
+    toast('הפלייר נבדק מול הערכה — 71% התאמה');
+  }
+  function autofix() {
+    toast('במערכת המלאה: הפלייר חוזר מתוקן — בפלטה, בפונט ועם האלמנט המזוהה. הדמו רץ כולו במחשב שלכם.');
   }
 
   /* ─── scroll-spy ─── */
@@ -541,7 +896,7 @@ var BK = (function () {
   function downloadPalette() { dl(new Blob(['﻿' + paletteText()], { type: 'text/plain;charset=utf-8' }), 'impact-palette.txt'); toast('הפלטה ירדה'); }
   function downloadAll() { downloadPalette(); setTimeout(downloadSVGAll, 300); setTimeout(downloadPNG, 700); }
   function share() { copy(location.href.split('#')[0], 'הקישור לערכה הועתק — שלחו לצוות'); }
-  function reset() { try { localStorage.removeItem(KEY); } catch (e) {} state = load(); renderDirs(); toast('הדמו אופס'); }
+  function reset() { try { localStorage.removeItem(KEY); } catch (e) {} state = load(); renderDirs(); applyDir(null); var mr = document.getElementById('matchRes'); if (mr) { mr.classList.remove('on'); document.getElementById('checkBtn').style.display = ''; } toast('הדמו אופס'); }
 
   /* ─── לשוניות: ערכת הזהות · פוסטים ─── */
   function showView(v) {
@@ -555,9 +910,10 @@ var BK = (function () {
   }
   if (location.hash === '#posts') showView('posts');
 
-  renderLogos(); renderPalette(); renderType(); renderSubs(); renderVoice(); renderDirs(); spy();
+  renderLogos(); renderPalette(); renderType(); renderSubs(); renderVoice(); renderDirs(); spy(); initGauge();
+  if (state.mine) applyDir(state.mine, true);
 
-  return { copy: copy, copySVG: copySVG, downloadSVG: downloadSVG, downloadSVGAll: downloadSVGAll, downloadPNG: downloadPNG, downloadPalette: downloadPalette, downloadAll: downloadAll, share: share, reset: reset, vote: vote, showView: showView };
+  return { copy: copy, copySVG: copySVG, downloadSVG: downloadSVG, downloadSVGAll: downloadSVGAll, downloadPNG: downloadPNG, downloadPalette: downloadPalette, downloadAll: downloadAll, share: share, reset: reset, vote: vote, showView: showView, go: go, fakeUpload: fakeUpload, analyze: analyze, checkFlyer: checkFlyer, autofix: autofix };
 })();
 </script>
 </body>

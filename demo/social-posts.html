@@ -83,7 +83,7 @@
   <div class="demo-head">
     <div>
       <h2>פוסטים מתוזמנים לרשתות</h2>
-      <p>לוח תוכן חודשי אחד — פייסבוק, אינסטגרם וקהילת הוואטסאפ. כותבים מראש, קובעים מתי, והפוסטים יוצאים לבד. בית הספר נוכח ברשתות בלי לרדוף אחרי זה כל ערב.</p>
+      <p>לוח תוכן חודשי אחד — פייסבוק, אינסטגרם וקהילת הוואטסאפ. כותבים מראש, קובעים מתי, והפוסטים יוצאים לבד. הכרטיסים הממותגים נצבעים אוטומטית לפי כיוון הזהות שנבחר בערכת המותג.</p>
     </div>
     <div class="demo-toolbar">
       <button type="button" class="btn-sm primary" onclick="openEdit(null)">פוסט חדש</button>
@@ -98,6 +98,7 @@
     <div class="cal-wrap">
       <div class="cal-head">
         <h3>נובמבר 2026 <small>· חשוון–כסלו תשפ"ז</small></h3>
+        <span id="dirChip"></span>
         <small>לחיצה על פוסט פותחת עריכה · פוסט מקווקו = טיוטה</small>
       </div>
       <table class="cal" id="cal"></table>
@@ -258,7 +259,12 @@
   }
 
   /* ───────── הצעות ויזואל — כרטיס ממותג (canvas) + התאמת נושא ───────── */
-  var BRAND = { navy: '#061E4F', teal: '#12C7C7', fuchsia: '#F00678', paper: '#F4F8FC' };
+  /* אם נבחר כיוון-זהות בערכת המותג — הכרטיסים נצבעים בו */
+  var BRAND = { navy: '#061E4F', teal: '#12C7C7', fuchsia: '#F00678', paper: '#F4F8FC', dirName: null };
+  try {
+    var _dir = JSON.parse(localStorage.getItem('farm-brand-dir') || 'null');
+    if (_dir && _dir.p) { BRAND.navy = _dir.deep; BRAND.teal = _dir.p; BRAND.fuchsia = _dir.s; BRAND.dirName = _dir.name; }
+  } catch (e) {}
   var TOPICS = [
     { id: 'chanuka', tag: 'חנוכה וחגים',      re: /חנוכה|נר |נרות|מדליק|סופגני|חג /,                bg: ['#0B1F4E', '#25418F'], ic: '#FFC53D', icon: 'M12 3c1.6 1.8 1.6 3.4 0 5-1.6-1.6-1.6-3.2 0-5zM12 9v8M6.5 21h11M8.5 13.5h7' },
     { id: 'books',   tag: 'קריאה וספרייה',    re: /ספר|קריאה|ספרי|כורסא/,                            bg: ['#0B5E5E', '#12C7C7'], ic: '#FFFFFF', icon: 'M12 6.5c-2.2-1.6-5.4-1.6-8 0v11c2.6-1.6 5.8-1.6 8 0 2.2-1.6 5.4-1.6 8 0v-11c-2.6-1.6-5.8-1.6-8 0zM12 6.5v11' },
@@ -294,11 +300,11 @@
     cv.width = W; cv.height = W;
     var dark = variant === 'A';
     x.fillStyle = dark ? BRAND.navy : BRAND.paper; x.fillRect(0, 0, W, W);
-    /* דקורציה */
+    /* דקורציה — בצבעי כיוון הזהות */
     x.beginPath(); x.arc(dark ? 130 : W - 110, dark ? W - 90 : 90, 330, 0, 7);
-    x.fillStyle = dark ? 'rgba(18,199,199,.16)' : 'rgba(240,6,120,.08)'; x.fill();
+    x.globalAlpha = dark ? .16 : .08; x.fillStyle = dark ? BRAND.teal : BRAND.fuchsia; x.fill(); x.globalAlpha = 1;
     x.beginPath(); x.arc(dark ? W - 120 : 140, dark ? 140 : W - 140, 58, 0, 7);
-    x.fillStyle = dark ? 'rgba(240,6,120,.85)' : 'rgba(18,199,199,.8)'; x.fill();
+    x.globalAlpha = dark ? .85 : .8; x.fillStyle = dark ? BRAND.fuchsia : BRAND.teal; x.fill(); x.globalAlpha = 1;
     /* שם בית הספר */
     x.direction = 'rtl'; x.textAlign = 'center';
     x.fillStyle = dark ? BRAND.teal : BRAND.navy;
@@ -342,7 +348,8 @@
     draw();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
     var sel = g.querySelector('[data-vis="' + edit.vis + '"]'); if (sel) sel.classList.add('sel');
-    document.getElementById('visNote').textContent = 'זוהה נושא: ' + tp.tag + ' · הכרטיסים נוצרים עכשיו, בצבעים של ' + DEMO.school.name + '. לחיצה בוחרת ויזואל לפוסט.';
+    document.getElementById('visNote').textContent = 'זוהה נושא: ' + tp.tag + ' · הכרטיסים נוצרים עכשיו, בצבעים של ' + DEMO.school.name
+      + (BRAND.dirName ? ' — כיוון הזהות "' + BRAND.dirName + '"' : '') + '. לחיצה בוחרת ויזואל לפוסט.';
   }
   function pickVis(tile) {
     var g = tile.parentNode, all = g.querySelectorAll('.vis-tile');
@@ -441,6 +448,9 @@
   load();
   renderKpis();
   showTab('cal');
+  document.getElementById('dirChip').innerHTML = BRAND.dirName
+    ? '<span class="chip-sm teal">מוזן מערכת הזהות · כיוון "' + BRAND.dirName + '"</span>'
+    : '<span class="chip-sm gray">טיפ: בחרו כיוון-זהות בערכת המותג — והכרטיסים כאן ייצבעו בו</span>';
 </script>
 </body>
 </html>
