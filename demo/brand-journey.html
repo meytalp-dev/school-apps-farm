@@ -392,12 +392,12 @@ var J = (function () {
     clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2400);
   }
 
-  /* ─── הסימן: מפרש/גל עם שמש (64×64) ─── */
+  /* ─── הסימן: מפרשית + שמש (64×64) — צורת המפרשית: Lucide "sailboat" (ISC) ─── */
   function mark(c, sun) {
-    return '<g fill="none" stroke="' + c + '" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">'
-      + '<path d="M32 8v36"/><path d="M32 12q16 8 16 26h-16"/><path d="M32 18q-11 7-11 20h11"/>'
-      + '<path d="M12 52q6 5 12 0t12 0q6 5 12 0t8-2"/></g>'
-      + '<circle cx="50" cy="10" r="4.5" fill="' + sun + '"/>';
+    return '<g transform="translate(5,6) scale(2.25)" fill="none" stroke="' + c + '" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'
+      + '<path d="M10 2v15"/><path d="M7 22a4 4 0 0 1-4-4 1 1 0 0 1 1-1h16a1 1 0 0 1 1 1 4 4 0 0 1-4 4z"/>'
+      + '<path d="M9.159 2.46a1 1 0 0 1 1.521-.193l9.977 8.98A1 1 0 0 1 20 13H4a1 1 0 0 1-.824-1.567z"/></g>'
+      + '<circle cx="56" cy="8" r="4.5" fill="' + sun + '"/>';
   }
   var HEEBO = 'font-family="Heebo, Arial, sans-serif"';
 

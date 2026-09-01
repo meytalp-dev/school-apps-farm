@@ -435,7 +435,7 @@
               <circle cx="272" cy="36" r="96" style="fill:var(--bkP)" opacity=".18"/>
               <circle cx="16" cy="368" r="64" style="fill:var(--bkS)" opacity=".15"/>
               <g fill="#fff" opacity=".22"><circle cx="36" cy="36" r="3"/><circle cx="60" cy="36" r="3"/><circle cx="36" cy="60" r="3"/><circle cx="60" cy="60" r="3"/><circle cx="84" cy="36" r="3"/><circle cx="84" cy="60" r="3"/></g>
-              <g transform="translate(224,78) scale(.85)"><g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M26 56L29 22h10l3 34"/><path d="M22 56h24"/><path d="M27.5 36h13M26 46h16"/><path d="M28 22v-6h12v6"/></g><circle cx="34" cy="9" r="4.5" style="fill:var(--bkS)"/><g fill="none" style="stroke:var(--bkS)" stroke-width="3" stroke-linecap="round"><path d="M22 5l6 2.5M46 5l-6 2.5"/></g></g>
+              <g transform="translate(222,80) scale(2.1)" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2 3l2 15h-8l2 -15l2 -3"/><path d="M8 9l8 0"/><path d="M3 11l2 -2l-2 -2"/><path d="M21 11l-2 -2l2 -2"/></g><circle cx="247" cy="78" r="4.5" style="fill:var(--bkS)"/>
               <text x="272" y="222" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="44" letter-spacing="-1.8" fill="#fff">כל נער צריך</text>
               <text x="272" y="270" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="44" letter-spacing="-1.8" fill="#fff">מגדלור<tspan style="fill:var(--bkS)">.</tspan></text>
               <rect x="104" y="300" width="168" height="38" rx="19" style="fill:var(--bkS)"/>
@@ -477,7 +477,7 @@
               <defs><linearGradient id="ogc" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--bkDeep)"/><stop offset=".55" style="stop-color:var(--bkP)"/><stop offset="1" style="stop-color:var(--bkS)"/></linearGradient></defs>
               <rect width="300" height="400" fill="#FFFFFF"/>
               <rect x="14" y="14" width="272" height="372" rx="14" fill="none" style="stroke:var(--bkDeep)" opacity=".22" stroke-width="1.5"/>
-              <g transform="translate(122,40)"><g fill="none" style="stroke:var(--bkDeep)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 52L25 22h8l3 30"/><path d="M18 52h22"/><path d="M23.5 34h11M22.5 43h13"/><path d="M24 22v-6h10v6"/></g><circle cx="29" cy="10" r="4" style="fill:var(--bkS)"/><g fill="none" style="stroke:var(--bkS)" stroke-width="2.5" stroke-linecap="round"><path d="M18 7l5 2M40 7l-5 2"/></g></g>
+              <g transform="translate(123,42) scale(2.25)" fill="none" style="stroke:var(--bkDeep)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2 3l2 15h-8l2 -15l2 -3"/><path d="M8 9l8 0"/><path d="M3 11l2 -2l-2 -2"/><path d="M21 11l-2 -2l2 -2"/></g><circle cx="150" cy="40" r="4.5" style="fill:var(--bkS)"/>
               <text x="150" y="156" text-anchor="middle" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="30" letter-spacing="-1" style="fill:var(--bkDeep)">תעודת הוקרה</text>
               <text x="150" y="186" text-anchor="middle" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="600" font-size="13" fill="#64748B">מוענקת לחונך המסיים שנתיים בתוכנית</text>
               <text x="150" y="228" text-anchor="middle" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="17" style="fill:var(--bkDeep)">על שנתיים של מפגש שבועי — בלי לפספס</text>
@@ -659,12 +659,11 @@ var BK = (function () {
     clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2400);
   }
 
-  /* ─── הסימן: מגדלור עם נקודת אור (64×64) ─── */
+  /* ─── הסימן: מגדלור + נקודת אור (64×64) — צורת המגדלור: Tabler "building-lighthouse" (MIT) ─── */
   function mark(c, spark) {
-    return '<g fill="none" stroke="' + c + '" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">'
-      + '<path d="M26 56L29 22h10l3 34"/><path d="M22 56h24"/><path d="M27.5 36h13M26 46h16"/><path d="M28 22v-6h12v6"/></g>'
-      + '<circle cx="34" cy="9" r="4.5" fill="' + spark + '"/>'
-      + '<g fill="none" stroke="' + spark + '" stroke-width="3" stroke-linecap="round"><path d="M22 5l6 2.5M46 5l-6 2.5"/></g>';
+    return '<g transform="translate(5,6) scale(2.25)" fill="none" stroke="' + c + '" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'
+      + '<path d="M12 3l2 3l2 15h-8l2 -15l2 -3"/><path d="M8 9l8 0"/><path d="M3 11l2 -2l-2 -2"/><path d="M21 11l-2 -2l2 -2"/></g>'
+      + '<circle cx="32" cy="6" r="4.5" fill="' + spark + '"/>';
   }
   var HEEBO = 'font-family="Heebo, Arial, sans-serif"';
   function svgWrap(w, h, inner) { return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" height="' + h + '">' + inner + '</svg>'; }
