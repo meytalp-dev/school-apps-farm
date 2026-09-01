@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דמו — זהות ואחידות ארגונית (עמותות) — חוות האפליקציות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+  /* ─── פריסה: תוכן מימין, ניווט-סעיפים דביק משמאל ─── */
+  .bk-layout { display: grid; grid-template-columns: 1fr 210px; gap: 28px; align-items: start; }
+  .bk-nav { position: sticky; top: 92px; display: flex; flex-direction: column; gap: 2px; padding: 8px; background: var(--white); border: 1px solid var(--line); border-radius: 18px; }
+  .bk-nav a { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 12px; font-size: 13px; font-weight: 700; color: var(--gray); text-decoration: none; transition: all var(--motion-fast) var(--motion-ease); }
+  .bk-nav a::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: rgba(6,30,79,.14); transition: all var(--motion-fast); }
+  .bk-nav a:hover { color: var(--navy); background: rgba(6,30,79,.04); }
+  .bk-nav a.on { color: var(--navy); background: rgba(255,176,32,.16); }
+  .bk-nav a.on::before { background: var(--bkS, #FFB020); transform: scale(1.4); }
+  .bk-nav .nav-t { font-size: 11px; font-weight: 800; letter-spacing: .6px; color: var(--gray); padding: 8px 12px 4px; }
+  .bk-sections { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+  .bk-sections section.card { scroll-margin-top: 92px; padding: 28px; }
+  .sec-k { font-size: 11.5px; font-weight: 800; letter-spacing: 1px; color: var(--bkS, #E09000); margin-bottom: 4px; }
+  .sec-h { font-size: 24px; font-weight: 900; letter-spacing: -.6px; line-height: 1.15; margin-bottom: 6px; }
+  .sec-p { color: var(--gray); font-size: 14.5px; max-width: 620px; margin-bottom: 20px; }
+  @media (max-width: 900px) { .bk-layout { grid-template-columns: 1fr; } .bk-nav { position: static; flex-direction: row; flex-wrap: wrap; } .bk-nav .nav-t { display: none; } .bk-sections section.card { padding: 20px 16px; } }
+
+  /* ─── משתני-כיוון: ברירת המחדל = זהות "עוגן" ─── */
+  body { --bkDeep: #123A5C; --bkP: #1FA8A0; --bkS: #FFB020; }
+
+  /* ─── פס המסע ─── */
+  .journey { display: flex; gap: 4px; background: var(--white); border: 1px solid var(--line); border-radius: 22px; padding: 10px; margin-bottom: 20px; overflow-x: auto; }
+  .jstep { flex: 1; min-width: 106px; border: none; background: transparent; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 12px 8px 10px; border-radius: 16px; position: relative; transition: background var(--motion-fast); }
+  .jstep:hover { background: rgba(31,168,160,.09); }
+  .jstep .jn { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: rgba(18,58,92,.08); color: var(--bkDeep); transition: all var(--motion-fast); }
+  .jstep .jn svg { width: 17px; height: 17px; }
+  .jstep:hover .jn { background: var(--bkDeep); color: #fff; }
+  .jstep b { font-size: 13.5px; font-weight: 800; color: var(--navy); letter-spacing: -.2px; white-space: nowrap; }
+  .jstep small { font-size: 11px; color: var(--gray); font-weight: 600; white-space: nowrap; }
+  .jstep:not(:first-child)::before { content: ''; position: absolute; top: 29px; right: -4px; width: 8px; height: 2px; background: rgba(6,30,79,.15); }
+
+  /* ─── 01 · העלאת חומרים ─── */
+  .up-zone { border: 2px dashed rgba(6,30,79,.18); border-radius: 20px; padding: 24px; text-align: center; background: var(--bg); cursor: pointer; transition: border-color var(--motion-fast), background var(--motion-fast); }
+  .up-zone:hover { border-color: var(--bkP); background: rgba(31,168,160,.05); }
+  .up-zone svg { width: 36px; height: 36px; color: var(--navy); opacity: .55; }
+  .up-zone b { display: block; font-size: 15.5px; font-weight: 800; margin-top: 8px; }
+  .up-zone small { color: var(--gray); font-size: 12.5px; }
+  .up-files { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 14px; }
+  .up-file { display: flex; align-items: center; gap: 11px; background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 10px 13px; }
+  .up-file .fi { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; color: #fff; flex: none; }
+  .up-file .fi svg { width: 17px; height: 17px; }
+  .up-file b { font-size: 13.5px; font-weight: 800; display: block; }
+  .up-file small { font-size: 11.5px; color: var(--gray); display: block; margin-top: 1px; }
+  .up-file .ok { margin-inline-start: auto; color: #3E7F1E; font-size: 11.5px; font-weight: 800; white-space: nowrap; background: rgba(123,203,82,.14); border-radius: 999px; padding: 4px 10px; }
+  .up-act { display: flex; align-items: center; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+  @media (max-width: 640px) { .up-files { grid-template-columns: 1fr; } }
+
+  /* ─── 02 · אבחון המותג ─── */
+  .dg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .dg { border: 1px solid var(--line); border-radius: 18px; padding: 18px; background: var(--white); }
+  .dg h4 { font-size: 12.5px; font-weight: 800; color: var(--gray); letter-spacing: .5px; margin-bottom: 11px; }
+  .dg h4:not(:first-child) { margin-top: 18px; }
+  .dg-grid.reveal .dg { animation: heroRise 600ms var(--motion-ease) both; }
+  .dg-grid.reveal .dg:nth-child(2) { animation-delay: .12s; }
+  .dg-grid.reveal .dg:nth-child(3) { animation-delay: .24s; }
+  .traits { display: flex; flex-wrap: wrap; gap: 8px; }
+  .traits span { padding: 8px 15px; border-radius: 999px; font-size: 14.5px; font-weight: 800; background: rgba(6,30,79,.07); color: var(--navy); }
+  .traits.hot span:nth-child(3n+1) { background: rgba(31,168,160,.14); color: #0B6E68; }
+  .traits.hot span:nth-child(3n+2) { background: rgba(255,176,32,.16); color: #9A6700; }
+  .tension .tt { display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; margin-bottom: 9px; }
+  .tension .tb { position: relative; height: 10px; border-radius: 999px; background: linear-gradient(90deg, rgba(18,58,92,.18), rgba(255,176,32,.35)); }
+  .tension .tb i { position: absolute; top: 50%; right: 58%; transform: translate(50%,-50%); width: 20px; height: 20px; border-radius: 50%; background: var(--bkS); border: 3px solid #fff; box-shadow: 0 4px 12px rgba(6,30,79,.28); }
+  .tension p { font-size: 12.5px; color: var(--gray); margin-top: 9px; line-height: 1.6; }
+  .rules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 16px; }
+  .rule { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; padding: 12px 14px; border-radius: 14px; }
+  .rule.do { background: rgba(123,203,82,.12); } .rule.dont { background: rgba(240,6,120,.07); }
+  .rule svg { width: 18px; height: 18px; flex: 0 0 auto; margin-top: 2px; }
+  .rule.do svg { color: #3E7F1E; } .rule.dont svg { color: var(--fuchsia); }
+  .dg-list { display: flex; flex-direction: column; gap: 8px; }
+  .dg-list .rule { margin: 0; }
+  .dg-issues { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .dg-issue { background: rgba(240,6,120,.045); border-radius: 14px; padding: 14px; }
+  .dg-issue b { display: block; font-size: 14px; font-weight: 800; color: var(--fuchsia); margin-bottom: 6px; }
+  .dg-issue p { font-size: 12.5px; color: var(--gray); line-height: 1.6; }
+  .found-blues { display: flex; gap: 6px; margin: 4px 0 8px; }
+  .found-blues i { width: 32px; height: 32px; border-radius: 10px; display: block; }
+  .found-fonts { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 8px; }
+  .found-fonts span { padding: 4px 12px; border-radius: 10px; background: var(--white); border: 1px solid var(--line); font-size: 14.5px; }
+  .tone-ex { font-size: 12.5px; background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; margin: 4px 0 8px; line-height: 1.55; }
+  .dg-foot { margin-top: 16px; font-size: 12.5px; color: var(--gray); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: space-between; }
+  @media (max-width: 860px) { .dg-grid, .dg-issues { grid-template-columns: 1fr; } }
+
+  /* ─── סיפור ─── */
+  .story { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .story div { padding: 18px; border-radius: 16px; background: var(--bg); border: 1px solid var(--line); }
+  .story b { display: block; font-size: 15px; font-weight: 800; margin-bottom: 6px; }
+  .story p { font-size: 14px; line-height: 1.7; color: #334155; }
+  .story-line { margin-top: 18px; padding: 22px 26px; border-radius: 18px; background: var(--bkDeep); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .story-line b { font-size: clamp(22px, 3vw, 30px); font-weight: 900; letter-spacing: -.8px; }
+  .story-line b i { font-style: normal; color: var(--bkS); }
+  .story-line small { color: rgba(255,255,255,.7); font-size: 13px; }
+  @media (max-width: 720px) { .story { grid-template-columns: 1fr; } }
+
+  /* ─── לוגו ─── */
+  .logo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .logo-card { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: var(--white); }
+  .logo-card .lh { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  .logo-card .lh b { font-size: 14px; font-weight: 800; }
+  .logo-card .lh small { color: var(--gray); font-size: 12px; }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; }
+  .tile { display: grid; place-items: center; padding: 20px 14px; min-height: 130px; }
+  .tile.light { background: var(--bg); }
+  .tile.dark { background: var(--bkDeep); }
+  .tile svg { max-width: 100%; height: auto; }
+  .logo-card .la { display: flex; gap: 6px; padding: 10px 12px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+  @media (max-width: 720px) { .logo-grid, .rules { grid-template-columns: 1fr; } }
+
+  /* ─── צבעים ─── */
+  .pal-group { margin-bottom: 18px; }
+  .pal-group h4 { font-size: 13px; font-weight: 800; color: var(--gray); letter-spacing: .4px; margin-bottom: 10px; }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .sw { border-radius: 16px; overflow: hidden; border: 1px solid var(--line); cursor: pointer; background: var(--white); transition: transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast); }
+  .sw:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(6,30,79,.12); }
+  .sw i { display: block; height: 72px; }
+  .sw div { padding: 10px 12px; }
+  .sw b { display: block; font-size: 13.5px; font-weight: 800; }
+  .sw span { font-size: 12px; color: var(--gray); font-family: ui-monospace, Consolas, monospace; letter-spacing: .3px; direction: ltr; display: inline-block; }
+  .sw small { display: block; font-size: 11.5px; color: var(--gray); margin-top: 3px; }
+  .ratio { display: flex; height: 14px; border-radius: 999px; overflow: hidden; margin-top: 8px; }
+  .ratio i { display: block; height: 100%; }
+  .ratio-l { display: flex; justify-content: space-between; font-size: 12px; color: var(--gray); margin-top: 6px; }
+
+  /* ─── טיפוגרפיה ─── */
+  .type-row { display: grid; grid-template-columns: 120px 1fr 90px; align-items: baseline; gap: 16px; padding: 14px 0; border-bottom: 1px dashed var(--line); }
+  .type-row:last-child { border-bottom: none; }
+  .type-row .tk { font-size: 12px; font-weight: 800; color: var(--gray); }
+  .type-row .tv { font-size: 12px; color: var(--gray); font-family: ui-monospace, Consolas, monospace; text-align: left; }
+  .type-row .ts { line-height: 1.15; letter-spacing: -.5px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .weights { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .weights span { padding: 8px 14px; border-radius: 12px; background: var(--bg); border: 1px solid var(--line); font-size: 18px; }
+  @media (max-width: 720px) { .type-row { grid-template-columns: 1fr; gap: 4px; } .type-row .tv { text-align: right; } }
+
+  /* ─── אלמנטים ─── */
+  .el-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .el { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+  .el b { display: block; padding: 12px 14px; font-size: 14px; font-weight: 800; border-bottom: 1px solid var(--line); }
+  .el p { padding: 10px 14px; font-size: 12.5px; color: var(--gray); }
+  .pattern { height: 150px; background-color: var(--bg);
+    background-image: radial-gradient(circle at 12px 12px, rgba(18,58,92,.85) 3px, transparent 3.5px), radial-gradient(circle at 36px 36px, var(--bkS) 3px, transparent 3.5px), linear-gradient(135deg, transparent 46%, color-mix(in srgb, var(--bkP) 35%, transparent) 46%, color-mix(in srgb, var(--bkP) 35%, transparent) 54%, transparent 54%);
+    background-size: 48px 48px, 48px 48px, 48px 48px; }
+  .grad { height: 150px; background: linear-gradient(90deg, var(--bkDeep) 0%, var(--bkP) 55%, var(--bkS) 100%); position: relative; }
+  .grad::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 60%, rgba(6,30,79,.25)); }
+  .grad-bar { height: 8px; border-radius: 999px; background: linear-gradient(90deg, var(--bkDeep), var(--bkP), var(--bkS)); margin: 14px; }
+  @media (max-width: 720px) { .el-grid { grid-template-columns: 1fr; } }
+
+  /* ─── עולם התמונות ─── */
+  .ph-rules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 18px; }
+  .ph-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; align-items: start; }
+  .ph { border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--white); margin: 0; transition: transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast); }
+  .ph:hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(6,30,79,.12); }
+  .ph svg { display: block; width: 100%; height: auto; }
+  .ph figcaption { padding: 9px 12px; font-size: 12px; font-weight: 700; color: var(--gray); border-top: 1px solid var(--line); }
+  @media (max-width: 860px) { .ph-grid { grid-template-columns: repeat(2, 1fr); } .ph-rules { grid-template-columns: 1fr; } }
+
+  /* ─── סלוגנים ─── */
+  .slogan-main { padding: 34px 26px; border-radius: 20px; background: linear-gradient(135deg, color-mix(in srgb, var(--bkP) 13%, #fff), color-mix(in srgb, var(--bkS) 12%, #fff)); text-align: center; margin-bottom: 16px; cursor: pointer; }
+  .slogan-main b { display: block; font-size: clamp(28px, 4.5vw, 46px); font-weight: 900; letter-spacing: -1.4px; line-height: 1.1; }
+  .slogan-main b i { font-style: normal; color: var(--bkS); }
+  .slogan-main small { display: block; margin-top: 8px; color: var(--gray); font-size: 13.5px; }
+  .sub-slogans { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .sub-slogans div { padding: 16px 18px; border-radius: 16px; border: 1px solid var(--line); background: var(--white); position: relative; cursor: pointer; }
+  .sub-slogans b { display: block; font-size: 19px; font-weight: 800; letter-spacing: -.4px; margin: 6px 0 4px; }
+  .sub-slogans p { font-size: 13px; color: var(--gray); }
+  @media (max-width: 640px) { .sub-slogans { grid-template-columns: 1fr; } }
+
+  /* ─── מילים + קול ─── */
+  .words { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .words > div { border-radius: 18px; padding: 18px; }
+  .words .on { background: rgba(123,203,82,.1); } .words .off { background: rgba(240,6,120,.06); }
+  .words h4 { font-size: 14px; font-weight: 800; margin-bottom: 12px; }
+  .words .on h4 { color: #3E7F1E; } .words .off h4 { color: var(--fuchsia); }
+  .wl { display: flex; flex-wrap: wrap; gap: 8px; }
+  .wl span { padding: 6px 12px; border-radius: 999px; background: var(--white); border: 1px solid var(--line); font-size: 13.5px; font-weight: 700; }
+  .words .off .wl span { text-decoration: line-through; text-decoration-color: rgba(240,6,120,.6); color: var(--gray); }
+  .voice { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .voice > div { border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+  .voice b { display: block; font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+  .voice p { font-size: 13px; color: var(--gray); margin-bottom: 12px; }
+  .ex { font-size: 13px; padding: 10px 12px; border-radius: 12px; margin-top: 8px; line-height: 1.55; }
+  .ex.y { background: rgba(123,203,82,.12); } .ex.n { background: rgba(240,6,120,.07); }
+  .ex small { display: block; font-size: 11px; font-weight: 800; margin-bottom: 2px; }
+  .ex.y small { color: #3E7F1E; } .ex.n small { color: var(--fuchsia); }
+  @media (max-width: 860px) { .voice { grid-template-columns: 1fr; } .words { grid-template-columns: 1fr; } }
+
+  /* ─── חוברת כיוונים ─── */
+  .dirs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .dir { border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: var(--white); transition: transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast); display: flex; flex-direction: column; }
+  .dir:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(6,30,79,.1); }
+  .dir.chosen { border-color: var(--bkS); box-shadow: 0 0 0 3px rgba(255,176,32,.25); }
+  .dir .prev { height: 150px; display: grid; place-items: center; position: relative; }
+  .dir .prev svg { width: 64px; height: 64px; }
+  .dir .prev b { position: absolute; bottom: 12px; right: 14px; font-size: 19px; font-weight: 900; letter-spacing: -.5px; }
+  .dir .db { padding: 16px; display: flex; flex-direction: column; flex: 1; }
+  .dir .db h4 { font-size: 16px; font-weight: 800; }
+  .dir .db p { font-size: 13px; color: var(--gray); margin: 4px 0 12px; line-height: 1.6; flex: 1; }
+  .dir .vote { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .dir .vote .bar { flex: 1; }
+  .dir .vote span { font-size: 12.5px; font-weight: 800; min-width: 34px; text-align: left; font-variant-numeric: tabular-nums; }
+  .vote-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; flex-wrap: wrap; font-size: 13px; color: var(--gray); }
+  @media (max-width: 860px) { .dirs { grid-template-columns: 1fr; } }
+
+  /* ─── הזהות בפעולה — פוסטים ─── */
+  .posts3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .postc { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: var(--white); }
+  .postc svg { display: block; width: 100%; height: auto; }
+  .postc .pm { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 12px; font-size: 11.5px; font-weight: 700; color: var(--gray); border-top: 1px solid var(--line); }
+  .postc .pm .chs { display: inline-flex; gap: 3px; }
+  .postc .pm .chs i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  @media (max-width: 860px) { .posts3 { grid-template-columns: 1fr; } }
+
+  /* ─── ציון המותג ─── */
+  .score-wrap { display: grid; grid-template-columns: 220px 1fr; gap: 26px; align-items: center; margin-bottom: 22px; }
+  .gauge { position: relative; width: 190px; margin: 0 auto; }
+  .gauge svg { width: 100%; height: auto; display: block; }
+  .gauge circle.track { fill: none; stroke: rgba(6,30,79,.08); stroke-width: 14; }
+  .gauge circle.val { fill: none; stroke: var(--bkP); stroke-width: 14; stroke-linecap: round; transform: rotate(-90deg); transform-origin: center; stroke-dasharray: 502; stroke-dashoffset: 502; transition: stroke-dashoffset 1.2s var(--motion-ease); }
+  .gauge .gv { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+  .gauge .gv b { display: block; font-size: 46px; font-weight: 900; letter-spacing: -2px; line-height: 1; }
+  .gauge .gv small { display: block; font-size: 11.5px; color: var(--gray); font-weight: 700; margin-top: 4px; }
+  .gauge .gv .delta { color: #1E9E5A; font-weight: 900; }
+  .dim { display: grid; grid-template-columns: 150px 1fr 40px; gap: 14px; align-items: center; padding: 9px 0; border-bottom: 1px dashed var(--line); }
+  .dim:last-child { border-bottom: none; }
+  .dim > div b { font-size: 13.5px; font-weight: 800; display: block; }
+  .dim > div small { display: block; font-size: 11.5px; color: var(--gray); font-weight: 600; margin-top: 1px; }
+  .dim .v { font-size: 15px; font-weight: 900; text-align: left; font-variant-numeric: tabular-nums; }
+  .check-grid { display: grid; grid-template-columns: 235px 1fr; gap: 20px; align-items: start; }
+  .flyer { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: 0 10px 26px rgba(6,30,79,.08); }
+  .flyer svg { display: block; width: 100%; height: auto; }
+  .match-res { display: none; }
+  .match-res.on { display: block; animation: heroRise 500ms var(--motion-ease) both; }
+  .match-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .match-head b { font-size: 38px; font-weight: 900; letter-spacing: -2px; color: var(--fuchsia); line-height: 1; }
+  .match-head span { font-size: 13.5px; font-weight: 800; }
+  .match-head span small { display: block; color: var(--gray); font-weight: 600; font-size: 12px; margin-top: 2px; }
+  .mrow { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; padding: 9px 12px; border-radius: 12px; margin-bottom: 6px; line-height: 1.55; }
+  .mrow.y { background: rgba(123,203,82,.1); } .mrow.w { background: rgba(244,180,27,.13); } .mrow.x { background: rgba(240,6,120,.07); }
+  .mrow i { font-style: normal; font-weight: 900; width: 16px; flex: none; }
+  .mrow.y i { color: #3E7F1E; } .mrow.w i { color: #9A6700; } .mrow.x i { color: var(--fuchsia); }
+  @media (max-width: 860px) { .score-wrap, .check-grid { grid-template-columns: 1fr; } .dim { grid-template-columns: 110px 1fr 36px; } .flyer { max-width: 260px; } }
+
+  /* ─── הורדות ─── */
+  .dl { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .dl > div { border: 1px solid var(--line); border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
+  .dl svg.ic { width: 28px; height: 28px; color: var(--bkDeep); }
+  .dl b { font-size: 15px; font-weight: 800; }
+  .dl p { font-size: 13px; color: var(--gray); flex: 1; }
+  @media (max-width: 860px) { .dl { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<main class="demo-main">
+  <div class="demo-head">
+    <div><h2>זהות ואחידות ארגונית — לעמותות</h2><p>אותו מסע כמו בגרסה הבית-ספרית, בשפה של ארגון חברתי: מעלים לוגו, חזון ודוח שנתי — והמערכת מאבחנת את המותג, מציעה כיוונים, בונה ערכה שלמה, ושומרת שכל פנייה לתורמים, למתנדבים ולקהילה תיראה "אתם". הדמו: עמותת "מגדלור" — חונכות אישית לנוער.</p></div>
+    <div class="demo-toolbar">
+      <a class="btn-sm" href="brand-kit.html">לגרסה הבית-ספרית</a>
+      <button type="button" class="btn-sm ghost" onclick="BK.reset()">איפוס דמו</button>
+    </div>
+  </div>
+
+  <div class="journey" role="navigation" aria-label="שלבי המסע">
+    <button type="button" class="jstep" onclick="BK.go('s-upload')"><span class="jn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg></span><b>מגלים</b><small>מעלים את מה שיש</small></button>
+    <button type="button" class="jstep" onclick="BK.go('s-diag')"><span class="jn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M8 11h6M11 8v6"/></svg></span><b>מאבחנים</b><small>מי אתם באמת</small></button>
+    <button type="button" class="jstep" onclick="BK.go('s-dirs')"><span class="jn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg></span><b>בוחרים כיוון</b><small>הוועד מצביע</small></button>
+    <button type="button" class="jstep" onclick="BK.go('s-story')"><span class="jn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9c0-1.1-.9-2-2-2h-2a2 2 0 0 1-2-2V6c0-1.1-.9-2-2-2z"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="7" r="1"/></svg></span><b>הערכה</b><small>לוגו · צבעים · קול</small></button>
+    <button type="button" class="jstep" onclick="BK.go('s-posts')"><span class="jn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg></span><b>בפעולה</b><small>הפוסטים לרשתות</small></button>
+    <button type="button" class="jstep" onclick="BK.go('s-score')"><span class="jn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 1 9-9"/><path d="M12 12l6-4.5"/><path d="M19 17l1.5 1.5L23.5 15"/></svg></span><b>בודקים</b><small>ציון עקביות</small></button>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi" style="--c:var(--bkDeep)"><b>4</b><span>קבצים נותחו + מקור ברשת</span></div>
+    <div class="kpi" style="--c:var(--bkP)"><b>9</b><span>צבעי מותג</span></div>
+    <div class="kpi" style="--c:var(--bkS)"><b>3</b><span>כיוונים להצבעת הוועד</span></div>
+    <div class="kpi" style="--c:var(--green)"><b>31</b><span>תוצרים שנוצרו מהערכה החודש</span></div>
+    <div class="kpi" style="--c:var(--fuchsia)"><b>71</b><span>ציון עקביות המותג</span></div>
+  </div>
+
+  <div class="bk-layout">
+    <div class="bk-sections" id="secs">
+
+      <!-- 01 · העלאת חומרים -->
+      <section class="card" id="s-upload">
+        <div class="sec-k">01 · מעלים את מה שכבר יש</div>
+        <h3 class="sec-h">תנו לנו את מה שכבר עשיתם — נבין אתכם</h3>
+        <p class="sec-p">לא עוד ארבעים שאלות. מעלים את הלוגו, מסמך החזון והדוח השנתי לתורמים — ומחברים את עמוד הפייסבוק. המערכת קוראת הכול ומגלה את המותג שמסתתר בפנים.</p>
+        <div class="up-zone" role="button" tabindex="0" onclick="BK.fakeUpload()" onkeydown="if(event.key==='Enter')BK.fakeUpload()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V6M7.5 10.5 12 6l4.5 4.5"/><path d="M4 16v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2"/></svg>
+          <b>גוררים לכאן קבצים — או לוחצים לבחירה</b>
+          <small>PDF · Word · PowerPoint · תמונות · קישור לאתר או לעמוד — עד 20 קבצים</small>
+        </div>
+        <div class="up-files">
+          <div class="up-file"><span class="fi" style="background:var(--bkDeep)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></span><span><b>לוגו-העמותה.png</b><small>שתי גרסאות זוהו · הצבעים חולצו</small></span><span class="ok">נקלט ✓</span></div>
+          <div class="up-file"><span class="fi" style="background:var(--bkP)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h6"/></svg></span><span><b>מסמך חזון.docx</b><small>11 משפטי מפתח · 4 ערכים זוהו</small></span><span class="ok">נקלט ✓</span></div>
+          <div class="up-file"><span class="fi" style="background:#C98600"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 14l2 2 4-4"/></svg></span><span><b>דוח שנתי לתורמים.pdf</b><small>23 עמודים · המספרים והשקיפות חולצו</small></span><span class="ok">נקלט ✓</span></div>
+          <div class="up-file"><span class="fi" style="background:#0B7DB5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 8h3V4.5h-3c-2.5 0-4 1.7-4 4.2V11H7v3.5h3V20h3.5v-5.5h3l.5-3.5h-3.5V9c0-.6.4-1 1-1z"/></svg></span><span><b>עמוד הפייסבוק של העמותה</b><small>28 פוסטים אחרונים נסרקו · הקול נלמד</small></span><span class="ok">נסרק ✓</span></div>
+        </div>
+        <div class="up-act">
+          <button type="button" class="btn-sm primary" onclick="BK.analyze()">ניתוח החומרים ←</button>
+          <span class="embed-note" style="margin:0">בדמו החומרים כבר "הועלו" — במערכת המלאה אלה הקבצים שלכם.</span>
+        </div>
+      </section>
+
+      <!-- 02 · אבחון המותג -->
+      <section class="card" id="s-diag">
+        <div class="sec-k">02 · אבחון המותג</div>
+        <h3 class="sec-h">ככה אנחנו מבינים אתכם</h3>
+        <p class="sec-p">לפני צבעים ולוגו — אבחון. מכל החומרים שהעליתם המערכת מזקקת מי אתם, למי אתם מדברים, מה שווה לשמר — ומה שובר כרגע את האחידות.</p>
+        <div class="dg-grid" id="dgGrid">
+          <div class="dg">
+            <h4>האישיות שעולה מהחומרים</h4>
+            <div class="traits hot"><span>חם</span><span>שקוף</span><span>אופטימי</span><span>מקצועי</span><span>בגובה העיניים</span></div>
+            <h4>הקהלים המרכזיים</h4>
+            <div class="traits"><span>תורמים ושותפים</span><span>מתנדבים</span><span>נוער ומשפחות</span></div>
+          </div>
+          <div class="dg">
+            <h4>המתח המותגי</h4>
+            <div class="tension">
+              <div class="tt"><span>אמינות</span><span>רגש</span></div>
+              <div class="tb"><i></i></div>
+              <p>הסיפורים שלכם מרגשים — אבל תורם מוסדי מחפש גם מסגרת אמינה אחת. הכיוון: שומרים על הלב, ועוטפים אותו במספרים ובשקיפות.</p>
+            </div>
+            <h4>מה שווה לשמר</h4>
+            <div class="dg-list">
+              <div class="rule do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg><span><b>הסיפורים האישיים</b> בפוסטים (בהסכמה) — הם שמביאים את התגובות והתרומות.</span></div>
+              <div class="rule do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg><span><b>שקיפות המספרים</b> בדוח השנתי — נכס אמון מול תורמים. מרימים אותה גם לרשתות.</span></div>
+            </div>
+          </div>
+          <div class="dg" style="grid-column:1/-1">
+            <h4>מה שובר כרגע את האחידות</h4>
+            <div class="dg-issues">
+              <div class="dg-issue"><b>חמישה כחולים שונים</b>
+                <div class="found-blues"><i style="background:#1F4E79"></i><i style="background:#0E3A5C"></i><i style="background:#2E75B6"></i><i style="background:#16324F"></i><i style="background:#0B7DB5"></i></div>
+                <p>בלוגו, בדוח, במצגת ובדפי התרומה — כל אחד כחול אחר. תורם שרואה שלושה חומרים לא בטוח שזה אותו ארגון.</p></div>
+              <div class="dg-issue"><b>שלושה פונטים מתחלפים</b>
+                <div class="found-fonts"><span style="font-family:David,serif">David</span><span style="font-family:Arial,sans-serif">Arial</span><span style="font-family:Heebo">Heebo</span></div>
+                <p>הדוח ב-David, המצגות ב-Arial, האתר ב-Heebo. בוחרים אחד — והוא הולך לכל מקום.</p></div>
+              <div class="dg-issue"><b>הטון קופץ בין ערוצים</b>
+                <div class="tone-ex">בדוח: "העמותה מספקת מענים הוליסטיים"<br>בפייסבוק: "איזה מפגש היה לנו אתמול!"</div>
+                <p>הפייסבוק הוא האמיתי שלכם. הדוח עוד מדבר בשפה של מכרזים.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="dg-foot">
+          <span>האבחון בדמו נוצר מארבעה קבצים וממקור אחד ברשת · במערכת המלאה — מהחומרים האמיתיים שלכם.</span>
+          <button type="button" class="btn-sm navy" onclick="BK.go('s-dirs')">ומכאן — בוחרים כיוון ←</button>
+        </div>
+      </section>
+
+      <!-- 03 · סיפור -->
+      <section class="card" id="s-story">
+        <div class="sec-k">03 · סיפור העמותה</div>
+        <h3 class="sec-h">עמותה שבה כל נער מגלה שרואים אותו</h3>
+        <p class="sec-p">שלושה משפטים שכל אחד בארגון יכול לספר — לתורם חדש, למתנדב מתלבט, לעיתונאית שמתקשרת.</p>
+        <div class="story">
+          <div><b>מאיפה באנו</b><p>מגדלור נולדה מתובנה פשוטה: נער אחד עם מבוגר אחד שמאמין בו — זה כל ההבדל. התחלנו עם שלושה חונכים בעיר אחת; היום אנחנו בשבע ערים.</p></div>
+          <div><b>מה אנחנו עושים</b><p>מחברים כל נער לחונך אישי לשנתיים לפחות: מפגש שבועי, יעד אחד שהנער בוחר בעצמו, וקהילה שלמה מסביב — משפחה, בית ספר, מתנדבים.</p></div>
+          <div><b>מה מבדל אותנו</b><p>אצלנו הקשר לא נגמר כשנגמר התקציב. חונך נשאר חונך, והבוגרים שלנו חוזרים — שליש מהחונכים החדשים היו פעם חניכים בעצמם.</p></div>
+        </div>
+        <div class="story-line"><b>רואים. מלווים. מאירים<i>.</i></b><small>נקודת האור בסוף היא הסימן שלנו — הרגע שבו נער מגלה שרואים אותו.</small></div>
+      </section>
+
+      <!-- 04 · לוגו -->
+      <section class="card" id="s-logo">
+        <div class="sec-k">04 · לוגו</div>
+        <h3 class="sec-h">הסימן: מגדלור עם נקודת אור</h3>
+        <p class="sec-p">מגדל פשוט בקו נקי, ונקודת-אור ענבר — האור שמישהו מדליק בשבילך. ארבע גרסאות, כל אחת לתפקיד אחר. כל גרסה ניתנת להורדה כ-SVG.</p>
+        <div class="logo-grid" id="logoGrid"></div>
+        <div class="rules">
+          <div class="rule do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg><span><b>שטח מרווח:</b> משאירים סביב הלוגו רווח ברוחב המגדל לפחות.</span></div>
+          <div class="rule dont"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>לא מותחים</b> ולא משנים פרופורציות. לא מסובבים.</span></div>
+          <div class="rule do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg><span><b>על רקע צבעוני</b> — משתמשים בגרסה הלבנה בלבד.</span></div>
+          <div class="rule dont"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>לא מוסיפים</b> צל, מסגרת או אפקטים. נקודת האור תמיד ענבר.</span></div>
+        </div>
+      </section>
+
+      <!-- 05 · צבעים -->
+      <section class="card" id="s-colors">
+        <div class="sec-k">05 · צבעים</div>
+        <h3 class="sec-h">פלטת מגדלור</h3>
+        <p class="sec-p">שלושה צבעי ליבה, אור אחד וניטרלים. לחיצה על צבע — מעתיקה את הקוד.</p>
+        <div id="palette"></div>
+        <div class="pal-group">
+          <h4>יחס שימוש מומלץ בעמוד</h4>
+          <div class="ratio"><i style="flex:60;background:#F8FAFC;border:1px solid var(--line)"></i><i style="flex:20;background:#123A5C"></i><i style="flex:12;background:#1FA8A0"></i><i style="flex:5;background:#FFB020"></i><i style="flex:3;background:#FF7A1A"></i></div>
+          <div class="ratio-l"><span>60% רקע בהיר</span><span>20% עומק-ים</span><span>12% גל</span><span>5% אור</span><span>3% אלמוג</span></div>
+        </div>
+      </section>
+
+      <!-- 06 · טיפוגרפיה -->
+      <section class="card" id="s-type">
+        <div class="sec-k">06 · טיפוגרפיה</div>
+        <h3 class="sec-h">Heebo — פונט אחד לכל דבר</h3>
+        <p class="sec-p">משפחה אחת, שבעה גדלים, ארבעה משקלים. כותרות כבדות וצפופות; טקסט רץ נושם — גם בדוח, גם בפוסט.</p>
+        <div id="typeScale"></div>
+        <div class="weights"><span style="font-weight:400">רגיל 400 — טקסט רץ</span><span style="font-weight:600">בינוני 600 — תוויות</span><span style="font-weight:800">מודגש 800 — כותרות</span><span style="font-weight:900">כבד 900 — סלוגן</span></div>
+      </section>
+
+      <!-- 07 · אלמנטים -->
+      <section class="card" id="s-elements">
+        <div class="sec-k">07 · אלמנטים גרפיים</div>
+        <h3 class="sec-h">אריח חוזר ופס גרדיאנט</h3>
+        <p class="sec-p">שני אלמנטים שנותנים "מגדלור" לכל תוצר בלי לוגו: אריח נקודות לרקעים ולעטיפות, ופס גרדיאנט לכותרות, לדוחות ולמצגות.</p>
+        <div class="el-grid">
+          <div class="el"><b>אריח חוזר — נקודה, אור, קו</b><div class="pattern"></div><p>לרקעי מצגות, כריכת הדוח השנתי, תעודות מתנדבים. שקיפות 20–40% מעל רקע לבן.</p></div>
+          <div class="el"><b>גרדיאנט מגדלור — עומק → גל → אור</b><div class="grad"></div><div class="grad-bar"></div><p>לפס עליון במסמכים, לכותרת שקף פתיחה, לבאנר קמפיין. תמיד באותו סדר.</p></div>
+        </div>
+      </section>
+
+      <!-- 08 · עולם התמונות -->
+      <section class="card" id="s-photos">
+        <div class="sec-k">08 · עולם התמונות</div>
+        <h3 class="sec-h">איך נראית תמונה של מגדלור</h3>
+        <p class="sec-p">ארבעה עקרונות צילום — ותבניות ויזואל חיות שנבנות מהערכה עצמה. בחרו כיוון אחר בחוברת הכיוונים למטה, ותראו את כולן נצבעות מחדש.</p>
+        <div class="ph-rules">
+          <div class="rule do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg><span><b>מצלמים קשר ועשייה</b> — חונך וחניך באמצע פעילות, לא מסתכלים למצלמה.</span></div>
+          <div class="rule dont"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>לא מצלמים מצוקה</b> — כבוד לפני רגש. אין תמונות "עצובות" כדי לגייס כסף.</span></div>
+          <div class="rule do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg><span><b>אור טבעי, מקומות אמיתיים</b> — החדר, החצר, המגרש. לא אולפן.</span></div>
+          <div class="rule dont"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>פרטיות קודמת לכול</b> — פנים של קטינים רק בהסכמת הורים כתובה; בסיפורים — שם מקוצר.</span></div>
+        </div>
+        <div class="ph-grid">
+          <figure class="ph">
+            <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="פוסטר קמפיין">
+              <rect width="300" height="400" style="fill:var(--bkDeep)"/>
+              <circle cx="272" cy="36" r="96" style="fill:var(--bkP)" opacity=".18"/>
+              <circle cx="16" cy="368" r="64" style="fill:var(--bkS)" opacity=".15"/>
+              <g fill="#fff" opacity=".22"><circle cx="36" cy="36" r="3"/><circle cx="60" cy="36" r="3"/><circle cx="36" cy="60" r="3"/><circle cx="60" cy="60" r="3"/><circle cx="84" cy="36" r="3"/><circle cx="84" cy="60" r="3"/></g>
+              <g transform="translate(224,78) scale(.85)"><g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M26 56L29 22h10l3 34"/><path d="M22 56h24"/><path d="M27.5 36h13M26 46h16"/><path d="M28 22v-6h12v6"/></g><circle cx="34" cy="9" r="4.5" style="fill:var(--bkS)"/><g fill="none" style="stroke:var(--bkS)" stroke-width="3" stroke-linecap="round"><path d="M22 5l6 2.5M46 5l-6 2.5"/></g></g>
+              <text x="272" y="222" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="44" letter-spacing="-1.8" fill="#fff">כל נער צריך</text>
+              <text x="272" y="270" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="44" letter-spacing="-1.8" fill="#fff">מגדלור<tspan style="fill:var(--bkS)">.</tspan></text>
+              <rect x="104" y="300" width="168" height="38" rx="19" style="fill:var(--bkS)"/>
+              <text x="188" y="325" text-anchor="middle" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="15" style="fill:var(--bkDeep)">קמפיין סוף השנה</text>
+              <text x="272" y="378" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="700" font-size="12" fill="#fff" opacity=".6">עמותת מגדלור</text>
+            </svg>
+            <figcaption>פוסטר · קמפיין תרומות</figcaption>
+          </figure>
+          <figure class="ph">
+            <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="כרטיס ציטוט חניך">
+              <defs><linearGradient id="ogq" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--bkDeep)"/><stop offset=".55" style="stop-color:var(--bkP)"/><stop offset="1" style="stop-color:var(--bkS)"/></linearGradient></defs>
+              <rect width="300" height="400" fill="#F8FAFC"/>
+              <text x="268" y="112" text-anchor="end" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="88" style="fill:var(--bkS)">״</text>
+              <text x="268" y="176" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="26" letter-spacing="-1" style="fill:var(--bkDeep)">פעם ראשונה</text>
+              <text x="268" y="212" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="26" letter-spacing="-1" style="fill:var(--bkDeep)">שמישהו שאל</text>
+              <text x="268" y="248" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="26" letter-spacing="-1" style="fill:var(--bkDeep)">אותי מה אני</text>
+              <text x="268" y="284" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="26" letter-spacing="-1" style="fill:var(--bkDeep)">חולם<tspan style="fill:var(--bkS)">.</tspan></text>
+              <text x="268" y="322" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="600" font-size="13" fill="#64748B">ח׳ · חניך בתוכנית · פורסם בהסכמה</text>
+              <rect x="0" y="386" width="300" height="14" fill="url(#ogq)"/>
+            </svg>
+            <figcaption>כרטיס ציטוט · בהסכמה</figcaption>
+          </figure>
+          <figure class="ph">
+            <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="סטורי גיוס מתנדבים">
+              <defs><linearGradient id="ogs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--bkDeep)"/><stop offset="1" style="stop-color:var(--bkP)"/></linearGradient></defs>
+              <rect width="300" height="400" fill="url(#ogs)"/>
+              <circle cx="64" cy="84" r="26" style="fill:var(--bkS)"/>
+              <g fill="#fff" opacity=".2"><circle cx="252" cy="330" r="3"/><circle cx="276" cy="330" r="3"/><circle cx="252" cy="354" r="3"/><circle cx="276" cy="354" r="3"/></g>
+              <text x="272" y="182" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="46" letter-spacing="-2" fill="#fff">שעתיים</text>
+              <text x="272" y="232" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="46" letter-spacing="-2" fill="#fff">בשבוע.</text>
+              <text x="272" y="282" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="46" letter-spacing="-2" style="fill:var(--bkS)">עולם שלם.</text>
+              <text x="272" y="322" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="700" font-size="15" fill="#fff" opacity=".85">בואו להיות חונכים — הקישור למעלה</text>
+              <text x="272" y="376" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="700" font-size="12" fill="#fff" opacity=".6">מגדלור · סטורי</text>
+            </svg>
+            <figcaption>סטורי · גיוס מתנדבים</figcaption>
+          </figure>
+          <figure class="ph">
+            <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="תעודת הוקרה למתנדב">
+              <defs><linearGradient id="ogc" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--bkDeep)"/><stop offset=".55" style="stop-color:var(--bkP)"/><stop offset="1" style="stop-color:var(--bkS)"/></linearGradient></defs>
+              <rect width="300" height="400" fill="#FFFFFF"/>
+              <rect x="14" y="14" width="272" height="372" rx="14" fill="none" style="stroke:var(--bkDeep)" opacity=".22" stroke-width="1.5"/>
+              <g transform="translate(122,40)"><g fill="none" style="stroke:var(--bkDeep)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 52L25 22h8l3 30"/><path d="M18 52h22"/><path d="M23.5 34h11M22.5 43h13"/><path d="M24 22v-6h10v6"/></g><circle cx="29" cy="10" r="4" style="fill:var(--bkS)"/><g fill="none" style="stroke:var(--bkS)" stroke-width="2.5" stroke-linecap="round"><path d="M18 7l5 2M40 7l-5 2"/></g></g>
+              <text x="150" y="156" text-anchor="middle" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="30" letter-spacing="-1" style="fill:var(--bkDeep)">תעודת הוקרה</text>
+              <text x="150" y="186" text-anchor="middle" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="600" font-size="13" fill="#64748B">מוענקת לחונך המסיים שנתיים בתוכנית</text>
+              <text x="150" y="228" text-anchor="middle" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="17" style="fill:var(--bkDeep)">על שנתיים של מפגש שבועי — בלי לפספס</text>
+              <rect x="90" y="264" width="120" height="8" rx="4" fill="url(#ogc)"/>
+              <text x="150" y="342" text-anchor="middle" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="14" style="fill:var(--bkDeep)">רואים. מלווים. מאירים<tspan style="fill:var(--bkS)">.</tspan></text>
+            </svg>
+            <figcaption>תעודת הוקרה · למתנדבים</figcaption>
+          </figure>
+        </div>
+        <div class="embed-note" style="margin-top:12px">במערכת המלאה: מנוע התמונות יוצר מהעקרונות האלה סטים שלמים — תמונות אתר, רשתות, דוח שנתי — בלי שתכתבו אף פרומפט. בדמו אלה תבניות חיות שנבנות מהערכה.</div>
+      </section>
+
+      <!-- 09 · סלוגנים -->
+      <section class="card" id="s-slogans">
+        <div class="sec-k">09 · מערכת סלוגנים</div>
+        <h3 class="sec-h">סלוגן ראשי + ארבעה לפי קהל</h3>
+        <p class="sec-p">הראשי מופיע ליד הלוגו. תתי-הסלוגנים מותאמים למי שקורא — תורמים, מתנדבים, נוער ושותפים. לחיצה מעתיקה.</p>
+        <div class="slogan-main" onclick="BK.copy('רואים. מלווים. מאירים.','הסלוגן הועתק')"><b>רואים. מלווים. מאירים<i>.</i></b><small>הסלוגן הראשי · גרסה מינימלית: "מאירים." · נקודת הסיום תמיד בענבר</small></div>
+        <div class="sub-slogans" id="subSlogans"></div>
+      </section>
+
+      <!-- 10 · קול -->
+      <section class="card" id="s-voice">
+        <div class="sec-k">10 · קול המותג</div>
+        <h3 class="sec-h">איך מגדלור מדברת</h3>
+        <p class="sec-p">שלושה עקרונות — ולכל אחד דוגמה של "כך" ו"לא כך". ואחריהם: מילים שאנחנו אוהבים, ומילים שאנחנו מניחים בצד.</p>
+        <div class="voice" id="voice"></div>
+        <div class="words" style="margin-top:16px">
+          <div class="on"><h4>On-Brand — משתמשים</h4><div class="wl" id="wOn"></div></div>
+          <div class="off"><h4>Off-Brand — נמנעים</h4><div class="wl" id="wOff"></div></div>
+        </div>
+      </section>
+
+      <!-- 11 · חוברת כיוונים -->
+      <section class="card" id="s-dirs">
+        <div class="sec-k">11 · חוברת כיוונים לוועד</div>
+        <h3 class="sec-h">שלושה כיוונים — הוועד מצביע</h3>
+        <p class="sec-p">לפני שנועלים מותג, הוועד המנהל רואה כמה כיוונים זה לצד זה, קורא ניתוח קצר ומצביע. הכיוון שנבחר צובע את כל הערכה — כולל עולם התמונות והפוסטים.</p>
+        <div class="dirs" id="dirs"></div>
+        <div class="vote-foot"><span id="voteSum"></span><span>ההצבעה פתוחה עד 15.9 · 7 חברי ועד</span></div>
+      </section>
+
+      <!-- 12 · הזהות בפעולה -->
+      <section class="card" id="s-posts">
+        <div class="sec-k">12 · הזהות בפעולה</div>
+        <h3 class="sec-h">הפוסטים לרשתות — כבר בזהות של העמותה</h3>
+        <p class="sec-p">הערכה לא נשארת במגירה: כל פוסט לתורמים, למתנדבים ולקהילה מתלבש אוטומטית בצבעים, בפונט ובקול. שלוש דוגמאות מתור הפרסום של החודש — נצבעות לפי הכיוון שנבחר.</p>
+        <div class="posts3">
+          <div class="postc">
+            <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="פוסט שקיפות לתורמים">
+              <rect width="300" height="300" style="fill:var(--bkDeep)"/>
+              <circle cx="270" cy="30" r="80" style="fill:var(--bkP)" opacity=".16"/>
+              <circle cx="34" cy="266" r="40" style="fill:var(--bkS)" opacity=".2"/>
+              <text x="272" y="96" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="700" font-size="16" style="fill:var(--bkP)">שקוף עד הסוף</text>
+              <text x="272" y="150" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="42" letter-spacing="-1.8" fill="#fff">3,400 שעות</text>
+              <text x="272" y="196" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="30" letter-spacing="-1" fill="#fff">חונכות השנה<tspan style="fill:var(--bkS)">.</tspan></text>
+              <text x="272" y="234" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="600" font-size="14" fill="#fff" opacity=".8">תודה למי שהדליק אותן — הפירוט המלא בדוח</text>
+              <text x="272" y="276" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="700" font-size="11.5" fill="#fff" opacity=".55">עמותת מגדלור</text>
+            </svg>
+            <div class="pm"><span class="chs"><i style="background:#0B7DB5"></i><i style="background:#F00678"></i></span><span>מתוזמן · יום ג׳ 19:00 · לתורמים</span></div>
+          </div>
+          <div class="postc">
+            <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="פוסט גיוס מתנדבים">
+              <rect width="300" height="300" fill="#F8FAFC"/>
+              <circle cx="30" cy="34" r="56" style="fill:var(--bkS)" opacity=".18"/>
+              <text x="272" y="86" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="700" font-size="15" style="fill:var(--bkP)">ספטמבר מתקרב</text>
+              <text x="272" y="138" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="34" letter-spacing="-1.4" style="fill:var(--bkDeep)">מחפשים 12</text>
+              <text x="272" y="178" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="34" letter-spacing="-1.4" style="fill:var(--bkDeep)">חונכים חדשים<tspan style="fill:var(--bkS)">.</tspan></text>
+              <text x="272" y="214" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="600" font-size="14" fill="#64748B">שעתיים בשבוע · הכשרה מלאה · ליווי צמוד</text>
+              <rect x="152" y="238" width="120" height="34" rx="17" style="fill:var(--bkDeep)"/>
+              <text x="212" y="260" text-anchor="middle" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="14" fill="#fff">מצטרפים ←</text>
+            </svg>
+            <div class="pm"><span class="chs"><i style="background:#F00678"></i><i style="background:#25D366"></i></span><span>מתוזמן · יום ה׳ 17:30 · למתנדבים</span></div>
+          </div>
+          <div class="postc">
+            <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="פוסט תודה לשותפים">
+              <defs><linearGradient id="ogp3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--bkP)"/><stop offset="1" style="stop-color:var(--bkDeep)"/></linearGradient></defs>
+              <rect width="300" height="300" fill="url(#ogp3)"/>
+              <g fill="#fff" opacity=".2"><circle cx="40" cy="252" r="3"/><circle cx="64" cy="252" r="3"/><circle cx="40" cy="276" r="3"/><circle cx="64" cy="276" r="3"/></g>
+              <text x="272" y="100" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="700" font-size="15" style="fill:var(--bkS)">בזכות השותפים שלנו</text>
+              <text x="272" y="152" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="36" letter-spacing="-1.4" fill="#fff">עוד 20 חניכים</text>
+              <text x="272" y="194" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="36" letter-spacing="-1.4" fill="#fff">מצטרפים השנה<tspan style="fill:var(--bkS)">.</tspan></text>
+              <text x="272" y="232" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="600" font-size="14" fill="#fff" opacity=".85">שנה פותחים בעיר השמינית — ביחד</text>
+            </svg>
+            <div class="pm"><span class="chs"><i style="background:#0B7DB5"></i></span><span>מתוזמן · יום א׳ 18:00 · לשותפים</span></div>
+          </div>
+        </div>
+        <div class="embed-note" style="margin-top:12px">במערכת המלאה: לוח תוכן חודשי, תור פרסום ופרסום אוטומטי לפייסבוק, לאינסטגרם ולקהילת הוואטסאפ — כמו במערכת "פוסטים מתוזמנים לרשתות" שבקטלוג.</div>
+      </section>
+
+      <!-- 13 · ציון המותג -->
+      <section class="card" id="s-score">
+        <div class="sec-k">13 · ציון המותג</div>
+        <h3 class="sec-h">כמה התוצרים שלכם באמת "אתם"?</h3>
+        <p class="sec-p">הערכה היא לא סוף הדרך — היא ההתחלה. המערכת עוקבת אחרי כל מה שיוצא מהעמותה, נותנת ציון עקביות, ומראה בדיוק איפה מאבדים נקודות.</p>
+        <div class="score-wrap">
+          <div class="gauge">
+            <svg viewBox="0 0 190 190"><circle class="track" cx="95" cy="95" r="80"/><circle class="val" id="gaugeVal" cx="95" cy="95" r="80"/></svg>
+            <div class="gv"><div><b>71</b><small>עקביות המותג · <span class="delta">‎+8 החודש</span></small></div></div>
+          </div>
+          <div>
+            <div class="dim"><div><b>צבעוניות</b><small>רוב התוצרים כבר בפלטה</small></div><div class="bar" style="--c:var(--green)"><i style="width:88%"></i></div><span class="v">88</span></div>
+            <div class="dim"><div><b>קול וניסוח</b><small>הרשתות כבר בקול אחד — הדוח עוד לא</small></div><div class="bar" style="--c:var(--green)"><i style="width:79%"></i></div><span class="v">79</span></div>
+            <div class="dim"><div><b>טיפוגרפיה</b><small>המצגות לתורמים עדיין ב-Arial</small></div><div class="bar" style="--c:var(--yellow)"><i style="width:64%"></i></div><span class="v">64</span></div>
+            <div class="dim"><div><b>אחידות ברשתות</b><small>פייסבוק עקבי, אינסטגרם פחות</small></div><div class="bar" style="--c:var(--yellow)"><i style="width:58%"></i></div><span class="v">58</span></div>
+            <div class="dim"><div><b>עולם התמונות</b><small>עוד יש תמונות סטוק בדפי התרומה</small></div><div class="bar" style="--c:var(--fuchsia)"><i style="width:47%"></i></div><span class="v">47</span></div>
+          </div>
+        </div>
+        <div class="card-h"><h3>בדיקת תוצר מול המותג</h3><span class="hint">מעלים פלייר, פוסט או מצגת — ומקבלים ציון התאמה ותיקונים</span></div>
+        <div class="check-grid">
+          <div class="flyer">
+            <svg viewBox="0 0 235 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="פלייר לדוגמה שנבדק">
+              <rect width="235" height="320" fill="#FFFFFF"/>
+              <rect width="235" height="66" fill="#2E75B6"/>
+              <text x="224" y="26" text-anchor="start" direction="rtl" font-family="Arial, sans-serif" font-weight="700" font-size="12" fill="#fff">הזמנה לערב התרמה שנתי —</text>
+              <text x="224" y="42" text-anchor="start" direction="rtl" font-family="Arial, sans-serif" font-weight="700" font-size="12" fill="#fff">מופע, מכירה שקטה ודברי ברכה</text>
+              <text x="224" y="58" text-anchor="start" direction="rtl" font-family="Arial, sans-serif" font-weight="700" font-size="12" fill="#fff">של ראש העיר ואורחים נוספים</text>
+              <rect y="66" width="235" height="104" fill="#E2E8F0"/>
+              <g fill="#94A3B8"><circle cx="92" cy="104" r="13"/><path d="M70 148c2-16 42-16 44 0z"/><circle cx="140" cy="106" r="13"/><path d="M118 148c2-16 42-16 44 0z"/></g>
+              <text x="117" y="164" text-anchor="middle" font-family="Arial" font-size="8" fill="#94A3B8">stock photo</text>
+              <rect x="20" y="188" width="195" height="7" rx="3" fill="#CBD5E1"/>
+              <rect x="48" y="203" width="167" height="7" rx="3" fill="#CBD5E1"/>
+              <rect x="76" y="218" width="139" height="7" rx="3" fill="#E2E8F0"/>
+              <rect x="60" y="248" width="115" height="26" rx="13" fill="#2E75B6"/>
+              <text x="117" y="265" text-anchor="middle" direction="rtl" font-family="Arial" font-weight="700" font-size="11" fill="#fff">לרכישת כרטיסים</text>
+              <rect y="300" width="235" height="20" fill="#64748B"/>
+            </svg>
+          </div>
+          <div>
+            <button type="button" class="btn-sm primary" id="checkBtn" onclick="BK.checkFlyer()">בדקו את הפלייר לדוגמה</button>
+            <div class="match-res" id="matchRes">
+              <div class="match-head"><b>68%</b><span>התאמה למותג<small>פלייר "ערב התרמה" · הועלה מ-Canva</small></span></div>
+              <div class="mrow y"><i>✓</i><span><b>הלוגו במקום הנכון</b> — ובגרסה המתאימה לרקע.</span></div>
+              <div class="mrow y"><i>✓</i><span><b>יש היררכיה ברורה</b> — כותרת, תמונה, פרטים, קריאה לפעולה.</span></div>
+              <div class="mrow w"><i>!</i><span><b>הכחול זר לפלטה</b> — סוטה מ"עומק-ים" ב-12%. החלפה אוטומטית אפשרית.</span></div>
+              <div class="mrow w"><i>!</i><span><b>הכותרת ארוכה ורשמית מדי</b> — הקול שלנו: עד 7 מילים. למשל: "ערב אחד. שנה של אור."</span></div>
+              <div class="mrow x"><i>✕</i><span><b>תמונת סטוק מבוימת</b> — מנוגדת לעולם התמונות: אצלנו מצלמים קשר אמיתי, לא לחיצות ידיים.</span></div>
+              <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+                <button type="button" class="btn-sm navy" onclick="BK.autofix()">תיקון אוטומטי לפי הערכה</button>
+                <span class="embed-note" style="margin:0;align-self:center">הבדיקה בדמו מוכנה מראש · במערכת המלאה — על כל קובץ שתעלו.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 14 · הורדות -->
+      <section class="card" id="s-dl">
+        <div class="sec-k">14 · הורדות</div>
+        <h3 class="sec-h">קבצים מוכנים לשימוש</h3>
+        <p class="sec-p">כל הקבצים נוצרים כאן, בדפדפן, מהערכה עצמה — כך שהם תמיד מעודכנים, ותמיד בכיוון שנבחר.</p>
+        <div class="dl">
+          <div><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 4v10l-7 4-7-4V7z"/><path d="M12 12l7-4M12 12v9M12 12L5 8"/></svg><b>לוגו SVG — כל הגרסאות</b><p>ארבע הגרסאות בקובץ אחד, לגרפיקאים ולדפוס. וקטור — לכל גודל.</p><button type="button" class="btn-sm navy" onclick="BK.downloadSVGAll()">הורדת SVG</button></div>
+          <div><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h6"/></svg><b>פלטת צבעים</b><p>קובץ טקסט עם שמות הצבעים, קודי HEX ו-CSS variables — להדבקה בכל כלי.</p><button type="button" class="btn-sm navy" onclick="BK.downloadPalette()">הורדת פלטה</button></div>
+        </div>
+      </section>
+
+    </div>
+
+    <nav class="bk-nav" id="bkNav" aria-label="סעיפי הערכה">
+      <span class="nav-t">סעיפים</span>
+      <a href="#s-upload">מעלים חומרים</a><a href="#s-diag">אבחון המותג</a><a href="#s-story">סיפור</a><a href="#s-logo">לוגו</a><a href="#s-colors">צבעים</a><a href="#s-type">טיפוגרפיה</a><a href="#s-elements">אלמנטים</a><a href="#s-photos">עולם התמונות</a><a href="#s-slogans">סלוגנים</a><a href="#s-voice">קול</a><a href="#s-dirs">חוברת כיוונים</a><a href="#s-posts">הזהות בפעולה</a><a href="#s-score">ציון המותג</a><a href="#s-dl">הורדות</a>
+    </nav>
+  </div>
+</main>
+
+<div class="toast" id="orgToast"></div>
+<div class="demo-foot">זהו דמו של <b>זהות ואחידות ארגונית — גרסת עמותות</b> עם נתונים מומצאים של "עמותת מגדלור". במערכת האמיתית הנתונים שלכם, ההרשאות שלכם, בענן שלכם. <a href="brand-kit.html">לגרסה הבית-ספרית</a> · <a href="../index.html#contact">לשיחת היכרות</a></div>
+
+<script>
+var BK = (function () {
+  var KEY = 'farm-demo-brand-kit-org';
+  var DIR_KEY = 'farm-brand-dir-org';
+
+  var toastTimer;
+  function toast(msg) {
+    var t = document.getElementById('orgToast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2400);
+  }
+
+  /* ─── הסימן: מגדלור עם נקודת אור (64×64) ─── */
+  function mark(c, spark) {
+    return '<g fill="none" stroke="' + c + '" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">'
+      + '<path d="M26 56L29 22h10l3 34"/><path d="M22 56h24"/><path d="M27.5 36h13M26 46h16"/><path d="M28 22v-6h12v6"/></g>'
+      + '<circle cx="34" cy="9" r="4.5" fill="' + spark + '"/>'
+      + '<g fill="none" stroke="' + spark + '" stroke-width="3" stroke-linecap="round"><path d="M22 5l6 2.5M46 5l-6 2.5"/></g>';
+  }
+  var HEEBO = 'font-family="Heebo, Arial, sans-serif"';
+  function svgWrap(w, h, inner) { return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" height="' + h + '">' + inner + '</svg>'; }
+
+  function pal() {
+    var cs = getComputedStyle(document.body);
+    return { deep: cs.getPropertyValue('--bkDeep').trim(), p: cs.getPropertyValue('--bkP').trim(), s: cs.getPropertyValue('--bkS').trim() };
+  }
+
+  /* ארבע גרסאות · dark=true → גרסה לבנה על כהה */
+  var VARIANTS = [
+    { id: 'official', name: 'רשמי', use: 'דוחות, אתר, מכתבים', svg: function (dark) {
+      var q = pal(), c = dark ? '#FFFFFF' : q.deep, sub = dark ? 'rgba(255,255,255,.72)' : '#64748B';
+      return svgWrap(300, 84, '<g transform="translate(232,8)">' + mark(c, q.s) + '</g>'
+        + '<text x="218" y="42" text-anchor="start" ' + HEEBO + ' font-weight="900" font-size="30" letter-spacing="-1" fill="' + c + '" direction="rtl">עמותת מגדלור</text>'
+        + '<text x="218" y="66" text-anchor="start" ' + HEEBO + ' font-weight="600" font-size="14" fill="' + sub + '" direction="rtl">רואים. מלווים. מאירים<tspan fill="' + q.s + '" font-weight="900">.</tspan></text>');
+    } },
+    { id: 'campaign', name: 'קמפיין', use: 'שלטים, אירועי התרמה, באנרים', svg: function (dark) {
+      var q = pal(), c = dark ? '#FFFFFF' : q.deep;
+      return svgWrap(300, 84, '<g transform="translate(240,12)">' + mark(c, q.s) + '</g>'
+        + '<text x="226" y="60" text-anchor="start" ' + HEEBO + ' font-weight="900" font-size="46" letter-spacing="-2" fill="' + c + '" direction="rtl">מאירים<tspan fill="' + q.s + '">.</tspan></text>');
+    } },
+    { id: 'icon', name: 'אייקון', use: 'פרופיל, פביקון, מדבקה', svg: function (dark) {
+      var q = pal();
+      return svgWrap(96, 96, '<rect width="96" height="96" rx="28" fill="' + (dark ? '#FFFFFF' : q.deep) + '"/><g transform="translate(16,16)">' + mark(dark ? q.deep : '#FFFFFF', q.s) + '</g>');
+    } },
+    { id: 'volunteers', name: 'מתנדבים', use: 'חולצות, תגים, קהילת החונכים', svg: function (dark) {
+      var q = pal(), bg = dark ? q.s : q.p, c = dark ? q.deep : '#FFFFFF';
+      return svgWrap(270, 96, '<rect x="190" y="8" width="80" height="80" rx="24" fill="' + bg + '"/><g transform="translate(198,14)">' + mark(c, dark ? q.deep : q.s) + '</g>'
+        + '<text x="176" y="52" text-anchor="start" ' + HEEBO + ' font-weight="900" font-size="30" letter-spacing="-1" fill="' + (dark ? '#FFFFFF' : q.deep) + '" direction="rtl">החונכים</text>'
+        + '<text x="176" y="80" text-anchor="start" ' + HEEBO + ' font-weight="600" font-size="15" fill="#64748B" direction="rtl">של מגדלור</text>');
+    } }
+  ];
+
+  var COPY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h9"/></svg>';
+  var DL_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>';
+
+  function renderLogos() {
+    var h = '';
+    VARIANTS.forEach(function (v, i) {
+      h += '<div class="logo-card"><div class="lh"><b>' + v.name + '</b><small>' + v.use + '</small></div>'
+        + '<div class="tiles"><div class="tile light">' + v.svg(false) + '</div><div class="tile dark">' + v.svg(true) + '</div></div>'
+        + '<div class="la"><button type="button" class="btn-sm ghost" onclick="BK.copySVG(' + i + ')">' + COPY_ICON + 'העתק SVG</button>'
+        + '<button type="button" class="btn-sm ghost" onclick="BK.downloadSVG(' + i + ',false)">' + DL_ICON + 'הורד SVG</button>'
+        + '<button type="button" class="btn-sm ghost" onclick="BK.downloadSVG(' + i + ',true)">' + DL_ICON + 'גרסה לבנה</button></div></div>';
+    });
+    document.getElementById('logoGrid').innerHTML = h;
+  }
+
+  /* ─── פלטה ─── */
+  var PALETTE = [
+    { g: 'צבעי ליבה', items: [
+      { n: 'עומק-ים', hex: '#123A5C', v: '--deep', d: 'טקסט, כותרות, רקע כהה' },
+      { n: 'גל', hex: '#1FA8A0', v: '--wave', d: 'מידע, קישורים, הדגשה רכה' },
+      { n: 'אור', hex: '#FFB020', v: '--light', d: 'פעולה ראשית, נקודת הסיום בסלוגן' } ] },
+    { g: 'צבע חם + תמיכה', items: [
+      { n: 'אלמוג', hex: '#FF7A1A', v: '--coral', d: 'רק לקמפיינים, במינון' },
+      { n: 'צמיחה', hex: '#7BCB52', v: '--growth', d: 'הצלחה, התקדמות' },
+      { n: 'שמיים', hex: '#8FC7E8', v: '--sky', d: 'רקעים רכים, אינפוגרפיקה' } ] },
+    { g: 'ניטרלים', items: [
+      { n: 'לבן', hex: '#FFFFFF', v: '--white', d: 'רקע ראשי' },
+      { n: 'ערפל', hex: '#F8FAFC', v: '--mist', d: 'רקע משני, כרטיסים' },
+      { n: 'פלדה', hex: '#64748B', v: '--steel', d: 'טקסט משני, כיתובים' } ] }
+  ];
+  function renderPalette() {
+    var h = '';
+    PALETTE.forEach(function (g) {
+      h += '<div class="pal-group"><h4>' + g.g + '</h4><div class="swatches">';
+      g.items.forEach(function (c) {
+        var border = c.hex === '#FFFFFF' || c.hex === '#F8FAFC' ? ';box-shadow:inset 0 0 0 1px rgba(6,30,79,.1)' : '';
+        h += '<div class="sw" onclick="BK.copy(\'' + c.hex + '\',\'' + c.hex + ' הועתק\')" title="העתקה"><i style="background:' + c.hex + border + '"></i><div><b>' + c.n + '</b><span>' + c.hex + '</span><small>' + c.d + '</small></div></div>';
+      });
+      h += '</div></div>';
+    });
+    document.getElementById('palette').innerHTML = h;
+  }
+
+  /* ─── סולם טיפוגרפי ─── */
+  var TYPE = [
+    ['H1 · כותרת ראשית', 44, 900, -1.4, 'רואים. מלווים. מאירים.'],
+    ['H2 · כותרת מסך', 32, 800, -.8, 'ערב ההוקרה למתנדבים'],
+    ['H3 · כותרת כרטיס', 24, 800, -.5, 'תוכנית החונכות בחיפה'],
+    ['H4 · תת-כותרת', 18, 700, -.2, 'מה קורה החודש'],
+    ['גוף · טקסט רץ', 16, 400, 0, 'הקשר לא נגמר כשנגמר התקציב. חונך נשאר חונך, והבוגרים שלנו חוזרים.'],
+    ['קטן · תוויות', 14, 600, 0, 'עודכן לפני שעה · רכזת מתנדבים'],
+    ['כיתוב · הערות', 12, 600, .3, 'התמונה: מפגש חונכים, קיץ תשפ"ז · בהסכמה']
+  ];
+  function renderType() {
+    document.getElementById('typeScale').innerHTML = TYPE.map(function (t) {
+      return '<div class="type-row"><span class="tk">' + t[0] + '</span><span class="ts" style="font-size:' + t[1] + 'px;font-weight:' + t[2] + ';letter-spacing:' + t[3] + 'px">' + t[4] + '</span><span class="tv">' + t[1] + 'px / ' + t[2] + '</span></div>';
+    }).join('');
+  }
+
+  /* ─── סלוגנים לפי קהל ─── */
+  var SUBS = [
+    ['תורמים', 'התרומה שלכם מדליקה אור.', 'לדפי תרומה, לדוח השנתי, למכתבי תודה', 'gold'],
+    ['מתנדבים', 'שעתיים בשבוע. עולם שלם.', 'לגיוס חונכים, לרשתות, לאירועי הוקרה', 'teal'],
+    ['נוער ומשפחות', 'יש מי שרואה אותך.', 'לפניות, לוואטסאפ, למפגש הראשון', 'navy'],
+    ['שותפים ורשויות', 'ביחד מאירים רחוק יותר.', 'למצגות, לדוחות, לעיתונות', 'gray']
+  ];
+  function renderSubs() {
+    document.getElementById('subSlogans').innerHTML = SUBS.map(function (s) {
+      return '<div onclick="BK.copy(\'' + s[1] + '\',\'הסלוגן הועתק\')"><span class="chip-sm ' + s[3] + '">' + s[0] + '</span><b>' + s[1] + '</b><p>' + s[2] + '</p></div>';
+    }).join('');
+  }
+
+  /* ─── קול + מילים ─── */
+  var VOICE = [
+    ['ישיר וחם', 'משפטים קצרים, פנייה ישירה, בלי מליצות.', 'ביום שלישי נפגשים במרכז. מביאים חברים.', 'הרינו מתכבדים להזמינכם לאירוע ההתרמה השנתי אשר ייערך…'],
+    ['שקוף באמת', 'אומרים כמה עלה, לאן הלך, ומה לא הצליח.', '78 אגורות מכל שקל הולכות ישירות לתוכניות. הנה הפירוט המלא.', 'העמותה פועלת ביעילות מרבית ובאחריות ציבורית.'],
+    ['מכבד תמיד', 'מדברים על חוזקות ועל חלומות — לא על חסכים.', 'נ׳ גילה השנה שהוא טוב במתמטיקה — ועכשיו הוא מלמד את אחיו הקטן.', 'נער נזקק ממשפחה קשת-יום, הזקוק נואשות לעזרתכם.']
+  ];
+  var W_ON = ['רואים', 'מלווים', 'מאירים', 'אמון', 'שקיפות', 'קהילה', 'הזדמנות', 'חוזקות', 'שותפים', 'ביחד', 'צמיחה', 'חלום'];
+  var W_OFF = ['נזקקים', 'מסכנים', 'קשת-יום', 'מקרים', 'אוכלוסייה', 'חסרי-ישע', 'הצלנו', 'שיקמנו', 'בעיה', 'נטל', 'עזרה לחלשים', 'ילדי רווחה'];
+  function renderVoice() {
+    document.getElementById('voice').innerHTML = VOICE.map(function (v) {
+      return '<div><b>' + v[0] + '</b><p>' + v[1] + '</p><div class="ex y"><small>כך</small>' + v[2] + '</div><div class="ex n"><small>לא כך</small>' + v[3] + '</div></div>';
+    }).join('');
+    document.getElementById('wOn').innerHTML = W_ON.map(function (w) { return '<span>' + w + '</span>'; }).join('');
+    document.getElementById('wOff').innerHTML = W_OFF.map(function (w) { return '<span>' + w + '</span>'; }).join('');
+  }
+
+  /* ─── חוברת כיוונים + הצבעה ─── */
+  var DIRS = [
+    { id: 'or', name: 'כיוון א׳ — "אור"', slogan: 'מאירים.', bg: '#FFB020', fg: '#123A5C', sp: '#123A5C', pal: { deep: '#123A5C', p: '#FFB020', s: '#FF7A1A' }, desc: 'חם ואופטימי, ענבר מוביל. בולט בפיד ובקמפיינים, משדר תקווה. חשש: פחות "כבד" מול קרנות ותורמים מוסדיים.', base: 3 },
+    { id: 'ogen', name: 'כיוון ב׳ — "עוגן"', slogan: 'רואים. מלווים. מאירים.', bg: '#1FA8A0', fg: '#FFFFFF', sp: '#FFB020', pal: { deep: '#123A5C', p: '#1FA8A0', s: '#FFB020' }, desc: 'מאוזן: ים רגוע עם נקודת אור. עובד גם בדוח לקרן וגם בסטורי למתנדבים. חשש: פחות נועז מהשכנים בפיד.', base: 3 },
+    { id: 'levyam', name: 'כיוון ג׳ — "לב-ים"', slogan: 'עמותה שמדליקה אור.', bg: '#0A2340', fg: '#FFFFFF', sp: '#FFB020', pal: { deep: '#0A2340', p: '#123A5C', s: '#FFB020' }, desc: 'עמוק וסמכותי, כחול-לילה עם אור אחד. מצוין למסמכים, לקרנות ולעיתונות. חשש: פחות "מדבר" לנוער.', base: 1 }
+  ];
+  function applyDir(id, silent) {
+    var d = null;
+    for (var i = 0; i < DIRS.length; i++) if (DIRS[i].id === id) d = DIRS[i];
+    var st = document.body.style;
+    if (!d) {
+      st.removeProperty('--bkDeep'); st.removeProperty('--bkP'); st.removeProperty('--bkS');
+      try { localStorage.removeItem(DIR_KEY); } catch (e) {}
+      renderLogos();
+      return;
+    }
+    st.setProperty('--bkDeep', d.pal.deep); st.setProperty('--bkP', d.pal.p); st.setProperty('--bkS', d.pal.s);
+    try { localStorage.setItem(DIR_KEY, JSON.stringify({ id: d.id, name: d.name.split('"')[1] || d.name, deep: d.pal.deep, p: d.pal.p, s: d.pal.s })); } catch (e) {}
+    renderLogos(); /* הלוגואים נבנים מהצבעים החיים */
+    if (!silent) toast('כל הערכה נצבעה בכיוון שנבחר — כולל הלוגו, עולם התמונות והפוסטים');
+  }
+  var state = load();
+  function load() { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.votes) return s; } catch (e) {} return { votes: { or: 3, ogen: 3, levyam: 1 }, mine: null }; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function renderDirs() {
+    var total = 0; DIRS.forEach(function (d) { total += state.votes[d.id]; });
+    document.getElementById('dirs').innerHTML = DIRS.map(function (d) {
+      var n = state.votes[d.id], pct = total ? Math.round(n / total * 100) : 0, mine = state.mine === d.id;
+      return '<div class="dir' + (mine ? ' chosen' : '') + '"><div class="prev" style="background:' + d.bg + '"><svg viewBox="0 0 64 64">' + mark(d.fg, d.sp) + '</svg><b style="color:' + d.fg + '">' + d.slogan + '</b></div>'
+        + '<div class="db"><h4>' + d.name + '</h4><p>' + d.desc + '</p>'
+        + '<button type="button" class="btn-sm ' + (mine ? 'primary' : '') + '" onclick="BK.vote(\'' + d.id + '\')">' + (mine ? 'ההצבעה שלך' : 'מצביעים') + '</button>'
+        + '<div class="vote"><div class="bar" style="--c:' + (mine ? 'var(--bkS)' : 'var(--bkDeep)') + '"><i style="width:' + pct + '%"></i></div><span>' + n + ' · ' + pct + '%</span></div></div></div>';
+    }).join('');
+    document.getElementById('voteSum').textContent = total + ' הצבעות עד כה' + (state.mine ? ' · הצבעתם ל' + DIRS.filter(function (d) { return d.id === state.mine; })[0].name.split(' — ')[1] : ' · טרם הצבעתם');
+  }
+  function vote(id) {
+    if (state.mine === id) { toast('כבר הצבעתם לכיוון הזה'); return; }
+    if (state.mine) state.votes[state.mine]--;
+    state.votes[id]++; state.mine = id; save(); renderDirs();
+    applyDir(id);
+  }
+
+  /* ─── מסע ─── */
+  function go(id) {
+    var el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function fakeUpload() { toast('בדמו החומרים כבר נקלטו — במערכת המלאה זה חלון ההעלאה שלכם'); }
+  function analyze() {
+    var g = document.getElementById('dgGrid');
+    g.classList.remove('reveal'); void g.offsetWidth; g.classList.add('reveal');
+    go('s-diag');
+    toast('האבחון עודכן מארבעה קבצים וממקור אחד ברשת');
+  }
+
+  /* ─── ציון המותג ─── */
+  function initGauge() {
+    var el = document.getElementById('gaugeVal');
+    if (!el) return;
+    var obs = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { el.style.strokeDashoffset = 502 * (1 - 0.71); obs.disconnect(); }
+    }, { threshold: 0.4 });
+    obs.observe(el);
+  }
+  function checkFlyer() {
+    document.getElementById('checkBtn').style.display = 'none';
+    document.getElementById('matchRes').classList.add('on');
+    toast('הפלייר נבדק מול הערכה — 68% התאמה');
+  }
+  function autofix() {
+    toast('במערכת המלאה: הפלייר חוזר מתוקן — בפלטה, בפונט ועם נקודת האור. הדמו רץ כולו במחשב שלכם.');
+  }
+
+  /* ─── scroll-spy ─── */
+  function spy() {
+    var links = document.querySelectorAll('#bkNav a'), secs = document.querySelectorAll('#secs section');
+    function upd() {
+      var y = window.scrollY + 140, cur = secs[0].id;
+      for (var i = 0; i < secs.length; i++) if (secs[i].offsetTop <= y) cur = secs[i].id;
+      if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 40) cur = secs[secs.length - 1].id;
+      for (var j = 0; j < links.length; j++) links[j].classList.toggle('on', links[j].getAttribute('href') === '#' + cur);
+    }
+    window.addEventListener('scroll', upd, { passive: true }); upd();
+  }
+
+  /* ─── העתקה / הורדות ─── */
+  function copy(text, msg) {
+    var done = function () { toast(msg || 'הועתק'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () { fallback(text); done(); });
+    else { fallback(text); done(); }
+  }
+  function fallback(text) { var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(ta); }
+  function dl(blob, name) { var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 800); }
+  function copySVG(i) { copy(VARIANTS[i].svg(false), 'ה-SVG הועתק'); }
+  function downloadSVG(i, dark) { var v = VARIANTS[i]; dl(new Blob([v.svg(!!dark)], { type: 'image/svg+xml' }), 'migdalor-logo-' + v.id + (dark ? '-white' : '') + '.svg'); toast('הקובץ ירד'); }
+  function downloadSVGAll() {
+    var y = 0, parts = VARIANTS.map(function (v) { var s = '<g transform="translate(0,' + y + ')">' + v.svg(false).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '') + '</g>'; y += 120; return s; });
+    dl(new Blob([svgWrap(320, y, parts.join(''))], { type: 'image/svg+xml' }), 'migdalor-logo-all.svg'); toast('כל הגרסאות ירדו בקובץ אחד');
+  }
+  function paletteText() {
+    var out = 'ערכת הזהות — עמותת מגדלור\nסלוגן: רואים. מלווים. מאירים.\n\n';
+    PALETTE.forEach(function (g) { out += '## ' + g.g + '\n'; g.items.forEach(function (c) { out += c.n + '  ' + c.hex + '  ' + c.v + '  — ' + c.d + '\n'; }); out += '\n'; });
+    out += '## CSS\n:root {\n'; PALETTE.forEach(function (g) { g.items.forEach(function (c) { out += '  ' + c.v + ': ' + c.hex + ';\n'; }); }); out += '}\n\nפונט: Heebo (400 / 600 / 800 / 900)\n';
+    return out;
+  }
+  function downloadPalette() { dl(new Blob(['﻿' + paletteText()], { type: 'text/plain;charset=utf-8' }), 'migdalor-palette.txt'); toast('הפלטה ירדה'); }
+  function reset() {
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    state = load(); renderDirs(); applyDir(null, true);
+    var mr = document.getElementById('matchRes');
+    if (mr) { mr.classList.remove('on'); document.getElementById('checkBtn').style.display = ''; }
+    toast('הדמו אופס');
+  }
+
+  renderLogos(); renderPalette(); renderType(); renderSubs(); renderVoice(); renderDirs(); spy(); initGauge();
+  if (state.mine) applyDir(state.mine, true);
+
+  return { copy: copy, copySVG: copySVG, downloadSVG: downloadSVG, downloadSVGAll: downloadSVGAll, downloadPalette: downloadPalette, reset: reset, vote: vote, go: go, fakeUpload: fakeUpload, analyze: analyze, checkFlyer: checkFlyer, autofix: autofix };
+})();
+</script>
+</body>
+</html>

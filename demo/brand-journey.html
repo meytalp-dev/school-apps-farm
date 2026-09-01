@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דמו — מסע המותג (מפושט) · בית ספר גלים — חוות האפליקציות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+  /* ─── מסע מפושט: מסך אחד לכל שלב, עמודה רגועה ─── */
+  body { --bkDeep: #0D3B33; --bkP: #1E7D6B; --bkS: #F2B33D; }
+  .jmain { max-width: 880px; margin: 0 auto; padding: 26px 20px 90px; }
+  .jhead { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+  .jhead h2 { font-size: clamp(22px, 3vw, 30px); font-weight: 900; letter-spacing: -.8px; }
+  .jhead .sch { display: inline-flex; align-items: center; gap: 8px; margin-top: 6px; }
+  .jhead .sch .chip-sm { font-size: 12.5px; }
+
+  /* צעדים */
+  .steps { display: flex; gap: 4px; background: var(--white); border: 1px solid var(--line); border-radius: 999px; padding: 6px; margin-bottom: 8px; overflow-x: auto; }
+  .stp { flex: 1; min-width: 86px; border: none; background: transparent; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 10px; border-radius: 999px; font-size: 13px; font-weight: 800; color: var(--gray); white-space: nowrap; transition: all var(--motion-fast) var(--motion-ease); }
+  .stp .n { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: rgba(6,30,79,.08); font-size: 11.5px; font-weight: 900; color: var(--navy); transition: all var(--motion-fast); }
+  .stp.done .n { background: rgba(123,203,82,.25); color: #3E7F1E; }
+  .stp.on { background: var(--navy); color: #fff; }
+  .stp.on .n { background: rgba(255,255,255,.2); color: #fff; }
+  .prog { height: 5px; border-radius: 999px; background: rgba(6,30,79,.08); overflow: hidden; margin-bottom: 22px; }
+  .prog i { display: block; height: 100%; background: linear-gradient(90deg, var(--bkP), var(--bkS)); transition: width 500ms var(--motion-ease); }
+
+  /* שלב */
+  .step { display: none; }
+  .step.on { display: block; animation: stepIn 420ms var(--motion-ease); }
+  @keyframes stepIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  .step .card { padding: 30px; }
+  .sk { font-size: 11.5px; font-weight: 800; letter-spacing: 1px; color: var(--bkP); margin-bottom: 4px; }
+  .sh { font-size: 26px; font-weight: 900; letter-spacing: -.7px; line-height: 1.15; margin-bottom: 6px; }
+  .sp { color: var(--gray); font-size: 14.5px; max-width: 600px; margin-bottom: 22px; }
+  .snav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 26px; }
+  .snav .hint { font-size: 12.5px; color: var(--gray); }
+
+  /* 1 · העלאה */
+  .up-zone { border: 2px dashed rgba(6,30,79,.18); border-radius: 20px; padding: 22px; text-align: center; background: var(--bg); cursor: pointer; }
+  .up-zone b { display: block; font-size: 15px; font-weight: 800; margin-top: 6px; }
+  .up-zone small { color: var(--gray); font-size: 12.5px; }
+  .up-zone svg { width: 32px; height: 32px; color: var(--navy); opacity: .55; }
+  .upf { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+  .upf > div { display: flex; align-items: center; gap: 11px; background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 10px 13px; }
+  .upf .fi { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; color: #fff; flex: none; }
+  .upf .fi svg { width: 16px; height: 16px; }
+  .upf b { font-size: 13.5px; font-weight: 800; }
+  .upf small { font-size: 11.5px; color: var(--gray); display: block; }
+  .upf .ok { margin-inline-start: auto; color: #3E7F1E; font-size: 11.5px; font-weight: 800; background: rgba(123,203,82,.14); border-radius: 999px; padding: 4px 10px; white-space: nowrap; }
+
+  /* 2 · אבחון */
+  .scan { display: none; text-align: center; padding: 30px 0 26px; }
+  .scan.on { display: block; }
+  .scan .bar { max-width: 380px; margin: 14px auto 8px; }
+  .scan p { font-size: 13.5px; color: var(--gray); font-weight: 700; min-height: 20px; }
+  .diag { display: none; }
+  .diag.on { display: block; }
+  .dgrow { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .dg { border: 1px solid var(--line); border-radius: 16px; padding: 16px; background: var(--white); }
+  .dg h4 { font-size: 12px; font-weight: 800; color: var(--gray); letter-spacing: .5px; margin-bottom: 10px; }
+  .traits { display: flex; flex-wrap: wrap; gap: 7px; }
+  .traits span { padding: 7px 14px; border-radius: 999px; font-size: 14px; font-weight: 800; background: rgba(6,30,79,.07); color: var(--navy); }
+  .traits.hot span:nth-child(2n) { background: rgba(30,125,107,.12); color: #14584C; }
+  .tt { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 800; margin-bottom: 8px; }
+  .tb { position: relative; height: 9px; border-radius: 999px; background: linear-gradient(90deg, rgba(6,30,79,.15), rgba(242,179,61,.4)); }
+  .tb i { position: absolute; top: 50%; right: 48%; transform: translate(50%,-50%); width: 18px; height: 18px; border-radius: 50%; background: var(--bkS); border: 3px solid #fff; box-shadow: 0 3px 10px rgba(6,30,79,.25); }
+  .dg .note { font-size: 12.5px; color: var(--gray); margin-top: 8px; line-height: 1.6; }
+  .issues { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .iss { background: rgba(240,6,120,.05); border-radius: 14px; padding: 13px; }
+  .iss b { display: block; font-size: 13.5px; font-weight: 800; color: var(--fuchsia); margin-bottom: 5px; }
+  .iss p { font-size: 12px; color: var(--gray); line-height: 1.55; }
+  .iss .sws { display: flex; gap: 5px; margin: 4px 0 7px; }
+  .iss .sws i { width: 26px; height: 26px; border-radius: 8px; display: block; }
+  .iss .fnt { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0 7px; }
+  .iss .fnt span { padding: 3px 10px; border-radius: 8px; background: var(--white); border: 1px solid var(--line); font-size: 13px; }
+  @media (max-width: 720px) { .dgrow, .issues { grid-template-columns: 1fr; } }
+
+  /* 3 · כיוונים */
+  .dirs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .dir { border: 1.5px solid var(--line); border-radius: 18px; overflow: hidden; background: var(--white); cursor: pointer; text-align: right; padding: 0; font-family: inherit; transition: transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast), border-color var(--motion-fast); }
+  .dir:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(6,30,79,.12); }
+  .dir.chosen { border-color: var(--bkS); box-shadow: 0 0 0 3px color-mix(in srgb, var(--bkS) 30%, transparent); }
+  .dir .prev { height: 120px; display: grid; place-items: center; position: relative; }
+  .dir .prev b { position: absolute; bottom: 10px; right: 12px; font-size: 17px; font-weight: 900; letter-spacing: -.4px; }
+  .dir .db { padding: 13px 14px; }
+  .dir .db h4 { font-size: 15px; font-weight: 800; }
+  .dir .db p { font-size: 12.5px; color: var(--gray); margin-top: 4px; line-height: 1.55; }
+  .dir .pick { display: inline-flex; margin-top: 10px; font-size: 12.5px; font-weight: 800; color: var(--navy); }
+  .dir.chosen .pick { color: #3E7F1E; }
+  @media (max-width: 720px) { .dirs { grid-template-columns: 1fr; } }
+
+  /* 4 · הערכה מרוכזת */
+  .kitrow { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .kbox { border: 1px solid var(--line); border-radius: 16px; padding: 16px; background: var(--white); }
+  .kbox h4 { font-size: 12px; font-weight: 800; color: var(--gray); letter-spacing: .5px; margin-bottom: 10px; }
+  .kbox.logo-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 0; overflow: hidden; }
+  .kbox.logo-tiles > div { display: grid; place-items: center; padding: 22px 12px; }
+  .kbox.logo-tiles .lt { background: var(--bg); }
+  .kbox.logo-tiles .dk { background: var(--bkDeep); }
+  .sws2 { display: flex; gap: 8px; }
+  .sws2 span { flex: 1; border-radius: 12px; height: 52px; display: grid; place-items: end center; padding-bottom: 5px; font-size: 10px; font-weight: 800; color: #fff; cursor: pointer; }
+  .story-line { padding: 20px 24px; border-radius: 16px; background: var(--bkDeep); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+  .story-line b { font-size: clamp(20px, 2.6vw, 26px); font-weight: 900; letter-spacing: -.7px; }
+  .story-line b i { font-style: normal; color: var(--bkS); }
+  .story-line small { color: rgba(255,255,255,.7); font-size: 12.5px; }
+  .vwords { display: flex; flex-wrap: wrap; gap: 7px; }
+  .vwords span { padding: 6px 12px; border-radius: 999px; background: rgba(123,203,82,.12); color: #3E7F1E; font-size: 13px; font-weight: 700; }
+  .vwords span.no { background: rgba(240,6,120,.07); color: var(--gray); text-decoration: line-through; text-decoration-color: rgba(240,6,120,.55); }
+  @media (max-width: 720px) { .kitrow { grid-template-columns: 1fr; } }
+
+  /* 5 · פוסטים */
+  .posts3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .postc { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--white); }
+  .postc svg { display: block; width: 100%; height: auto; }
+  .postc .pm { padding: 8px 11px; font-size: 11px; font-weight: 700; color: var(--gray); border-top: 1px solid var(--line); }
+  @media (max-width: 720px) { .posts3 { grid-template-columns: 1fr; } }
+
+  /* 6 · ציון */
+  .score-wrap { display: grid; grid-template-columns: 200px 1fr; gap: 24px; align-items: center; margin-bottom: 18px; }
+  .gauge { position: relative; width: 175px; margin: 0 auto; }
+  .gauge svg { width: 100%; height: auto; display: block; }
+  .gauge circle.track { fill: none; stroke: rgba(6,30,79,.08); stroke-width: 13; }
+  .gauge circle.val { fill: none; stroke: var(--bkP); stroke-width: 13; stroke-linecap: round; transform: rotate(-90deg); transform-origin: center; stroke-dasharray: 502; stroke-dashoffset: 502; transition: stroke-dashoffset 1s var(--motion-ease); }
+  .gauge .gv { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+  .gauge .gv b { display: block; font-size: 40px; font-weight: 900; letter-spacing: -2px; line-height: 1; }
+  .gauge .gv small { display: block; font-size: 11px; color: var(--gray); font-weight: 700; margin-top: 3px; }
+  .dim { display: grid; grid-template-columns: 130px 1fr 36px; gap: 12px; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+  .dim:last-child { border-bottom: none; }
+  .dim b { font-size: 13px; font-weight: 800; }
+  .dim .v { font-size: 14px; font-weight: 900; text-align: left; font-variant-numeric: tabular-nums; }
+  .mrow { display: flex; gap: 9px; align-items: flex-start; font-size: 13px; padding: 8px 11px; border-radius: 11px; margin-bottom: 5px; line-height: 1.55; }
+  .mrow.y { background: rgba(123,203,82,.1); } .mrow.w { background: rgba(244,180,27,.13); } .mrow.x { background: rgba(240,6,120,.07); }
+  .mrow i { font-style: normal; font-weight: 900; width: 15px; flex: none; }
+  .mrow.y i { color: #3E7F1E; } .mrow.w i { color: #9A6700; } .mrow.x i { color: var(--fuchsia); }
+  .match-res { display: none; margin-top: 14px; }
+  .match-res.on { display: block; animation: stepIn 400ms var(--motion-ease); }
+  .match-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .match-head b { font-size: 32px; font-weight: 900; letter-spacing: -1.5px; color: var(--fuchsia); line-height: 1; }
+  .match-head span { font-size: 13px; font-weight: 800; }
+  @media (max-width: 720px) { .score-wrap { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<main class="jmain">
+  <div class="jhead">
+    <div>
+      <h2>מסע המותג — הגרסה המפושטת</h2>
+      <div class="sch"><span class="chip-sm teal">הדמו: בית ספר "גלים" · קריית ים</span><span class="chip-sm gray">שלב אחד על המסך · 6 שלבים</span></div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a class="btn-sm" href="brand-kit.html">לספר המותג המלא (אימפקט)</a>
+      <button type="button" class="btn-sm ghost" onclick="J.reset()">איפוס דמו</button>
+    </div>
+  </div>
+
+  <div class="steps" id="steps"></div>
+  <div class="prog"><i id="prog"></i></div>
+
+  <!-- שלב 1 · מגלים -->
+  <section class="step on" id="st-1">
+    <div class="card">
+      <div class="sk">שלב 1 מתוך 6 · מגלים</div>
+      <h3 class="sh">תנו לנו את מה שכבר עשיתם</h3>
+      <p class="sp">בית ספר גלים פועל מ-1987 — יש המון חומרים. מעלים אותם, וזהו. לא ממלאים אף שאלון.</p>
+      <div class="up-zone" role="button" tabindex="0" onclick="J.toast('בדמו החומרים כבר נקלטו')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V6M7.5 10.5 12 6l4.5 4.5"/><path d="M4 16v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2"/></svg>
+        <b>גוררים לכאן קבצים — או לוחצים לבחירה</b>
+        <small>PDF · Word · PowerPoint · תמונות · קישור לאתר או לעמוד</small>
+      </div>
+      <div class="upf">
+        <div><span class="fi" style="background:var(--bkDeep)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></span><span><b>לוגו-גלים-סרוק.jpg</b><small>סריקה של הלוגו מ-1998 · שלוש גרסאות שונות זוהו</small></span><span class="ok">נקלט ✓</span></div>
+        <div><span class="fi" style="background:var(--bkP)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h6"/></svg></span><span><b>אני מאמין בית-ספרי.docx</b><small>עודכן לאחרונה תשס"ט · 9 משפטי מפתח זוהו</small></span><span class="ok">נקלט ✓</span></div>
+        <div><span class="fi" style="background:#C98600"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M12 17v4M8 21h8"/></svg></span><span><b>מצגת ערב חשיפה.pptx</b><small>26 שקפים · 4 פונטים שונים נמצאו</small></span><span class="ok">נקלט ✓</span></div>
+        <div><span class="fi" style="background:#0B7DB5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 8h3V4.5h-3c-2.5 0-4 1.7-4 4.2V11H7v3.5h3V20h3.5v-5.5h3l.5-3.5h-3.5V9c0-.6.4-1 1-1z"/></svg></span><span><b>עמוד הפייסבוק של גלים</b><small>41 פוסטים נסרקו · הקול נלמד</small></span><span class="ok">נסרק ✓</span></div>
+      </div>
+      <div class="snav">
+        <span class="hint">בדמו החומרים כבר "הועלו" — במערכת המלאה אלה הקבצים שלכם.</span>
+        <button type="button" class="btn-sm primary" onclick="J.analyze()">נתחו את החומרים ←</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- שלב 2 · מאבחנים -->
+  <section class="step" id="st-2">
+    <div class="card">
+      <div class="sk">שלב 2 מתוך 6 · מאבחנים</div>
+      <h3 class="sh">ככה אנחנו מבינים את גלים</h3>
+      <p class="sp">לפני צבעים ולוגו — אבחון קצר: מי אתם, מה שווה לשמר, ומה שובר את האחידות.</p>
+
+      <div class="scan" id="scan">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--bkP)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <div class="bar"><i id="scanBar" style="width:0%;--c:var(--bkP)"></i></div>
+        <p id="scanTxt">קוראים את הלוגו הסרוק…</p>
+      </div>
+
+      <div class="diag" id="diag">
+        <div class="dgrow">
+          <div class="dg">
+            <h4>האישיות שעולה מהחומרים</h4>
+            <div class="traits hot"><span>קהילתי</span><span>ותיק ויציב</span><span>מכיל</span><span>צנוע</span><span>מחובר לים</span></div>
+            <h4 style="margin-top:14px">הקהלים המרכזיים</h4>
+            <div class="traits"><span>משפחות השכונה — דור שני ושלישי</span><span>הרשות</span><span>בוגרים</span></div>
+          </div>
+          <div class="dg">
+            <h4>המתח המותגי</h4>
+            <div class="tt"><span>מסורת</span><span>התחדשות</span></div>
+            <div class="tb"><i></i></div>
+            <p class="note">גלים יושב בדיוק באמצע: הוותק הוא הנכס הכי גדול שלכם — אבל הוא נראה כרגע כמו התיישנות. הכיוון: מסורת שנראית עכשווית.</p>
+          </div>
+        </div>
+        <div class="issues">
+          <div class="iss"><b>הלוגו חי בשלוש גרסאות</b><p>סריקה מ-1998, גרסה מוקטנת מטושטשת, וגרסה שמישהו צבע מחדש. אף אחת לא וקטורית.</p></div>
+          <div class="iss"><b>ארבעה ירוקים שונים</b>
+            <div class="sws"><i style="background:#2F6B4F"></i><i style="background:#1F7D5B"></i><i style="background:#4C8C3F"></i><i style="background:#186B54"></i></div>
+            <p>בשער, בחולצות, במצגת ובאתר — כל אחד ירוק אחר.</p></div>
+          <div class="iss"><b>ארבעה פונטים מתחלפים</b>
+            <div class="fnt"><span style="font-family:David,serif">David</span><span style="font-family:Arial">Arial</span><span style="font-family:'Times New Roman',serif">Times</span><span style="font-family:Heebo">Heebo</span></div>
+            <p>המסמכים הרשמיים עדיין נראים כמו תשס"ט.</p></div>
+        </div>
+        <div class="snav">
+          <button type="button" class="btn-sm" onclick="J.go(1)">→ חזרה</button>
+          <button type="button" class="btn-sm primary" onclick="J.go(3)">בוחרים כיוון ←</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- שלב 3 · בוחרים כיוון -->
+  <section class="step" id="st-3">
+    <div class="card">
+      <div class="sk">שלב 3 מתוך 6 · בוחרים כיוון</div>
+      <h3 class="sh">שלושה כיוונים — לחצו ותראו הכול נצבע</h3>
+      <p class="sp">מהאבחון נגזרו שלושה כיווני זהות. בחירה צובעת מיד את כל ההמשך — הערכה, התמונות והפוסטים. אפשר להתחרט ולבחור אחר.</p>
+      <div class="dirs" id="dirs"></div>
+      <div class="snav">
+        <button type="button" class="btn-sm" onclick="J.go(2)">→ חזרה</button>
+        <button type="button" class="btn-sm primary" onclick="J.go(4)">לערכה ←</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- שלב 4 · הערכה -->
+  <section class="step" id="st-4">
+    <div class="card">
+      <div class="sk">שלב 4 מתוך 6 · הערכה</div>
+      <h3 class="sh">הזהות של גלים — בעמוד אחד</h3>
+      <p class="sp">התמצית שכל הצוות צריך: סימן, צבעים, משפט אחד וקול. ספר המותג המלא — בלחיצה, למי שצריך את הפרטים.</p>
+      <div class="story-line"><b>רוח גבית לכל ילד<i>.</i></b><small>הסלוגן · נקודת הסיום תמיד בזהב — כמו שמש על המים</small></div>
+      <div class="kitrow">
+        <div class="kbox logo-tiles"><div class="lt" id="logoLt"></div><div class="dk" id="logoDk"></div></div>
+        <div class="kbox">
+          <h4>הצבעים — לחיצה מעתיקה</h4>
+          <div class="sws2" id="sws2"></div>
+          <h4 style="margin-top:14px">הפונט</h4>
+          <div style="font-size:20px"><b style="font-weight:900">Heebo כבד לכותרות</b> · <span style="font-weight:400">רגיל לטקסט</span></div>
+        </div>
+      </div>
+      <div class="kbox">
+        <h4>איך גלים מדבר — משתמשים / נמנעים</h4>
+        <div class="vwords"><span>בית</span><span>שורשים</span><span>ביחד</span><span>דור לדור</span><span>רוח גבית</span><span>הים שלנו</span><span class="no">מצוינות</span><span class="no">חדשני</span><span class="no">מוביל</span><span class="no">יוקרתי</span></div>
+      </div>
+      <div class="snav">
+        <button type="button" class="btn-sm" onclick="J.go(3)">→ חזרה</button>
+        <span style="display:flex;gap:8px;flex-wrap:wrap">
+          <a class="btn-sm" href="brand-kit.html">ספר המותג המלא נראה כך ←</a>
+          <button type="button" class="btn-sm primary" onclick="J.go(5)">הזהות בפעולה ←</button>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- שלב 5 · בפעולה -->
+  <section class="step" id="st-5">
+    <div class="card">
+      <div class="sk">שלב 5 מתוך 6 · בפעולה</div>
+      <h3 class="sh">הפוסטים לרשתות — כבר בזהות של גלים</h3>
+      <p class="sp">כל פוסט מתלבש אוטומטית בצבעים, בפונט ובקול. שלוש דוגמאות מתור הפרסום — נצבעות לפי הכיוון שבחרתם בשלב 3.</p>
+      <div class="posts3">
+        <div class="postc">
+          <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="פוסט ניקיון חוף">
+            <rect width="300" height="300" style="fill:var(--bkDeep)"/>
+            <circle cx="270" cy="30" r="80" style="fill:var(--bkP)" opacity=".18"/>
+            <circle cx="34" cy="266" r="40" style="fill:var(--bkS)" opacity=".2"/>
+            <text x="272" y="92" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="700" font-size="15" style="fill:var(--bkS)">מסורת של 30 שנה</text>
+            <text x="272" y="146" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="38" letter-spacing="-1.6" fill="#fff">בוקר ניקיון</text>
+            <text x="272" y="190" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="38" letter-spacing="-1.6" fill="#fff">החוף השנתי<tspan style="fill:var(--bkS)">.</tspan></text>
+            <text x="272" y="230" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="600" font-size="14" fill="#fff" opacity=".8">יום שישי · 7:30 · כל המשפחות מוזמנות</text>
+            <text x="272" y="274" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="700" font-size="11.5" fill="#fff" opacity=".55">בית ספר גלים · קריית ים</text>
+          </svg>
+          <div class="pm">מתוזמן · יום ד׳ 17:30 · פייסבוק + וואטסאפ</div>
+        </div>
+        <div class="postc">
+          <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="פוסט הרשמה">
+            <rect width="300" height="300" fill="#F8FAFC"/>
+            <circle cx="30" cy="34" r="56" style="fill:var(--bkS)" opacity=".18"/>
+            <text x="272" y="84" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="700" font-size="15" style="fill:var(--bkP)">גם אבא שלך למד כאן?</text>
+            <text x="272" y="136" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="34" letter-spacing="-1.4" style="fill:var(--bkDeep)">דור שלישי</text>
+            <text x="272" y="176" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="34" letter-spacing="-1.4" style="fill:var(--bkDeep)">בגלים<tspan style="fill:var(--bkS)">.</tspan></text>
+            <text x="272" y="212" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="600" font-size="14" fill="#64748B">ההרשמה לשנה הבאה נפתחה — סיורים בכל שבוע</text>
+            <rect x="152" y="238" width="120" height="34" rx="17" style="fill:var(--bkDeep)"/>
+            <text x="212" y="260" text-anchor="middle" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="14" fill="#fff">לסיור היכרות ←</text>
+          </svg>
+          <div class="pm">מתוזמן · יום א׳ 19:00 · פייסבוק + אינסטגרם</div>
+        </div>
+        <div class="postc">
+          <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="פוסט גאוות בוגרים">
+            <defs><linearGradient id="jp3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--bkP)"/><stop offset="1" style="stop-color:var(--bkDeep)"/></linearGradient></defs>
+            <rect width="300" height="300" fill="url(#jp3)"/>
+            <text x="272" y="96" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="700" font-size="15" style="fill:var(--bkS)">גאוות בוגרים</text>
+            <text x="272" y="150" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="34" letter-spacing="-1.4" fill="#fff">המורה החדשה</text>
+            <text x="272" y="192" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="900" font-size="34" letter-spacing="-1.4" fill="#fff">למדה כאן בעצמה<tspan style="fill:var(--bkS)">.</tspan></text>
+            <text x="272" y="230" text-anchor="start" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="600" font-size="14" fill="#fff" opacity=".85">מחזור תשס"ח חוזר הביתה — ראיון בתגובות</text>
+          </svg>
+          <div class="pm">מתוזמן · יום ה׳ 18:00 · כל הערוצים</div>
+        </div>
+      </div>
+      <div class="snav">
+        <button type="button" class="btn-sm" onclick="J.go(4)">→ חזרה</button>
+        <button type="button" class="btn-sm primary" onclick="J.go(6)">בודקים עקביות ←</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- שלב 6 · בודקים -->
+  <section class="step" id="st-6">
+    <div class="card">
+      <div class="sk">שלב 6 מתוך 6 · בודקים</div>
+      <h3 class="sh">כמה התוצרים של גלים באמת "גלים"?</h3>
+      <p class="sp">מכאן והלאה המערכת שומרת על הזהות: ציון עקביות שוטף, ובדיקה של כל פלייר ופוסט מול הערכה.</p>
+      <div class="score-wrap">
+        <div class="gauge">
+          <svg viewBox="0 0 190 190"><circle class="track" cx="95" cy="95" r="80"/><circle class="val" id="gaugeVal" cx="95" cy="95" r="80"/></svg>
+          <div class="gv"><div><b>62</b><small>עקביות המותג · רק מתחילים</small></div></div>
+        </div>
+        <div>
+          <div class="dim"><b>צבעוניות</b><div class="bar" style="--c:var(--yellow)"><i style="width:71%"></i></div><span class="v">71</span></div>
+          <div class="dim"><b>קול וניסוח</b><div class="bar" style="--c:var(--yellow)"><i style="width:66%"></i></div><span class="v">66</span></div>
+          <div class="dim"><b>טיפוגרפיה</b><div class="bar" style="--c:var(--fuchsia)"><i style="width:48%"></i></div><span class="v">48</span></div>
+          <div class="dim"><b>עולם התמונות</b><div class="bar" style="--c:var(--fuchsia)"><i style="width:44%"></i></div><span class="v">44</span></div>
+        </div>
+      </div>
+      <button type="button" class="btn-sm primary" id="checkBtn" onclick="J.checkFlyer()">בדקו פלייר לדוגמה מול המותג</button>
+      <div class="match-res" id="matchRes">
+        <div class="match-head"><b>64%</b><span>התאמה למותג — פלייר "ערב חשיפה" מ-Canva</span></div>
+        <div class="mrow y"><i>✓</i><span><b>הלוגו החדש במקום</b> — ובגרסה הנכונה לרקע.</span></div>
+        <div class="mrow w"><i>!</i><span><b>הירוק זר לפלטה</b> — אחד מארבעת הירוקים הישנים חזר. החלפה אוטומטית אפשרית.</span></div>
+        <div class="mrow x"><i>✕</i><span><b>הכותרת ב-Times</b> — הפונט של תשס"ט. אצלנו: Heebo בלבד.</span></div>
+        <div style="margin-top:8px"><button type="button" class="btn-sm navy" onclick="J.toast('במערכת המלאה: הפלייר חוזר מתוקן — בפלטה, בפונט ועם הסימן')">תיקון אוטומטי לפי הערכה</button></div>
+      </div>
+      <div class="snav">
+        <button type="button" class="btn-sm" onclick="J.go(5)">→ חזרה</button>
+        <span class="hint">זה סוף המסע — ומכאן המערכת ממשיכה לבד: כל תוצר חדש נבדק ונצבע.</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="jToast"></div>
+<div class="demo-foot">זהו דמו של <b>מסע המותג המפושט</b> עם נתונים מומצאים של "בית ספר גלים". אותה מערכת — בית ספר אחר, זהות אחרת. <a href="brand-kit.html">לספר המותג המלא של אימפקט</a> · <a href="../index.html#contact">לשיחת היכרות</a></div>
+
+<script>
+var J = (function () {
+  var KEY = 'farm-demo-brand-journey';
+  var toastTimer;
+  function toast(msg) {
+    var t = document.getElementById('jToast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2400);
+  }
+
+  /* ─── הסימן: מפרש/גל עם שמש (64×64) ─── */
+  function mark(c, sun) {
+    return '<g fill="none" stroke="' + c + '" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">'
+      + '<path d="M32 8v36"/><path d="M32 12q16 8 16 26h-16"/><path d="M32 18q-11 7-11 20h11"/>'
+      + '<path d="M12 52q6 5 12 0t12 0q6 5 12 0t8-2"/></g>'
+      + '<circle cx="50" cy="10" r="4.5" fill="' + sun + '"/>';
+  }
+  var HEEBO = 'font-family="Heebo, Arial, sans-serif"';
+
+  /* ─── כיוונים ─── */
+  var DIRS = [
+    { id: 'ogen', name: '"עוגן"', tag: 'מסורת שנראית עכשווית', bg: '#0D3B33', fg: '#FFFFFF', sp: '#F2B33D', pal: { deep: '#0D3B33', p: '#1E7D6B', s: '#F2B33D' }, desc: 'ירוק-ים עמוק אחד במקום ארבעה, וזהב של שמש. ותיק, יציב, חם.' },
+    { id: 'mifras', name: '"מפרש"', tag: 'רוח חדשה, אותם שורשים', bg: '#2EB8A6', fg: '#0E3A54', sp: '#FFFFFF', pal: { deep: '#0E3A54', p: '#2EB8A6', s: '#FF6B4A' }, desc: 'טורקיז בהיר ואלמוג. צעיר ופתוח — בלי לאבד את הים.' },
+    { id: 'ruach', name: '"רוח גבית"', tag: 'נועז — בולטים בשכונה', bg: '#FF6B4A', fg: '#FFFFFF', sp: '#0E3A54', pal: { deep: '#0E3A54', p: '#FF6B4A', s: '#F2B33D' }, desc: 'אלמוג מוביל וזהב. אנרגיה של התחדשות — הכי רחוק מהלוגו הישן.' }
+  ];
+  var state = load();
+  function load() { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s) return s; } catch (e) {} return { dir: null, analyzed: false }; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  function renderDirs() {
+    document.getElementById('dirs').innerHTML = DIRS.map(function (d) {
+      var mine = state.dir === d.id;
+      return '<button type="button" class="dir' + (mine ? ' chosen' : '') + '" onclick="J.pick(\'' + d.id + '\')">'
+        + '<span class="prev" style="background:' + d.bg + '"><svg viewBox="0 0 64 64" width="56" height="56">' + mark(d.fg, d.sp) + '</svg><b style="color:' + d.fg + '">רוח גבית.</b></span>'
+        + '<span class="db" style="display:block"><h4>' + d.name + ' — ' + d.tag + '</h4><p>' + d.desc + '</p>'
+        + '<span class="pick">' + (mine ? '✓ הכיוון שנבחר' : 'לוחצים לבחירה') + '</span></span></button>';
+    }).join('');
+  }
+  function applyDir(id, silent) {
+    var d = null;
+    for (var i = 0; i < DIRS.length; i++) if (DIRS[i].id === id) d = DIRS[i];
+    var st = document.body.style;
+    if (!d) { st.removeProperty('--bkDeep'); st.removeProperty('--bkP'); st.removeProperty('--bkS'); renderKit(); return; }
+    st.setProperty('--bkDeep', d.pal.deep); st.setProperty('--bkP', d.pal.p); st.setProperty('--bkS', d.pal.s);
+    renderKit();
+    if (!silent) toast('נבחר כיוון ' + d.name + ' — כל ההמשך נצבע בו');
+  }
+  function pick(id) {
+    state.dir = id; save(); renderDirs(); applyDir(id);
+  }
+
+  /* ─── ערכה מרוכזת: לוגו + צבעים חיים ─── */
+  function pal() {
+    var cs = getComputedStyle(document.body);
+    return { deep: cs.getPropertyValue('--bkDeep').trim(), p: cs.getPropertyValue('--bkP').trim(), s: cs.getPropertyValue('--bkS').trim() };
+  }
+  function logoSVG(dark) {
+    var q = pal(), c = dark ? '#FFFFFF' : q.deep;
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 76" style="width:88%;max-width:220px;height:auto"><g transform="translate(176,4)">' + mark(c, q.s) + '</g>'
+      + '<text x="164" y="38" text-anchor="start" ' + HEEBO + ' font-weight="900" font-size="28" letter-spacing="-1" fill="' + c + '" direction="rtl">בית ספר גלים</text>'
+      + '<text x="164" y="60" text-anchor="start" ' + HEEBO + ' font-weight="600" font-size="13" fill="' + (dark ? 'rgba(255,255,255,.72)' : '#64748B') + '" direction="rtl">רוח גבית לכל ילד<tspan fill="' + q.s + '" font-weight="900">.</tspan></text></svg>';
+  }
+  function renderKit() {
+    var q = pal();
+    document.getElementById('logoLt').innerHTML = logoSVG(false);
+    document.getElementById('logoDk').innerHTML = logoSVG(true);
+    var colors = [[q.deep, 'עומק'], [q.p, 'מוביל'], [q.s, 'שמש'], ['#F8FAFC', 'רקע'], ['#64748B', 'טקסט משני']];
+    document.getElementById('sws2').innerHTML = colors.map(function (c) {
+      var lightBg = c[0] === '#F8FAFC';
+      return '<span style="background:' + c[0] + (lightBg ? ';color:#64748B;box-shadow:inset 0 0 0 1px rgba(6,30,79,.12)' : '') + '" onclick="J.copy(\'' + c[0] + '\')">' + c[1] + '</span>';
+    }).join('');
+  }
+  function copy(text) {
+    var done = function () { toast(text + ' הועתק'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, done);
+    else done();
+  }
+
+  /* ─── צעדים ─── */
+  var STEPS = ['מגלים', 'מאבחנים', 'בוחרים', 'הערכה', 'בפעולה', 'בודקים'];
+  var cur = 1;
+  function renderSteps() {
+    document.getElementById('steps').innerHTML = STEPS.map(function (s, i) {
+      var n = i + 1;
+      return '<button type="button" class="stp' + (n === cur ? ' on' : '') + (n < cur ? ' done' : '') + '" onclick="J.go(' + n + ')"><span class="n">' + (n < cur ? '✓' : n) + '</span>' + s + '</button>';
+    }).join('');
+    document.getElementById('prog').style.width = Math.round(cur / STEPS.length * 100) + '%';
+  }
+  function go(n) {
+    cur = Math.max(1, Math.min(STEPS.length, n));
+    var steps = document.querySelectorAll('.step');
+    for (var i = 0; i < steps.length; i++) steps[i].classList.toggle('on', steps[i].id === 'st-' + cur);
+    renderSteps();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (cur === 2 && state.analyzed) { showDiag(true); }
+    if (cur === 6) initGauge();
+  }
+
+  /* ─── אבחון: סריקה קצרה ואז תוצאה ─── */
+  var SCAN_MSGS = ['קוראים את הלוגו הסרוק…', 'מחלצים צבעים מהמצגת…', 'לומדים את הקול מ-41 פוסטים…', 'מזהים מה שובר את האחידות…'];
+  function analyze() {
+    go(2);
+    if (state.analyzed) { showDiag(true); return; }
+    var scan = document.getElementById('scan'), diag = document.getElementById('diag');
+    diag.classList.remove('on'); scan.classList.add('on');
+    var bar = document.getElementById('scanBar'), txt = document.getElementById('scanTxt'), i = 0;
+    txt.textContent = SCAN_MSGS[0]; bar.style.width = '10%';
+    var iv = setInterval(function () {
+      i++;
+      if (i < SCAN_MSGS.length) { txt.textContent = SCAN_MSGS[i]; bar.style.width = (10 + i * 28) + '%'; }
+      else {
+        clearInterval(iv); bar.style.width = '100%';
+        setTimeout(function () { state.analyzed = true; save(); showDiag(); }, 350);
+      }
+    }, 650);
+  }
+  function showDiag(instant) {
+    document.getElementById('scan').classList.remove('on');
+    document.getElementById('diag').classList.add('on');
+    if (!instant) toast('האבחון מוכן — נוצר מ-4 קבצים ומקור אחד ברשת');
+  }
+
+  /* ─── ציון ─── */
+  function initGauge() {
+    var el = document.getElementById('gaugeVal');
+    if (el) requestAnimationFrame(function () { el.style.strokeDashoffset = 502 * (1 - 0.62); });
+  }
+  function checkFlyer() {
+    document.getElementById('checkBtn').style.display = 'none';
+    document.getElementById('matchRes').classList.add('on');
+  }
+  function reset() {
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    state = load();
+    document.body.style.removeProperty('--bkDeep'); document.body.style.removeProperty('--bkP'); document.body.style.removeProperty('--bkS');
+    document.getElementById('matchRes').classList.remove('on'); document.getElementById('checkBtn').style.display = '';
+    document.getElementById('diag').classList.remove('on'); document.getElementById('scan').classList.remove('on');
+    renderDirs(); renderKit(); go(1);
+    toast('הדמו אופס');
+  }
+
+  renderDirs(); renderKit(); renderSteps();
+  if (state.dir) applyDir(state.dir, true);
+  /* קישור ישיר לשלב: ?step=3 */
+  var mStep = location.search.match(/[?&]step=(\d)/);
+  if (mStep) {
+    var n0 = +mStep[1];
+    if (n0 >= 2) { state.analyzed = true; }
+    go(n0);
+  }
+
+  return { go: go, pick: pick, analyze: analyze, checkFlyer: checkFlyer, reset: reset, toast: toast, copy: copy };
+})();
+</script>
+</body>
+</html>
