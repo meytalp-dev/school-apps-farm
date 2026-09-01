@@ -142,6 +142,16 @@
   .match-head b { font-size: 32px; font-weight: 900; letter-spacing: -1.5px; color: var(--fuchsia); line-height: 1; }
   .match-head span { font-size: 13px; font-weight: 800; }
   @media (max-width: 720px) { .score-wrap { grid-template-columns: 1fr; } }
+
+  /* ─── ספר המותג: באנר + סגירת מסע ─── */
+  .bookbar { display: flex; align-items: center; gap: 14px; margin-top: 18px; padding: 14px 18px; border: 1.5px solid color-mix(in srgb, var(--bkS) 55%, transparent); background: color-mix(in srgb, var(--bkS) 10%, #fff); border-radius: 16px; flex-wrap: wrap; }
+  .bookbar .bi { font-size: 26px; }
+  .bookbar .bt { flex: 1; min-width: 220px; font-size: 13.5px; line-height: 1.6; color: var(--navy); }
+  .finish { display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin-top: 18px; padding: 20px 24px; border-radius: 18px; background: linear-gradient(135deg, var(--bkDeep), var(--bkP)); color: #fff; }
+  .finish b { font-size: 17px; font-weight: 900; letter-spacing: -.3px; }
+  .finish p { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,.85); margin-top: 4px; max-width: 520px; }
+  .finish-btn { background: #fff; border-color: #fff; color: var(--bkDeep); font-weight: 800; white-space: nowrap; }
+  .finish-btn:hover { border-color: #fff; }
 </style>
 </head>
 <body>
@@ -153,7 +163,7 @@
       <div class="sch"><span class="chip-sm teal">הדמו: בית ספר "גלים" · קריית ים</span><span class="chip-sm gray">שלב אחד על המסך · 6 שלבים</span></div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <a class="btn-sm" href="brand-kit.html">לספר המותג המלא (אימפקט)</a>
+      <a class="btn-sm navy" href="brand-kit.html" title="כל 14 הסעיפים: כללי שימוש, סלוגנים, הורדות — בפורמט ספר (דמו אימפקט)">📖 ספר המותג המלא</a>
       <button type="button" class="btn-sm ghost" onclick="J.reset()">איפוס דמו</button>
     </div>
   </div>
@@ -264,12 +274,14 @@
         <h4>איך גלים מדבר — משתמשים / נמנעים</h4>
         <div class="vwords"><span>בית</span><span>שורשים</span><span>ביחד</span><span>דור לדור</span><span>רוח גבית</span><span>הים שלנו</span><span class="no">מצוינות</span><span class="no">חדשני</span><span class="no">מוביל</span><span class="no">יוקרתי</span></div>
       </div>
+      <div class="bookbar">
+        <span class="bi">📖</span>
+        <span class="bt"><b>זו התמצית לעבודה היומיומית.</b> ספר המותג המלא — 14 סעיפים: כללי שימוש בלוגו, מערכת סלוגנים, קול המותג וקובצי הורדה — נפתח בלחיצה.</span>
+        <a class="btn-sm navy" href="brand-kit.html">פותחים את הספר ←</a>
+      </div>
       <div class="snav">
         <button type="button" class="btn-sm" onclick="J.go(3)">→ חזרה</button>
-        <span style="display:flex;gap:8px;flex-wrap:wrap">
-          <a class="btn-sm" href="brand-kit.html">ספר המותג המלא נראה כך ←</a>
-          <button type="button" class="btn-sm primary" onclick="J.go(5)">הזהות בפעולה ←</button>
-        </span>
+        <button type="button" class="btn-sm primary" onclick="J.go(5)">הזהות בפעולה ←</button>
       </div>
     </div>
   </section>
@@ -352,9 +364,16 @@
         <div class="mrow x"><i>✕</i><span><b>הכותרת ב-Times</b> — הפונט של תשס"ט. אצלנו: Heebo בלבד.</span></div>
         <div style="margin-top:8px"><button type="button" class="btn-sm navy" onclick="J.toast('במערכת המלאה: הפלייר חוזר מתוקן — בפלטה, בפונט ועם הסימן')">תיקון אוטומטי לפי הערכה</button></div>
       </div>
+      <div class="finish">
+        <div>
+          <b>סוף המסע — וזה התוצר שנשאר אצלכם:</b>
+          <p>ספר מותג שלם, חי ומעודכן: לוגו בכל הגרסאות, צבעים, סלוגנים, קול המותג וקובצי הורדה. מכאן המערכת ממשיכה לבד — כל תוצר חדש נבדק ונצבע.</p>
+        </div>
+        <a class="btn-sm finish-btn" href="brand-kit.html">📖 לספר המותג המלא ←</a>
+      </div>
       <div class="snav">
         <button type="button" class="btn-sm" onclick="J.go(5)">→ חזרה</button>
-        <span class="hint">זה סוף המסע — ומכאן המערכת ממשיכה לבד: כל תוצר חדש נבדק ונצבע.</span>
+        <span class="hint">אפשר לחזור לכל שלב דרך פס השלבים למעלה.</span>
       </div>
     </div>
   </section>
